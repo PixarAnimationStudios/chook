@@ -22,13 +22,12 @@
 ###    language governing permissions and limitations under the Apache License.
 ###
 ###
-
 module Chook
 
   class PatchSoftwareTitleUpdatedEvent < Event
 
     EVENT_NAME = 'PatchSoftwareTitleUpdated'.freeze
-    OBJECT_CLASS = Chook::EventObjects::PatchSoftwareTitleUpdate
+    OBJECT_CLASS = Chook::EventObjects::PatchSoftwareTitleUpdated
 
   end # class
 

@@ -22,7 +22,6 @@
 ###    language governing permissions and limitations under the Apache License.
 ###
 ###
-
 module Chook
 
   class SmartGroupComputerMembershipChangeEvent < Event

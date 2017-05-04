@@ -22,7 +22,6 @@
 ###    language governing permissions and limitations under the Apache License.
 ###
 ###
-
 module Chook
 
   # This method is used by the Ruby event-handler files.
