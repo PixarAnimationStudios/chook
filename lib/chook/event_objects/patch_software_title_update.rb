@@ -24,7 +24,7 @@
 ###
 
 Chook::EventObjects.object_definitions[:patch_software_title_update] = {
-  class_name: 'PatchSoftwareTitleUpdate',
+  class_name: 'PatchSoftwareTitleUpdated',
   attributes: [
     :name,
     :latestVersion,

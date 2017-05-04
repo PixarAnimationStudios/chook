@@ -31,7 +31,7 @@ module Chook
     include Singleton
 
     # The location of the default config file
-    DEFAULT_CONF_FILE = Pathname.new '/etc/jsswebhooks.conf'
+    DEFAULT_CONF_FILE = Pathname.new '/etc/chook.conf'
 
     ### The attribute keys we maintain, and the type they should be stored as
     CONF_KEYS = {

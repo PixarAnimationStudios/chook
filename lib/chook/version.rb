@@ -26,7 +26,7 @@
 ###
 module Chook
 
-  ### The version of the JSS WebHooks framework
+  ### The version of the Chook framework
   VERSION = '0.0.1'.freeze
 
 end # module
