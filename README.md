@@ -12,23 +12,28 @@
 - [Installing Chook into ruby-jss](#installing-jsswebhooks-into-ruby-jss)
 - [TODOs](#todos)
 
- <!-- TOC depthFrom:2 depthTo:6 withLinks:1 updateOnSave:0 orderedList:0 -->
-
-
-<!-- /TOC -->
 
 ## Introduction
 
-Chook is a sub-module of ruby-jss which implements both a framework for
-working with JSS WebHook events, and a simple http server, based on Sinatra and
-WEBrick, for handling those events.
+Chook is a Ruby module which implements a framework for working with WebHook events
+sent by the JSS, the core of [Jamf Pro](https://www.jamf.com/products/jamf-pro/),
+a management tool for Apple devices.
 
-You do not need to be a Ruby programmer to make use of this framework! "Event Handlers"
-can be written in any language and used by the web server included with the module.
-See _Event Handlers_ and _The Server_  below for more info.
+Chook also provides a simple, sinatra-based http server, for handling those events,
+and classes for sending simulated JSS WebHook events to a webhook server.
+
+**You do not need to be a Ruby programmer to make use of this framework!**
+
+The webhook handling server that comes with Chook can use "Event Handlers" written in
+any language. See _Event Handlers_ and _The Server_ below for more info.
 
 Chook is still in early development. While the basics seem to work,
-there's much to do before it can be released in the ruby-jss gem.
+there's much to do before it can be considered a released project.
+
+While Chook integrates well with [ruby-jss](http://pixaranimationstudios.github.io/ruby-jss/index.html),
+it's a separate tool and the two projects aren't dependent. However Chook
+will become a requirement for [d3](http://pixaranimationstudios.github.io/depot3/index.html),
+as the means by which d3 responds to Jamf Pro's PatchSoftwareTitleUpdated events.
 
 For details about the JSS WebHooks API, and the JSON data it passes, please see
 [Bryson Tyrrell's excellent
@@ -48,22 +53,22 @@ of `Chook::Event` is returned, for example
 
 Each event instance contains these important attributes:
 
-* **webhook:** A read-only instance of `JSSWebHook::Event::WebHook`
+* **webhook:** A read-only instance of `Chook::Event::WebHook`
   representing the WebHook stored in the JSS which cause the POST request. This
   object has attributes matching those in the "webhook" dict. of the POSTed
   JSON.
 
-* **event_object:** A read-only instance of a `JSSWebHook::EventObject::<Class>`
+* **event_object:** A read-only instance of a `Chook::EventObject::<Class>`
   representing the 'event object' that accompanies the event that triggered the
   WebHook. It comes from the 'object' dict of the POSTed JSON, and different
   events come with different objects attached. For example, the
   ComputerInventoryCompleted event comes with a "computer" object, containing
   data about the JSS computer that completed inventory.
 
-  This is not full `JSS::Computer` instance from the REST API, but rather a group
+  This is not full `JSS::Computer` object from the REST API, but rather a group
   of named attributes about that computer. At the moment the Chook
-  framework makes no attempt to use the event object to create a `JSS::Computer`
-  instance but the handlers written for the event could easily do so if needed.
+  framework makes no attempt to use the event object to look up the object in
+  the API, but the handlers written for the event could easily do so if needed.
 
 * **event_json:** The JSON content from the POST request, parsed into
   a Ruby hash with symbolized keys (meaning the JSON key "deviceName" becomes
@@ -80,13 +85,13 @@ Each event instance contains these important attributes:
 
 A handler is a file containing code to run when a webhook event occurs. These
 files are located in a specified directory, /Library/Application
-Support/Chook/ by default, and are loaded at runtime. It's up to the Casper
+Support/Chook/ by default, and are loaded at runtime. It's up to the Jamf
 administrator to create these handlers to perform desired tasks. Each class of
 event can have as many handlers as desired, all will be executed when the event's
 `handle` method is called.
 
 Handler files must begin with the name of the event they handle, e.g.
-ComputerAdded, followed by: nothing, a dot, a dash, or an underscore. Hander
+ComputerAdded, followed by: nothing, a dot, a dash, or an underscore. Handler
 filenames are case-insensitive.
 
 All of these filenames work as handlers for ComputerAdded events:
@@ -148,7 +153,7 @@ echo "Computer '${cname}' was just added to the JSS for user ${uname}."
 External handlers **must** be executable files. Executability is how the
 framework determines if a handler is internal or external.
 
-See ruby-jss/lib/jss/webhooks/data/sample_handlers/RestAPIOperation-executable
+See data/sample_handlers/RestAPIOperation-executable
 for a more detailed bash example that handles RestAPIOperation events.
 
 ### Putting it together
@@ -158,7 +163,7 @@ ComputerAdded event:
 
 ```ruby
 # load in the framework
-require 'jss/webhooks'
+require 'chook'
 
 # The framework comes with sample JSON files for each event type.
 # In reality, a webserver would extract this from the data POSTed from the JSS
@@ -218,7 +223,7 @@ Chook comes with a simple http server that uses the Chook framework
 to handle all incoming webhook POST requests from the JSS via a single URL.
 
 To use it you'll need to install the [sinatra](http://www.sinatrarb.com/
-) ruby gem (`sudo gem install sinatra`).
+) ruby gem (`gem install sinatra`).
 
 After that, just run the `jss-webhook-server` command located in the bin
 directory for ruby-jss and then point your WebHooks at:
@@ -230,30 +235,16 @@ you have installed.
 To automate it on a dedicated machine, just make a LaunchDaemon plist to run
 that command and keep it running.
 
-## Installing Chook into ruby-jss
+## Installing Chook
 
-Until Chook is officially released as part of ruby-jss, here's how to get
-it up and running:
-
-0. Write a handler or two (see _Handlers_ above) and put them into
-   /Library/Application Support/Chook/
-0. Clone ruby-jss from github into some path like /path/to/github/clone/
-1. If you don't already have it, install the ruby-jss gem `sudo gem install ruby-jss`
-2. Install sinata: `sudo gem install sinatra`
-3. Install immutable-struct: `sudo gem install immutable-struct`
-4. From /path/to/github/clone/lib/jss/ copy the webhooks folder **and** webhooks.rb
-   and into /Library/Ruby/Gems/2.0.0/gems/ruby-jss-_version_/lib/jss/ or
-   where-ever your gems are installed.
-5. From /path/to/github/clone/bin/ copy 'jss-webhook-server' into
-   /Library/Ruby/Gems/2.0.0/gems/ruby-jss-_version_/bin/
+`gem install chook -n /usr/local/bin`. It will also install the dependencies 'sinatra' & 'immutable-struct'
 
 Then fire up `irb` and `require jss/webhooks` to start playing around. (remember
 the sample JSON strings available in `Chook.sample_jsons`)
 
 OR
 
-run /Library/Ruby/Gems/2.0.0/gems/ruby-jss-_version_/bin/jss-webhook-server  and
-point some WebHooks at your machine.
+run `/usr/local/bin/chook` and point some WebHooks at your machine.
 
 
 ## TODOs
@@ -262,7 +253,7 @@ point some WebHooks at your machine.
 - Better (any!) thread management for handlers
 - Logging and Debug options
 - handler reloading for individual, or all, Event subclasses
-- Generate the YARD docs
+- Better YARD docs
 - better namespace protection for internal handlers
 - Use and improve the configuration stuff.
 - write proper documentation beyond this README

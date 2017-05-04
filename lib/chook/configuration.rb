@@ -116,7 +116,7 @@ module Chook
     ###
     def reload(file = DEFAULT_CONF_FILE)
       file = Pathname.new file
-      return false unless file.file? and file.readable?
+      return false unless file.file? && file.readable?
       clear_all
       read file
     end

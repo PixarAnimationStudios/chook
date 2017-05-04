@@ -52,8 +52,10 @@ module Chook
     # @return [Hash{String => Class} a mapping of Event names as they come from
     #   the JSS to the Chook::Event subclasses that represent them
     #
-    def self.event_to_class_names
-      @event_to_class_names
+    class << self
+
+      attr_reader :event_to_class_names
+
     end
 
     # Given the raw json from the JSS webhook,

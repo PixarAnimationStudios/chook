@@ -26,7 +26,6 @@
 require 'ruby-jss'
 require 'immutable-struct'
 
-
 # The Chook module
 #
 module Chook

@@ -23,7 +23,7 @@
 ###
 ###
 
-require 'jss/webhooks'
+require 'chook'
 require 'sinatra/base'
 require 'webrick/https'
 
@@ -34,5 +34,5 @@ module Chook
 
 end # module
 
-require 'jss/webhooks/server_app/server'
-require 'jss/webhooks/server_app/routes'
+require 'server_app/server'
+require 'server_app/routes'
