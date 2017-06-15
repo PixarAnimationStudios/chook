@@ -1,3 +1,0 @@
-#!/usr/bin/ruby
-require 'chook/server_app'
-Chook::Server.run!

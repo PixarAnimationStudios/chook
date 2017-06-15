@@ -1,0 +1,5 @@
+#!/usr/bin/ruby
+require 'pixenv'
+require 'chook/server'
+Chook::HandledEvent::Handlers.load_handlers
+Chook::Server.run!
