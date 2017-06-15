@@ -23,119 +23,132 @@
 ###
 ###
 
+#
 module Chook
 
-  # The superclass of all webhook events.
+  # This is the MetaClass for all Event objects, both handled and test.
+  # It holds constants, methods, and attributes that are common to all
+  # events in Chook.
   #
-  # Almost all processing happens here in the Superclass. The Subclasses
-  # define specfic-event-related details.
-  # As such, the Subclasses must define these constants:
+  # An 'event' within Chook is the ruby-abstraction of a JSON payload
+  # as sent by a JSS Webhook representing an event that takes place in the JSS.
   #
-  # HANDLER_KEY = The Chook::Configuration key pointing to the handler
-  #   file for this event. See Event#handle for details.
-  #
-  # OBJECT_CLASS = the Chook::EventObjects (q.v.) class representing the
-  #   event object with this event
+  # All events contain a #subject attribute, which represent the thing
+  # upon which the event acted, e.g. a computer, mobile divice, or the
+  # JSS itself.
+  # The #subject attribute contains an object which is a subclass
+  # of Chook::Subject, q.v.
   #
   class Event
 
-    #########################
-    # Class Instance Variables
-
-    # Holds a mapping of Event names as they come from the JSS to the
-    # Event subclasses that represent them. Will be populated
-    # as the event subclasses are required.
-    @event_to_class_names ||= {}
-
-    # Getter for @event_to_class_names
+    # A mapping of the Event Names (as they are known to the JSS)
+    # to the the matching Subject class names
     #
-    # @return [Hash{String => Class} a mapping of Event names as they come from
-    #   the JSS to the Chook::Event subclasses that represent them
+    # The event names from the JSS are in the JSON hash as the value of
+    # JSON_hash[:webhook][:webhookEvent] and they are also the names
+    # of the matching event classes within the HandledEvent module and the
+    # TestEvent module.
     #
-    class << self
-
-      attr_reader :event_to_class_names
-
-    end
-
-    # Given the raw json from the JSS webhook,
-    # create an object of the correct Event subclass
+    # E.g.
+    # the HandledEvents class that handles the 'ComputerPolicyFinished'
+    # event is Chook::HandledEvent::ComputerPolicyFinished
     #
-    # @param [String] raw_event_json The JSON http POST content from the JSS
+    # and
     #
-    # @return [Chook::Event subclass] the Event subclass matching the event
+    # the TestEvents that simulates 'ComputerPolicyFinished' is
+    # Chook::TestEvents::ComputerPolicyFinished
     #
-    def self.parse_event(raw_event_json)
-      event_json = JSON.parse(raw_event_json, symbolize_names: true)
-      event_name = event_json[:webhook][:webhookEvent]
-      Chook::Event.event_to_class_names[event_name].new event_json, raw_event_json
-    end
+    # And, those classes take the matching 'Computer' subject, either
+    # Chook::HandledSubjects::Computer or Chook::TestSubjects::Computer
+    #
+    EVENTS = {
+      'ComputerAdded' => Chook::Subject::COMPUTER,
+      'ComputerCheckIn' => Chook::Subject::COMPUTER,
+      'ComputerInventoryCompleted' => Chook::Subject::COMPUTER,
+      'ComputerPolicyFinished' => Chook::Subject::COMPUTER,
+      'ComputerPushCapabilityChanged' => Chook::Subject::COMPUTER,
+      'JSSShutdown' => Chook::Subject::JSS,
+      'JSSStartup' => Chook::Subject::JSS,
+      'MobileDeviceCheckIn' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDeviceCommandCompleted' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDeviceEnrolled' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDevicePushSent' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDeviceUnEnrolled' => Chook::Subject::MOBILE_DEVICE,
+      'PatchSoftwareTitleUpdated' => Chook::Subject::PATCH_SW_UPDATE,
+      'PushSent' => Chook::Subject::PUSH,
+      'RestAPIOperation' => Chook::Subject::REST_API_OPERATION,
+      'SCEPChallenge' => Chook::Subject::SCEP_CHALLENGE,
+      'SmartGroupComputerMembershipChange' => Chook::Subject::SMART_GROUP,
+      'SmartGroupMobileDeviceMembershipChange' => Chook::Subject::SMART_GROUP
+    }.freeze
 
-    # @return [String] the raw JSON recieved from the JSS
+    # Event subclasses will have an EVENT_NAME constant,
+    # which contains the name of the event, one of the keys
+    # from the Event::EVENTS Hash.
+    EVENT_NAME_CONST = 'EVENT_NAME'.freeze
+
+    # Event subclasses will have an SUBJECT_CLASS constant,
+    # which contains the class of the subject of the event, based on one of the
+    # values from the Event::EVENTS Hash.
+    SUBJECT_CLASS_CONST = 'SUBJECT_CLASS'.freeze
+
+    #### Attrbutes common to all events
+
+    # @return [Integer] The webhook id in the JSS that caused this event
+    attr_reader :webhook_id
+
+    # @return [String] The webhook name in the JSS that caused this event
+    attr_reader :webhook_name
+
+    # @return [Object] The subject of this event - i.e. the thing it acted upon.
+    #   An instance of a class from either the Chook::HandledSubjects module
+    #   or the Chook::TestSubjects module
+    attr_reader :subject
+
+    # @return [String, nil] If this event object was initialized with a JSON
+    #  blob as from the JSS, it will be stored here.
     attr_reader :raw_json
 
-    # @return [Hash] The parsed JSON recieved from the JSS
-    attr_reader :event_json
+    # @return [Hash, nil] If this event object was initialized with a JSON
+    #  blob as from the JSS, the Hash parsed from it will be stored here.
+    attr_reader :parsed_json
 
-    # @return [Chook::WebHook] The webhook in the JSS that caused this event
-    attr_reader :webhook
-
-    # @return [Chook::EventObjects class] The event object sent with the event
-    attr_reader :event_object
-
-    # @return [Array<Proc,Pathname>] the handlers defined for this event
-    attr_reader :handlers
-
-    def initialize(event_json, raw_json)
-      @event_json = event_json
-      @raw_json = raw_json
-
-      # make a WebHook instance out of the webhook data for the event
-      @webhook = WebHook.new(event_json[:webhook])
-
-      # make an Event Objects class instance for the event object that
-      # came with this event.
-      @event_object = self.class::OBJECT_CLASS.new(event_json[:event])
-
-      # An array of handlers for this event type.
-      @handlers = Chook::Event::Handlers.event_handlers[self.class::EVENT_NAME]
-      @handlers ||= []
-    end # init
-
-    def handle
-      @handlers.each do |handler|
-        case handler
-        when Pathname
-          pipe_to_executable handler
-        when Proc
-          handle_with_proc handler
-        end # case
-      end # @handlers.each do |handler|
-
-      # the handle method should return a string, since
-      # it's what gets called by the Post processor
-      # and it's output it returned as the HTTP Result
-      # body.
-      "Processed by #{@handlers.count} handlers"
-    end # def handle
-
-    # TODO: have something here that
-    # cleans up old threads and forks
-    def pipe_to_executable(handler)
-      thread = Thread.new do
-        IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
+    # Args are a hash (or group of named params)
+    # with these possible keys:
+    #   raw_json: [String] A raw JSON blob for a full event as sent by the JSS
+    #     If this is present, all other keys are ignored and the instance is
+    #     built with this data.
+    #   parsed_json: [Hash] A pre-parsed JSON blob for a full event.
+    #     If this is present, all other keys are ignored and the instance is
+    #     built with this data (however raw_json wins if both are provided)
+    #   webhook_event: [String] The name of the event, one of the keys of EVENTS
+    #   webhook_id: [Integer] The id of the webhook defined in the JSS
+    #   webhook_name: [String] The name of the webhook defined in the JSS
+    # The remaning keys are the attributes of the Subject subclass for this
+    # event. Any not provided will be nil.
+    #
+    def initialize(**args)
+      if args[:raw_json]
+        @raw_json = args[:raw_json]
+        @parsed_json = JSON.parse @raw_json, symbolize_names: true
+      elsif args[:parsed_json]
+        @parsed_json = args[:parsed_json]
       end
+
+      if @parsed_json
+        @webhook_name = @parsed_json[:webhook][:name]
+        @webhook_id = @parsed_json[:webhook][:id]
+        subject_data = @parsed_json[:event]
+      else
+        @webhook_name = args.delete :webhook_name
+        @webhook_id = args.delete :webhook_id
+        subject_data = args
+      end
+
+      @subject = self.class::SUBJECT_CLASS.new subject_data
+
     end
 
-    def handle_with_proc(handler)
-      thread = Thread.new { handler.call self }
-    end
-
-  end # class event
+  end # class Event
 
 end # module
-
-# load in the subclass definitions
-Pathname.new(__FILE__).parent.+('event').children.each do |file|
-  require file.to_s if file.extname == '.rb'
-end
