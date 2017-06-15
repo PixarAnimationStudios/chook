@@ -1,0 +1,4 @@
+
+# a curl command to test the server with a smaple json file
+
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X POST --data "$( < /path/to/json/file )"   http://localhost:8000/handle_webhook_event
