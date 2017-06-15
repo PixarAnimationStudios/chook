@@ -23,30 +23,16 @@
 ###
 ###
 
-require 'ruby-jss'
-require 'immutable-struct'
-
-# The Chook module
+# Requiring this file (require 'chook') will load the entire library
+# including event testing, event handling, and the server.
 #
-module Chook
+# To load a subset, use one of:
+#   require 'chook/event_testing'
+#   require 'chook/event_handing'
+#   require 'chook/server'
 
-  # load in some sample JSON files, one per event type
-  @sample_jsons = {}
+# foundation
+require 'chook/event_testing'
 
-  sample_json_dir = Pathname.new(__FILE__).parent + 'webhooks/data/sample_jsons'
-  sample_json_dir.children.each do |jf|
-    event = jf.basename.to_s.chomp(jf.extname).to_sym
-    @sample_jsons[event] = jf.read
-  end
-
-  def self.sample_jsons
-    @sample_jsons
-  end
-
-end # module
-
-require 'configuration'
-require 'jss/webhooks/event_objects'
-require 'jss/webhooks/event'
-
-Chook::Event::Handlers.load_handlers
+# the server - it loads the event handling files
+require 'chook/server'
