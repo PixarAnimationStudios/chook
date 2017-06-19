@@ -39,7 +39,12 @@ module Chook
     CONF_KEYS = {
       server_port: :to_i,
       server_engine:  :to_sym,
-      handler_dir: :to_s
+      handler_dir: nil,
+      use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
+      ssl_private_key_path: Chook::Procs::STRING_TO_PATHNAME,
+      ssl_private_key_pw_path: nil,
+      ssl_cert_path: Chook::Procs::STRING_TO_PATHNAME,
+      ssl_cert_name: nil
     }.freeze
 
     # Class Variables
@@ -48,24 +53,20 @@ module Chook
     # Class Methods
     #####################################
 
-
     # Attributes
     #####################################
 
     # automatically create accessors for all the CONF_KEYS
     CONF_KEYS.keys.each { |k| attr_accessor k }
 
-
     # Constructor
     #####################################
-
 
     # Initialize!
     #
     def initialize
       read_global
     end
-
 
     # Public Instance Methods
     #####################################
@@ -78,7 +79,6 @@ module Chook
       CONF_KEYS.keys.each { |k| send "#{k}=".to_sym, nil }
     end
 
-
     # (Re)read the global prefs, if it exists.
     #
     # @return [Boolean] was the file loaded?
@@ -87,7 +87,6 @@ module Chook
       return false unless DEFAULT_CONF_FILE.file? && DEFAULT_CONF_FILE.readable?
       read DEFAULT_CONF_FILE
     end
-
 
     # Clear the settings and reload the prefs file, or another file if provided
     #
@@ -101,7 +100,6 @@ module Chook
       clear_all
       read file
     end
-
 
     # Save the prefs into a file
     #
@@ -139,9 +137,8 @@ module Chook
 
       # make sure we end with a newline, the save it.
       data << "\n" unless data.end_with?("\n")
-      path.jss_save data
+      path.open('w') { |f| f.write data }
     end # save file
-
 
     # Print out the current settings to stdout
     #
@@ -155,8 +152,7 @@ module Chook
     #####################################
     private
 
-    #
-    # Read in any prefs file
+    # Read in a prefs file
     #
     # @param file[String,Pathname] the file to read
     #
@@ -172,13 +168,22 @@ module Chook
         key = Regexp.last_match(1)
         next unless key
         attr = key.to_sym
+        next unless available_conf_keys.include? attr
         setter = "#{key}=".to_sym
         value = Regexp.last_match(2).strip
 
-        next unless available_conf_keys.include? attr
-
-        # convert the value to the correct class
-        value = value.send(CONF_KEYS[attr]) if value
+        # convert the string value read from the file
+        # to the correct class
+        value &&= case CONF_KEYS[attr]
+                  when Proc
+                    # If its a proc, pass it to the proc
+                    CONF_KEYS[attr].call value
+                  when Symbol
+                    # otherwise its a symbol method name to call on the string
+                    value.send(CONF_KEYS[attr])
+                  else
+                    value
+                  end
 
         send(setter, value)
       end # do line

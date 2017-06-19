@@ -29,8 +29,10 @@ module Chook
   # A namespace to hold Proc objects in constants
   module Procs
 
+    TRUE_RE = /^\s*(true|yes)\s*$/i
     JSS_EPOCH_TO_TIME = proc { |val| Time.strptime val.to_s[0..-4], '%s' }
-
+    STRING_TO_BOOLEAN = proc { |val| val =~ TRUE_RE ? true : false }
+    STRING_TO_PATHNAME = proc { |val| Pathname.new val }
   end
 
 end # module

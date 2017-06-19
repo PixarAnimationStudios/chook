@@ -31,7 +31,7 @@
 #   require 'chook/event_handing'
 #   require 'chook/server'
 
-# foundation
+require 'chook/foundation'
 require 'chook/event_testing'
 
 # the server - it loads the event handling files

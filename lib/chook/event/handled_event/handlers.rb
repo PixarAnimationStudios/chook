@@ -114,7 +114,6 @@ module Chook
       #
       def self.load_handlers(from_dir: Chook::CONFIG.handler_dir, reload: false)
         from_dir ||= DEFAULT_HANDLER_DIR
-
         if reload
           @handlers_loaded_from = nil
           @handlers = {}
@@ -129,6 +128,7 @@ module Chook
         end
 
         @handlers_loaded_from = handler_dir
+        @handlers.values.flatten.size
       end # load handlers
 
       # Load an event handler from a file.
