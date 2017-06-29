@@ -40,6 +40,11 @@ module Chook
     @server_port = Chook::CONFIG.server_port || DEFAULT_PORT
 
     def self.run!
+      # trap HUPs to reload handlers
+      Signal.trap('HUP') do
+        Chook::HandledEvent::Handlers.load_handlers reload: true
+      end
+      Chook::HandledEvent::Handlers.load_handlers
       chook_configure
       case @server_engine.to_sym
       when :webrick
