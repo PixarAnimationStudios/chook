@@ -84,13 +84,13 @@ Chook::Subject.classes[Chook::Subject::COMPUTER] = {
   },
   username: {
     validation: String,
-    randomizer: :random_word,
+    randomizer: :word,
     sampler: :computer_username,
     api_object_attribute: :username
   },
   realName: {
     validation: String,
-    randomizer: :random_name,
+    randomizer: :name,
     sampler: :real_name,
     api_object_attribute: :real_name
   },
@@ -102,7 +102,7 @@ Chook::Subject.classes[Chook::Subject::COMPUTER] = {
   },
   phone: {
     validation: String, #:validate_phone_number,
-    randomizer: :phone,
+    randomizer: :phone, # TODO: Add dashes in output formatting of this method
     sampler: :phone,
     api_object_attribute: :phone
   },
