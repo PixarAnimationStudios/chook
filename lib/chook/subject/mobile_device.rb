@@ -25,54 +25,107 @@
 
 Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   udid: {
-
+    validation: String,
+    randomizer: :mobile_udid,
+    sampler: :mobile_udid,
+    api_object_attribute: :udid
   },
   deviceName: {
-
+    validation: String,
+    randomizer: :word,
+    sampler: :mobile_device_name,
+    api_object_attribute: :name
   },
   version: {
-
+    validation: String,
+    randomizer: :version,
+    sampler: :version,
+    api_object_attribute: [:network, :carrier_settings_version]
   },
   model: {
-
+    validation: String,
+    randomizer: :mobile_model,
+    sampler: :mobile_model,
+    api_object_attribute: :model
   },
   bluetoothMacAddress: {
-
+    validation: String, #:validate_mac_address,
+    randomizer: :mac_address,
+    sampler: :mobile_mac_address,
+    api_object_attribute: :bluetooth_mac_address
   },
   wifiMacAddress: {
-
+    validation: String, #:validate_mac_address,
+    randomizer: :mac_address,
+    sampler: :mobile_mac_address,
+    api_object_attribute: :wifi_mac_address
   },
   imei: {
-
+    validation: String, #:imei,
+    randomizer: :imei,
+    sampler: :imei,
+    api_object_attribute: [:network, :imei]
   },
   icciID: {
-
+    validation: String, #:iccid, # TODO: Write this method?
+    randomizer: :iccid,
+    sampler: :iccid,
+    api_object_attribute: [:network, :iccid]
   },
   product: {
-
+    # Product is null in the sample JSONs... And there isn't anything labeled "product" in JSS::API.get_rsrc("mobiledevices/id/#{id}")
+    validation: Nil,
+    randomizer: :product,
+    sampler: :product,
+    api_object_attribute: Chook::Procs::PRODUCT
   },
   serialNumber: {
-
+    validation: :serial_number,
+    randomizer: :mobile_serial_number,
+    sampler: :mobile_sserial_number,
+    api_object_attribute: :serial_number
   },
   userDirectoryID: {
-
+    # userDirectoryID is -1 in the sample JSONs... And there isn't anything labeled "userDirectoryID" in JSS::API.get_rsrc("mobiledevices/id/#{id}")
+    validation: String,
+    randomizer: Chook::Procs::MOBILE_USERID,
+    sampler: Chook::Procs::MOBILE_USERID,
+    api_object_attribute: Chook::Procs::MOBILE_USERID
   },
   room: {
-
+    validation: String,
+    randomizer: :room,
+    sampler: :room,
+    api_object_attribute: :room
   },
   osVersion: {
-
+    validation: String,
+    randomizer: :mobile_os_version,
+    sampler: :mobile_os_version,
+    api_object_attribute: :os_version
   },
   osBuild: {
-
+    validation: String,
+    randomizer: :os_build,
+    sampler: :mobile_os_build,
+    api_object_attribute: :os_build
   },
   modelDisplay: {
-
+    validation: String,
+    randomizer: :mobile_model,
+    sampler: :model_display,
+    api_object_attribute: :model
   },
   username: {
-
+    validation: String,
+    randomizer: :random_word,
+    sampler: :mobile_username,
+    api_object_attribute: :username
   },
   jssID: {
-
-  },
+    validation: Integer,
+    randomizer: :int,
+    sampler: :mobile_jssid,
+    api_object_attribute: :id
+  }
 }
