@@ -33,6 +33,17 @@ module Chook
     JSS_EPOCH_TO_TIME = proc { |val| Time.strptime val.to_s[0..-4], '%s' }
     STRING_TO_BOOLEAN = proc { |val| val =~ TRUE_RE ? true : false }
     STRING_TO_PATHNAME = proc { |val| Pathname.new val }
-  end
+    MOBILE_USERID = proc { |_device| '-1' }
+    PRODUCT = proc { |_device| nil }
+    ALWAYS_TRUE = proc { |_boolean| True }
+    COMPUTER_USERID = proc do |comp|
+      if comp.groups_accounts[:local_accounts].empty?
+        '-1'
+      else
+        comp.groups_accounts[:local_accounts].find { |acct| acct[:name] == comp.username }[:uid] || '-1'
+      end # end if
+    end # end proc do |comp|
 
-end # module
+  end # module Procs
+
+end # module Chook
