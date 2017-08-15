@@ -61,13 +61,13 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
     api_object_attribute: :wifi_mac_address
   },
   imei: {
-    validation: String, #:imei,
+    validation: :imei,
     randomizer: :imei,
     sampler: :imei,
     api_object_attribute: [:network, :imei]
   },
   icciID: {
-    validation: String, #:iccid, # TODO: Write this method?
+    validation: String, #:iccid,
     randomizer: :iccid,
     sampler: :iccid,
     api_object_attribute: [:network, :iccid]
