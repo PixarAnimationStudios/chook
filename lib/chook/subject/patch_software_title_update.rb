@@ -24,18 +24,34 @@
 ###
 Chook::Subject.classes[Chook::Subject::PATCH_SW_UPDATE] = {
   name: {
-
+    validation: :patch,
+    randomizer: :patch,
+    sampler: :patch_name,
+    # api_object_attribute: :name
   },
   latestVersion: {
-
+    validation: String,
+    randomizer: :version,
+    # sampler: ,
+    # api_object_attribute:
   },
   lastUpdate: {
-    converter: Chook::Procs::JSS_EPOCH_TO_TIME
+    converter: Chook::Procs::JSS_EPOCH_TO_TIME,
+    validation: Time,
+    randomizer: :time,
+    # sampler: ,
+    # api_object_attribute:
   },
   reportUrl: {
-
+    validation: :url,
+    randomizer: :url,
+    # sampler: ,
+    # api_object_attribute:
   },
   jssID: {
-
+    validation: Integer,
+    randomizer: :int,
+    sampler: :patch_id,
+    # api_object_attribute: :id
   }
 }
