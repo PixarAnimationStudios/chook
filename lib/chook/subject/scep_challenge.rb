@@ -24,6 +24,9 @@
 ###
 Chook::Subject.classes[Chook::Subject::SCEP_CHALLENGE] = {
   targetDevice: {
-
+    # validation: ,
+    # randomizer: ,
+    # sampler: ,
+    # api_object_attribute:
   }
 }
