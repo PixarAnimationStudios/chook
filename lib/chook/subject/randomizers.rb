@@ -11,36 +11,36 @@ module Chook
 
     NAMES = Pathname.new '/usr/share/dict/propernames'
 
-    REST_OPS = %w[GET POST PUT DELETE].freeze
+    REST_OPS = %w(GET POST PUT DELETE).freeze
 
     MOBILE_SERIAL_CHARACTER_SETS = [
-      %w[F D C H],
-      %w[4 L Q 7 M 3 K N 2 9 5 C 8 1 X Y 6 0 J F T G D A P R],
-      %w[L X T 8 Q 9 K V P 7 R J F 6 G N 3 M 5 Y W 4 1 H 2 C D],
-      %w[K M L J H G N F 3 P B Q R S A],
-      %w[H 6 4 C G V J 5 T R N K X 1 F L 9 Q 8 W M 2 P D 7 3 Y A],
-      %w[J 1 2 8 B W 0 C 4 7 F 5 6 M 3 G A E Q S N R D Z X 9 P K V Y H U T L],
-      %w[3 2 S Y V R M Q F J 1 8 9 L 6 H W A 4 0 E T U 5 N 7 X Z K G B D C P],
-      %w[V 7 Z R P C G 8 A 2 J X Q 4 D E N B 9 0 H K Y 3 6 1 L T 5 M W F U S],
-      %w[F D G 9 7 H 1],
-      %w[1 C N K F J 8 R T 2 P V 3 L 4 H 5 0 6 D M X 9 G],
-      %w[9 M D 1 J H 8 C 2 F P G W T Y 5 R Q 7 3 V N K X L 6 0],
-      %w[6 5 K 4 J W T 2 0 V M Y 9 N 8 3 1 H Q L D R 7 P G C F X]
+      %w(F D C H),
+      %w(4 L Q 7 M 3 K N 2 9 5 C 8 1 X Y 6 0 J F T G D A P R),
+      %w(L X T 8 Q 9 K V P 7 R J F 6 G N 3 M 5 Y W 4 1 H 2 C D),
+      %w(K M L J H G N F 3 P B Q R S A),
+      %w(H 6 4 C G V J 5 T R N K X 1 F L 9 Q 8 W M 2 P D 7 3 Y A),
+      %w(J 1 2 8 B W 0 C 4 7 F 5 6 M 3 G A E Q S N R D Z X 9 P K V Y H U T L),
+      %w(3 2 S Y V R M Q F J 1 8 9 L 6 H W A 4 0 E T U 5 N 7 X Z K G B D C P),
+      %w(V 7 Z R P C G 8 A 2 J X Q 4 D E N B 9 0 H K Y 3 6 1 L T 5 M W F U S),
+      %w(F D G 9 7 H 1),
+      %w(1 C N K F J 8 R T 2 P V 3 L 4 H 5 0 6 D M X 9 G),
+      %w(9 M D 1 J H 8 C 2 F P G W T Y 5 R Q 7 3 V N K X L 6 0),
+      %w(6 5 K 4 J W T 2 0 V M Y 9 N 8 3 1 H Q L D R 7 P G C F X)
     ].freeze
 
     COMPUTER_SERIAL_CHARACTER_SETS = [
-      %w[C],
-      %w[0 2 1 P],
-      %w[7 2 V M W F Q X],
-      %w[K L F G M N J H D P Q R S],
-      %w[8 G 5 7 L T M 2 P 9 X 4 K J D W C H F Q V N R 3 6 1 Y],
-      %w[1 9 0 7 5 2 6 B A P 4 E 3 K F R G U W C L V 8 J D T X Y M Z N S H],
-      %w[9 U 2 S Q H M V Z J G P D N 5 Y X 7 3 E 6 0 K T 4 L C F 8 A B W 1 R],
-      %w[4 E N C Y H F A G 1 B 3 0 5 8 M J W L T S D V P R K U 6 Z 2 Q 7 9 X],
-      %w[D F G H],
-      %w[Y 6 D R H 5 W G F 0 8 T K V L 2 N 3 J 9 1 C Q],
-      %w[3 T Q 0 Y P 5 V R 8 4 2 J 7 1 C M H N D F 6 G W],
-      %w[H 6 X 4 5 W L J 8 G 3 P 7 T N 9 1 F M V 0 D R K 2 C Y]
+      %w(C),
+      %w(0 2 1 P),
+      %w(7 2 V M W F Q X),
+      %w(K L F G M N J H D P Q R S),
+      %w(8 G 5 7 L T M 2 P 9 X 4 K J D W C H F Q V N R 3 6 1 Y),
+      %w(1 9 0 7 5 2 6 B A P 4 E 3 K F R G U W C L V 8 J D T X Y M Z N S H),
+      %w(9 U 2 S Q H M V Z J G P D N 5 Y X 7 3 E 6 0 K T 4 L C F 8 A B W 1 R),
+      %w(4 E N C Y H F A G 1 B 3 0 5 8 M J W L T S D V P R K U 6 Z 2 Q 7 9 X),
+      %w(D F G H),
+      %w(Y 6 D R H 5 W G F 0 8 T K V L 2 N 3 J 9 1 C Q),
+      %w(3 T Q 0 Y P 5 V R 8 4 2 J 7 1 C M H N D F 6 G W),
+      %w(H 6 X 4 5 W L J 8 G 3 P 7 T N 9 1 F M V 0 D R K 2 C Y)
     ].freeze
 
     SAMPLE_MOBILE_MODELS = [
@@ -151,6 +151,70 @@ module Chook
       '“MacPro6,1”'
     ].freeze
 
+    # Keeping this set of PUSH_COMMANDS in here just in case JAMF decides to make the Push webhooks more useful...
+    # PUSH_COMMANDS = [
+    #   'Settings',
+    #   'DeviceLock',
+    #   'EraseDevice',
+    #   'ClearPasscode',
+    #   'UnmanageDevice',
+    #   'UpdateInventory',
+    #   'ClearRestrictionsPassword',
+    #   'SettingsEnableDataRoaming',
+    #   'SettingsDisableDataRoaming',
+    #   'SettingsEnableVoiceRoaming',
+    #   'SettingsDisableVoiceRoaming',
+    #   'SettingsEnableAppAnalytics',
+    #   'SettingsDisableAppAnalytics',
+    #   'SettingsEnableDiagnosticSubmission',
+    #   'SettingsDisableDiagnosticSubmission',
+    #   'BlankPush',
+    #   'Wallpaper', # supervised only
+    #   'DeviceName', # supervised only
+    #   'ShutDownDevice', # supervised only
+    #   'RestartDevice', # supervised only
+    #   'PasscodeLockGracePeriod' # shared iPad only
+    # ].freeze
+
+    PUSH_COMMANDS = %w(MobileDevicePushSent PushSent).freeze
+
+    # A full list of supported titles is unfortunately not available via the API :(
+    PATCH_SOFTWARE_TITLES = [
+      'Adobe AIR',
+      'Adobe Acrobat Pro DC',
+      'Adobe Acrobat Pro XI',
+      'Adobe Acrobat Reader DC',
+      'Adobe Acrobat Reader XI',
+      'Adobe After Effects CC',
+      'Adobe Bridge CC	Adobe',
+      'Adobe Core Components',
+      'Adobe Dreamweaver CC',
+      'Adobe Fireworks CS6',
+      'Adobe Flash Player',
+      'Adobe Illustrator CC',
+      'Adobe InDesign CC',
+      'Adobe Photoshop CC',
+      'Adobe Photoshop Lightroom CC',
+      'Adobe Prelude CC',
+      'Adobe Premiere Pro CC',
+      'Adobe Shockwave Player',
+      'Java SE Development Kit 7',
+      'Java SE Development Kit 8',
+      'Java SE Runtime Environment JRE 7',
+      'Java SE Runtime Environment JRE 8',
+      'McAfee Endpoint Security for Mac',
+      'Microsoft AutoUpdate',
+      'Microsoft Excel 2016',
+      'Microsoft OneNote 2016',
+      'Microsoft Outlook 2016',
+      'Microsoft PowerPoint 2016',
+      'Microsoft Silverlight',
+      'Microsoft Word 2016',
+      'Mozilla Firefox Extended Support Release (ESR)',
+      'Skype',
+      'Skype for Business'
+    ].freeze
+
     # Random Word
     # Use this to generate device or username Strings
     #
@@ -158,7 +222,7 @@ module Chook
     #
     def self.word
       WORDS.read.lines.sample.chomp
-    end # end random_word
+    end # end word
 
     # Random Name
     #
@@ -166,15 +230,15 @@ module Chook
     #
     def self.name
       NAMES.read.lines.sample.chomp + ' ' + NAMES.read.lines.sample.chomp
-    end # end random_name
+    end # end name
 
     # Random Email
     #
     # @return [String] Randomly generated email address formatted String e.g. FirstNameLastName@randomword.com
     #
-    def self.email
-      random_name.gsub(' ','.') + '@' + random_word + '.com'
-    end # end random_email
+    def self.email_address
+      name.gsub(' ','.') + '@' + word + '.com'
+    end # end email_address
 
     # Random Int
     #
@@ -185,7 +249,7 @@ module Chook
       startpoint = 10**(x - 1)
       endpoint = (10**x) - 1
       rand(startpoint..endpoint)
-    end # end random_int
+    end # end int
 
     # Random Serial Number
     #
@@ -196,15 +260,23 @@ module Chook
       serial = ''
       dataset.each { |pos| serial << pos.sample }
       serial
-    end # end random_serial_number
+    end # end serial_number
 
+    # Computer Serial Number
+    #
+    # @return [String] Valid Computer Serial Number
+    #
     def self.computer_serial_number
       serial_number_from COMPUTER_SERIAL_CHARACTER_SETS
-    end
+    end # end computer_serial_number
 
+    # Mobile Serial Number (wrapper)
+    #
+    # @return [String] Valid Mobile Device Serial Number
+    #
     def self.mobile_serial_number
       serial_number_from MOBILE_SERIAL_CHARACTER_SETS
-    end
+    end # mobile_serial_number
 
     # Random U*ID
     # MobileDevice UDID and Mac UUID are poorly distingusished in Jamf Pro.
@@ -214,10 +286,10 @@ module Chook
     #
     # @return [String] Randomly generated UUID/UDID formatted String
     #
-    def self.udid(mobile: false)
+    def self.udid(mobile = false)
       if mobile
         # UDID = SHA1(serial + IMEI + wifiMac + bluetoothMac)
-        Digest::SHA1.hexdigest(random_serial_number(mobile: true) + random_int(15).to_s + random_mac_address + random_mac_address)
+        Digest::SHA1.hexdigest(serial_number(mobile: true) + int(15).to_s + mac_address + mac_address)
       else
         # UUID
         # In its canonical textual representation, the sixteen octets of a UUID are represented as 32 hexadecimal (base 16) digits
@@ -229,7 +301,28 @@ module Chook
         indexes.each { |idx| uuid.insert(idx, '-') }
         uuid.upcase
       end
-    end # end random_udid
+    end # end udid
+
+    # Computer UUID (wrapper)
+    #
+    # @return [String] Randomly generated computer UUID formatted String
+    #
+    def self.computer_udid
+      udid
+    end # end computer_udid
+
+    # Mobile UDID (wrapper)
+    #
+    # @return [String] Randomly generated mobile UDID formatted String
+    #
+    def self.mobile_udid
+      udid(true)
+    end # end mobile_udid
+
+    # Product is null in the sample JSONs... And there isn't anything labeled "product" in JSS::API.get_rsrc("mobiledevices/id/#{id}")
+    def self.product
+      nil
+    end # end product
 
     # Random MAC Address
     #
@@ -237,7 +330,7 @@ module Chook
     #
     def self.mac_address
       SecureRandom.hex(6).upcase.scan(/.{2}/).join(':')
-    end # end random_mac_address
+    end # end mac_address
 
     # Random IMEI
     #
@@ -245,46 +338,84 @@ module Chook
     #
     def self.imei
       indexes = [2, 9, 16]
-      imei = random_int(15).to_s
+      imei = int(15).to_s
       indexes.each { |idx| imei.insert(idx, ' ') }
       imei
-    end # end random_imei
+    end # end imei
 
     # Random ICCID
     #
     # @return [String] Randomly generated ICCID formatted number String
     #
     def self.iccid
-      random_int(20).to_s.scan(/.{4}/).join(' ')
-    end # end random_iccid
+      int(20).to_s.scan(/.{4}/).join(' ')
+    end # end iccid
 
     # Random Model
     #
     # @param [Boolean] mobile Returns a valid Computer model by default, mobile: true returns a valid Mobile Device model
     # @return [String] Randomly selected Computer or MobileDevice model
     #
-    def self.model(mobile: false)
+    def self.model(mobile = false)
       if mobile
         SAMPLE_MOBILE_MODELS.sample
       else
         SAMPLE_COMPUTER_MODELS.sample
       end
-    end # end random_model
+    end # end model
 
+    # Mobile Model (wrapper)
+    #
+    # @return [String]  Randomly selected MobileDevice model
+    #
+    def self.mobile_model
+      model(true)
+    end # end mobile_model
 
+    # Computer Model (wrapper)
+    #
+    # @return [String]  Randomly selected Computer model
+    #
+    def self.computer_model
+      model
+    end # end computer_model
+
+    # Version
+    #
+    # @return [String] Carrier Settings Version formatted String
+    #
+    def self.version
+      [int(2), int].join('.')
+    end # end version
 
     # Random OS Version
     #
     # @param [Boolean] mobile Returns a randomized Computer OS version by default, mobile: true returns a randomized Mobile Device OS version
     # @return [Type] String
     #
-    def self.os_version(mobile: false)
+    def self.os_version(mobile = false)
       if mobile
-        [rand(4..11), random_int, random_int].join('.')
+        [rand(4..11), int, int].join('.')
       else
-        [10, rand(6..15), random_int].join('.')
+        [10, rand(6..15), int].join('.')
       end
-    end # end random_os_version
+    end # end os_version
+
+    # Mobile OS Version (wrapper)
+    #
+    # @return [String]  Operating System Version from a MobileDevice in the JSS
+    #
+    def self.mobile_os_version
+      os_version(true)
+    end # end mobile_os_version
+
+    # Computer OS Version (wrapper)
+    #
+    # @return [String]  Operating System Version from a Computer in the JSS
+    #
+    def self.computer_os_version
+      os_version
+    end # end computer_os_version
 
     # Random OS Build
     #
@@ -292,7 +423,7 @@ module Chook
     #
     def self.os_build
       SecureRandom.hex(3).upcase
-    end # end random_os_build
+    end # end os_build
 
     # Random Boolean
     #
@@ -300,7 +431,7 @@ module Chook
     #
     def self.bool
       rand(0..1).zero?
-    end # end random_bool
+    end # end bool
 
     # Random REST Operation
     #
@@ -308,18 +439,66 @@ module Chook
     #
     def self.rest_operation
       REST_OPS.sample
-    end # end random_rest_operation
+    end # end rest_operation
 
+    # Random Phone Number
+    #
+    # @return [String] Random US-formatted Phone Number
+    #
     def self.phone
-       int(10).to_s
-    end
+      raw_phone = int(10).to_s.split(//)
+      [3, 7].each { |index| raw_phone.insert(index, '-') }
+      raw_phone.join('')
+    end # end phone
 
+    # Random Room Number
+    #
+    # @return [String] Random Room Number
+    #
     def self.room
-      int((1..4).to_a.sample)
-    end
+      int((1..4).to_a.sample).to_s
+    end # end room
 
+    # Random Push Command
+    #
+    # @return [String] Random Push Command from PUSH_COMMANDS
+    #
+    def self.push
+      PUSH_COMMANDS.sample
+    end # end push
+
+    # Random Patch Software Title
+    #
+    # @return [String] Random Patch Software Title
+    #
+    def self.patch
+      PATCH_SOFTWARE_TITLES.sample
+    end # end patch
+
+    # Random Time (for lastUpdate in Patch Software Update subject)
+    #
+    # @return [Time] A random date and time
+    #
+    def self.time
+      Time.at(rand * Time.now.to_i) # .to_i
+    end # end time
+
+    # Random URL-formatted String
+    #
+    # @return [String] A random URL-formatted String
+    #
+    def self.url
+      "http://www.#{word}.com:#{int}"
+    end # end url
+
+    # Random hostname-formatted String
+    #
+    # @return [String] A random hostname-formatted String
+    #
+    def self.host
+      "#{word}.#{word}.com"
+    end # end host
 
   end # module randomizers
-
 
 end # mod chook
