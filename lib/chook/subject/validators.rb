@@ -16,7 +16,7 @@ module Chook
     #
     def self.mac_address(mac)
       mac =~ /^([a-f\d]{2}:){5}[a-f\d]{2}$/i ? true : false
-    end # end validate_mac_address
+    end # end mac_address
 
     # Validate E-mail Address
     #
@@ -25,7 +25,7 @@ module Chook
     #
     def self.email(email_address)
       email_address =~ /^[a-zA-Z]([\w -]*[a-zA-Z])\@\w*\.\w*$/ ? true : false
-    end # end validate_email
+    end # end email
 
     # Validate URL
     #
@@ -35,7 +35,7 @@ module Chook
     def self.url(url)
       uri = URI.parse(url)
       uri.is_a?(URI::HTTP) && !uri.host.nil? ? true : false
-    end # end validate_url
+    end # end url
 
     # Validate Serial Number
     #
@@ -50,7 +50,39 @@ module Chook
         return false unless (Chook::Randomizers::MOBILE_SERIAL_CHARACTER_SETS[index].include? character) || (Chook::Randomizers::COMPUTER_SERIAL_CHARACTER_SETS[index].include? character)
       end
       true
-    end # end validate_serial_number
+    end # end serial_number
+
+    # Validate Push
+    #
+    # @param [String] Push Type
+    # @return [Boolean]
+    #
+    def self.push(push)
+      raise TypeError unless push.is_a? String
+      return false if push.empty?
+      return false unless Chook::Randomizers::PUSH_COMMANDS.include? push
+      true
+    end # end push
+
+    # Validate IMEI
+    #
+    # @param [String] A 17-15 digit sequence of numbers
+    # @return [Boolean]
+    #
+    def self.imei(imei)
+      imei_length = imei.delete(' ').size
+      (15...17).cover? imei_length
+    end # end imei
+
+    # Validate ICCID
+    #
+    # @param [String] ICCID
+    # @return [Boolean]
+    #
+    def self.iccid(iccid)
+      iccid_length = iccid.delete(' ').size
+      return true if iccid_length < 23
+    end # end iccid
 
     # Validate Boolean
     #
@@ -59,7 +91,16 @@ module Chook
     #
     def self.boolean(true_or_false)
       [true, false].include? true_or_false
-    end # end validate_boolean
+    end # end boolean
+
+    # Validate Patch
+    #
+    # @param [String] Name of a Patch Reporting Software Title
+    # @return [Boolean]
+    #
+    def self.patch(patch_name)
+      Chook::Randomizers::PATCH_SOFTWARE_TITLES.include? patch_name
+    end # end patch
 
   end # module validators
 
