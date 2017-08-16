@@ -16,11 +16,16 @@ module Chook
                        when nil then nil
                        when Symbol then random_computer.send definition[:api_object_attribute]
                        when Array then random_computer.send(definition[:api_object_attribute][0])[definition[:api_object_attribute][1]]
-        end # case
+                       end # case
       end # do k
       hash
     end
 
+    # Serial Number
+    #
+    # @param [String] true = Mobile Device, false = Computer
+    # @return [Type] Sampled Computer or Mobile Device Serial Number
+    #
     def self.serial_number(mobile = false)
       if mobile
         JSS::MobileDevice.all_serial_numbers.sample
@@ -28,6 +33,22 @@ module Chook
         JSS::Computer.all_serial_numbers.sample
       end
     end # end serial_number
+
+    # Computer Serial Number (wrapper)
+    #
+    # @return [String] Sampled Computer Serial Number
+    #
+    def self.computer_serial_number
+      serial_number
+    end # end computer_serial_number
+
+    # Mobile Serial Number (wrapper)
+    #
+    # @return [String] Sampled Mobile Device Serial Number
+    #
+    def self.mobile_serial_number
+      serial_number(true)
+    end # end mobile_serial_number
 
     # MAC Address Sampler
     #
@@ -42,6 +63,22 @@ module Chook
       end
     end # end mac_address
 
+    # Computer MAC Address (wrapper)
+    #
+    # @return [String] A MAC Address sampled from a Computer in the JSS
+    #
+    def self.computer_mac_address
+      mac_address
+    end # end computer_mac_address
+
+    # Mobile MAC Address (wrapper)
+    #
+    # @return [String] A MAC Address sampled from a MobileDevice in the JSS
+    #
+    def self.mobile_mac_address
+      mac_address(true)
+    end # end mobile_mac_address
+
     # UDID Sampler
     #
     # @param [Boolean] mobile Set to true to indicate MobileDevice vs. Computer
@@ -54,6 +91,22 @@ module Chook
         JSS::Computer.all_udids.sample
       end
     end # end udid
+
+    # Mobile UDID (wrapper)
+    #
+    # @return [String] A UDID sampled from a MobileDevice in the JSS
+    #
+    def self.mobile_udid
+      udid(true)
+    end # end mobile_udid
+
+    # Computer UUID (wrapper)
+    #
+    # @return [String] A UUID sampled from a Computer in the JSS
+    #
+    def self.computer_udid
+      udid
+    end # end computer_udid
 
     # IMEI Sampler
     #
@@ -99,14 +152,12 @@ module Chook
     def self.version
       id = jssid(mobile: true)
       raw_subset = JSS::API.get_rsrc("mobiledevices/id/#{id}/subset/network")
-      raw_subset[:mobile_device][:something][:something]
+      raw_subset[:mobile_device][:network][:carrier_settings_version] || ''
     end # end version
 
-    # Product is null in the sample JSONs...
+    # Product is null in the sample JSONs... And there isn't anything labeled "product" in JSS::API.get_rsrc("mobiledevices/id/#{id}")
     def self.product
-      id = jssid(mobile: true)
-      raw_subset = JSS::API.get_rsrc("mobiledevices/id/#{id}/subset/network")
-      raw_subset[:mobile_device][:something][:something] # AURICA
+      nil
     end # end product
 
     def self.model_display
@@ -120,7 +171,7 @@ module Chook
     # @param [Boolean] mobile Set to true to indicate MobileDevice vs. Computer
     # @return [Integer] A JSS ID sampled from a MobileDevice or Computer in the JSS
     #
-    def self.jssid(mobile: false)
+    def self.jssid(mobile = false)
       if mobile
         all_mobile = JSS::MobileDevice.all
         all_mobile.map { |i| i[:id] }.sample.to_i
@@ -129,6 +180,22 @@ module Chook
         all_computer.map { |i| i[:id] }.sample.to_i
       end
     end # end jssid
+
+    # Mobile JSS ID (wrapper)
+    #
+    # @return [String] JSS ID from a MobileDevice in the JSS
+    #
+    def self.mobile_jssid
+      jssid(true)
+    end # end mobile_jssid
+
+    # Computer JSS ID (wrapper)
+    #
+    # @return [String]JSS ID from a Computer in the JSS
+    #
+    def self.computer_jssid
+      jssid
+    end # end computer_jssid
 
     # OS Build Sampler
     #
@@ -147,6 +214,22 @@ module Chook
       end
     end # end os_build
 
+    # Mobile OS Build (wrapper)
+    #
+    # @return [String] Operating System build from a MobileDevice in the JSS
+    #
+    def self.mobile_os_build
+      os_build(true)
+    end # end mobile_os_build
+
+    # Computer OS build (wrapper)
+    #
+    # @return [String] Operating System build from a Computer in the JSS
+    #
+    def self.computer_os_build
+      os_build
+    end # end computer_os_build
+
     # OS Version Sampler
     #
     # @param [Boolean] mobile Set to true to indicate MobileDevice vs. Computer
@@ -164,6 +247,22 @@ module Chook
       end
     end # end os_version
 
+    # Mobile OS Version (wrapper)
+    #
+    # @return [String] Operating System Version from a MobileDevice in the JSS
+    #
+    def self.mobile_os_version
+      os_version(true)
+    end # end mobile_os_version
+
+    # Computer OS Version (wrapper)
+    #
+    # @return [String] Operating System Version from a Computer in the JSS
+    #
+    def self.computer_os_version
+      os_version
+    end # end computer_os_version
+
     # Device Name Sampler
     #
     # @param [Boolean] mobile Set to true to indicate MobileDevice vs. Computer
@@ -178,6 +277,22 @@ module Chook
         all_computer.map { |i| i[:name] }.sample
       end
     end # end device_name
+
+    # Computer Device Name Sampler (wrapper)
+    #
+    # @return [String] A name sampled from a Computer in the JSS
+    #
+    def self.computer_device_name
+      device_name
+    end # end computer_device_name
+
+    # Mobile Device Name Sampler (wrapper)
+    #
+    # @return [String] A name sampled from a MobileDevice in the JSS
+    #
+    def self.mobile_device_name
+      device_name(true)
+    end # end mobile_device_name
 
     # Model Sampler
     #
@@ -194,6 +309,22 @@ module Chook
       end
     end # end model
 
+    # Mobile Model (wrapper)
+    #
+    # @return [String] A model sampled from a MobileDevice in the JSS
+    #
+    def self.mobile_model
+      model(true)
+    end # end mobile_model
+
+    # Computer Model (wrapper)
+    #
+    # @return [String] A model sampled from a Computer in the JSS
+    #
+    def self.computer_model
+      model
+    end # end computer_model
+
     # Username Sampler
     #
     # @param [Boolean] mobile Set to true to indicate MobileDevice vs. Computer
@@ -209,14 +340,33 @@ module Chook
       end
     end # end username
 
+    # Mobile Username (wrapper)
+    #
+    # @return [String] A username sampled from a MobileDevice in the JSS
+    #
+    def self.mobile_username
+      username(true)
+    end # end mobile_username
+
+    # Computer Username (wrapper)
+    #
+    # @return [String] A username sampled from a Computer in the JSS
+    #
+    def self.computer_username
+      username
+    end # end computer_username
+
     # User Directory ID Sampler
     #
     # @return [Integer] A randomly sampled uid from a Computer in the JSS
     #
     def self.user_directory_id
       id = jssid
+      # TODO: Benchmark get_rsrc and Computer object instantiation, use the most efficient
       raw_groups_acccounts = JSS::API.get_rsrc("computers/id/#{id}/subset/groups_accounts")
-      raw_groups_acccounts[:computer][:groups_accounts][:local_accounts].sample[:uid]
+      an_account = raw_groups_acccounts[:computer][:groups_accounts][:local_accounts].sample
+      return '-1' if an_account.empty?
+      an_account[:uid]
     end # end user_directory_id
 
     # Real Name Sampler
@@ -275,7 +425,7 @@ module Chook
     #
     # @return [String] A phone number from a Computer or MobileDevice in the JSS
     #
-    def self.phone_number
+    def self.phone
       phone = ''
       i = 0
       while phone.nil? || phone.empty?
@@ -295,11 +445,11 @@ module Chook
         end
       end
       phone
-    end # end phone_number
+    end # end phone
 
     # Position Sampler
     #
-    # @return [String] A position from a Computer or MoabileDevice in the JSS
+    # @return [String] A position from a Computer or MobileDevice in the JSS
     #
     def self.position
       position = ''
@@ -407,11 +557,79 @@ module Chook
     #
     # @return [String] A Smart Group name from the JSS
     #
-    def self.smart_group
-      raw_computer_groups = JSS::API.get_rsrc('computergroups')
-      smart_groups = raw_computer_groups[:computer_groups].select { |group| group[:is_smart] == true }
+    def self.smart_group(mobile = false)
+      if mobile
+        raw_mobile_groups = JSS::API.get_rsrc('mobiledevicegroups')
+        smart_groups = raw_mobile_groups[:mobile_device_groups].select { |group| group[:is_smart] == true }
+      else
+        raw_computer_groups = JSS::API.get_rsrc('computergroups')
+        smart_groups = raw_computer_groups[:computer_groups].select { |group| group[:is_smart] == true }
+      end
       smart_groups.sample[:name]
     end # end smart_group
+
+    # Smart Group ID Sampler
+    #
+    # @param [Boolean] mobile Set to true to indicate MobileDevice vs. Computer
+    # @return [Integer] The ID # of a MobileDevice or Computer Smart Group from JSS
+    #
+    def self.smart_group_jssid(mobile = false)
+      if mobile
+        all_mobile_smart = JSS::MobileDeviceGroup.all_smart(true)
+        all_mobile_smart.map { |i| i[:id] }.sample.to_i
+      else
+        all_computer_smart = JSS::ComputerGroup.all_smart(true)
+        all_computer_smart.map { |i| i[:id] }.sample.to_i
+      end
+    end # end group_jssid
+
+    # Computer Smart Group ID (wrapper)
+    #
+    # @return [Integer] The ID # of a Computer Smart Group from JSS
+    #
+    def self.computer_smart_group_jssid
+      smart_group_jssid
+    end # end computer_smart_group_id
+
+    # Mobile Device Smart Group ID (wrapper)
+    #
+    # @return [Integer] The ID # of a MobileDevice Smart Group from JSS
+    #
+    def self.mobile_smart_group_jssid
+      smart_group_jssid(true)
+    end # end mobile_smart_group_id
+
+    # Any Smart Group ID (wrapper)
+    #
+    # @return [Integer] The ID # of a MobileDevice or Computer Smart Group from JSS
+    #
+    def self.any_smart_group_jssid
+      [computer_smart_group_jssid, mobile_smart_group_jssid].sample
+    end # end any_smart_group_id
+
+    # Patch Name Sampler
+    #
+    # @return [String] An enabled Patch Reporting Software Title from the JSS
+    #
+    def self.patch_name
+      JSS::API.get_rsrc('patches')[:patch_reporting_software_titles].sample[:name]
+    end # end patch_name
+
+    # Patch ID Sampler
+    #
+    # @return [Integer] An enabled Patch Reporting Software ID from the JSS
+    #
+    def self.patch_id
+      JSS::API.get_rsrc('patches')[:patch_reporting_software_titles].sample[:id].to_i
+    end # end patch_id
+
+    # Institution Sampler
+    #
+    # @return [String] The name of the JSS's Organization Name
+    #
+    def self.institution
+      JSS::API.get_rsrc('activationcode')[:activation_code][:organization_name]
+    end # end institution
 
   end # module samplers
 
