@@ -104,16 +104,22 @@ module Chook
     #      value to its interally stored version. E.g. Time objects in JSON
     #      are left as Strings by the JSON.parse method. A converter can be
     #      used to make it a Time object.
-    #    :validation => Class or Proc. When working with a TestSubject, this
+    #    :validation => Class or Proc. When creating a TestSubject, this
     #      attribute is settable, and new values are validated. If a Class, then
     #      the new value must be an instance of the class. If a Proc, the value
     #      is passed to the proc, which must return True.
-    #    :randomizer => Symbol. When working with a TestSubject,
+    #    :randomizer => Symbol. When creating a TestSubject,
     #      this is the class-method to call on Chook::TestSubject
     #      to generate a valid random value for this attribute.
-    #    :sampler => Symbol: When working with a TestSubject, this is the
+    #    :sampler => Symbol: When creating a TestSubject, this is the
     #      Chook::TestSubject class method which will pull a random value from
     #      a real JSS.
+    #    :api_object_attribute => Symbol or Array of Symbols or a Proc:
+    #       When creating a TestSubject, this represents the location of values in an API object
+    #       Symbol: A method name to call on an API object
+    #       Array: Array[0] is a method name to call on an API object
+    #         subsequent items are Hash keys to be called on Array[0]'s output
+    #       Proc: Pass an API object to the PROC to get a value
     #
     def self.classes
       @classes
