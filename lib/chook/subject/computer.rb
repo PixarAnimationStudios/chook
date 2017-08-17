@@ -102,7 +102,7 @@ Chook::Subject.classes[Chook::Subject::COMPUTER] = {
   },
   phone: {
     validation: String, #:validate_phone_number,
-    randomizer: :phone, # TODO: Add dashes in output formatting of this method
+    randomizer: :phone,
     sampler: :phone,
     api_object_attribute: :phone
   },

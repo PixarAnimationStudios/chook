@@ -74,7 +74,7 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   },
   product: {
     # Product is null in the sample JSONs... And there isn't anything labeled "product" in JSS::API.get_rsrc("mobiledevices/id/#{id}")
-    validation: Nil,
+    validation: NilClass,
     randomizer: :product,
     sampler: :product,
     api_object_attribute: Chook::Procs::PRODUCT
