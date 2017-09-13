@@ -27,13 +27,13 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   udid: {
     validation: String,
     randomizer: :mobile_udid,
-    sampler: :mobile_udid,
+    sampler: :udid,
     api_object_attribute: :udid
   },
   deviceName: {
     validation: String,
     randomizer: :word,
-    sampler: :mobile_device_name,
+    sampler: :device_name,
     api_object_attribute: :name
   },
   version: {
@@ -45,19 +45,19 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   model: {
     validation: String,
     randomizer: :mobile_model,
-    sampler: :mobile_model,
+    sampler: :model,
     api_object_attribute: :model
   },
   bluetoothMacAddress: {
     validation: String, #:validate_mac_address,
     randomizer: :mac_address,
-    sampler: :mobile_mac_address,
+    sampler: :mac_address,
     api_object_attribute: :bluetooth_mac_address
   },
   wifiMacAddress: {
     validation: String, #:validate_mac_address,
     randomizer: :mac_address,
-    sampler: :mobile_mac_address,
+    sampler: :mac_address,
     api_object_attribute: :wifi_mac_address
   },
   imei: {
@@ -82,7 +82,7 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   serialNumber: {
     validation: :serial_number,
     randomizer: :mobile_serial_number,
-    sampler: :mobile_sserial_number,
+    sampler: :serial_number,
     api_object_attribute: :serial_number
   },
   userDirectoryID: {
@@ -101,13 +101,13 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   osVersion: {
     validation: String,
     randomizer: :mobile_os_version,
-    sampler: :mobile_os_version,
+    sampler: :os_version,
     api_object_attribute: :os_version
   },
   osBuild: {
     validation: String,
     randomizer: :os_build,
-    sampler: :mobile_os_build,
+    sampler: :os_build,
     api_object_attribute: :os_build
   },
   modelDisplay: {
@@ -119,13 +119,13 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   username: {
     validation: String,
     randomizer: :random_word,
-    sampler: :mobile_username,
+    sampler: :username,
     api_object_attribute: :username
   },
   jssID: {
     validation: Integer,
     randomizer: :int,
-    sampler: :mobile_jssid,
+    sampler: :jssid,
     api_object_attribute: :id
   }
 }
