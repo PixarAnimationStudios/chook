@@ -23,7 +23,6 @@
 ###
 ###
 
-#
 module Chook
 
   # An event that will be sent to a Webhook Server, simulating
@@ -56,7 +55,7 @@ module Chook
 
         # Set its SUBJECT_CLASS constant to the appropriate
         # class in the TestEvents module.
-        the_class.const_set Chook::TestEvent::SUBJECT_CLASS_CONST, Chook::TestSubject.const_get(subject)
+        the_class.const_set Chook::TestEvent::SUBJECT_CLASS_CONST, Chook::TestSubjects.const_get(subject)
 
         # Add the new class to the HandledEvents module.
         Chook::TestEvents.const_set(class_name, the_class)
