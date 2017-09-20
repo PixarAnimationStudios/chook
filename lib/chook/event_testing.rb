@@ -10,8 +10,10 @@ require 'chook/subject/validators'
 # testing data generation
 require 'chook/subject/test_subject'
 require 'chook/test_subjects'
+Chook::TestSubject.generate_classes
 
 # events
 require 'chook/event'
 require 'chook/event/test_event'
 require 'chook/test_events'
+Chook::TestEvent.generate_classes

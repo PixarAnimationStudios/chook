@@ -39,28 +39,11 @@ module Chook
     # and store them in the TestSubjects module.
     def self.generate_classes
       Chook::Subject.classes.each do |classname, attribs|
+        # Don't redefine anything.
         next if Chook::TestSubjects.const_defined? classname
 
         # new subclass of Chook::TestSubject
         new_class = Class.new(Chook::TestSubject) do
-
-          ### define class methods for the class, for generating text subjects:
-
-          # a random test subject,
-          def self.random
-            random_vals = {}
-            Chook::Subject.classes[].each do |attrib, deets|
-              random_vals[attrib] = Chook::Randomizers.send deets[:randomizer]
-            end # each do |attr_def|
-            new random_vals
-          end
-
-          # a sampled test subject (real data from real JSS objects)
-          # NOTE: a valid ruby-jss JSS::APIConnection must exist
-          def self.sample
-            #
-          end
-
           # add getter, setters, validators for all the attribs.
           attribs.each do |attrib, deets|
             # getter
@@ -75,19 +58,31 @@ module Chook
                 raise "Invalid value for #{attrib}" unless Chook::Validators.send validator, new_val
               end
               instance_variable_set attrib, new_val
-            end # define method
-          end # attribs.each
-
-        end # class.new do
-
+            end # end define method
+          end # end do |attrib, deets|
+        end # end new_class
         # set a class constant so each class knows it's name
         new_class.const_set Chook::Subject::NAME_CONSTANT, classname
 
-        # add the class to the Chook::HandledSubjects module
+        # add the class to the Chook::TestSubjects module
         Chook::TestSubjects.const_set classname, new_class
+      end # end Chook::Subject.classes.each do |classname, attribs|
+    end # end generate_classes
 
-      end
-    end
+    # a random test subject,
+    def self.random
+      random_vals = {}
+      Chook::Subject.classes[].each do |attrib, deets|
+        random_vals[attrib] = Chook::Randomizers.send deets[:randomizer]
+      end # each do |attr_def|
+      new random_vals
+    end # end random
+
+    # a sampled test subject (real data from real JSS objects)
+    # NOTE: a valid ruby-jss JSS::APIConnection must exist
+    def self.sample(ids = 'random', api: JSS.api)
+      # Placeholder
+    end # end sample
 
     # All the subclassses will inherit this constructor
     #
@@ -98,7 +93,7 @@ module Chook
       my_classname = self.class.const_get Chook::Subject::NAME_CONSTANT
       my_attribs = Chook::Subject.classes[my_classname]
 
-      subject_data_from_json.each do |key, value|
+      subject_data.each do |key, value|
         # ignore unknown attributes. Shouldn't get any,but....
         next unless my_attribs[key]
 
@@ -111,7 +106,6 @@ module Chook
         # set the value.
         instance_variable_set ":@#{key}", value
       end # each key value
-
     end # init
 
   end # class TestSubject

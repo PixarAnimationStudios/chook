@@ -25,9 +25,9 @@
 
 module Chook
 
-  # This module is a namespace holding all of the classes that are
+  # This class is a namespace holding all of the classes that are
   # subclasses of Chook::TestEvent, q.v.
   #
-  module TestEvents; end
+  class TestEvents; end # class TestEvents
 
-end # module
+end # class Chook

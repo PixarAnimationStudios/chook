@@ -38,6 +38,33 @@ module Chook
   #
   class TestEvent < Chook::Event
 
+    # For each event type in Chook::Event::EVENTS.keys
+    # generate a TestEvent class for it, set its SUBJECT_CLASS constant
+    # and add it to the TestEvents module.
+    #
+    # @return [void]
+    #
+    def self.generate_classes
+      Chook::Event::EVENTS.each do |class_name, subject|
+        next if Chook::TestEvent.const_defined? class_name
+
+        # make the new TestEvent subclass
+        the_class = Class.new(Chook::TestEvents)
+
+        # Set its EVENT_NAME constant
+        the_class.const_set Chook::TestEvent::EVENT_NAME_CONST, class_name
+
+        # Set its SUBJECT_CLASS constant to the appropriate
+        # class in the TestEvents module.
+        the_class.const_set Chook::TestEvent::SUBJECT_CLASS_CONST, Chook::TestSubject.const_get(subject)
+
+        # Add the new class to the HandledEvents module.
+        Chook::TestEvents.const_set(class_name, the_class)
+      end # each classname, subject
+    end # self.generate_classes
+
+    # define @classes reader in here???
+
   end # class TestEvent
 
 end # module
