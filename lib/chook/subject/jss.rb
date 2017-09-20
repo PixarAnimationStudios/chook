@@ -26,7 +26,7 @@ Chook::Subject.classes[Chook::Subject::JSS] = {
   institution: {
     validation: String,
     randomizer: :word,
-    sampler: :institution,
+    # sampler: :institution,
     # api_object_attribute: :institution
   },
   hostAddress: {

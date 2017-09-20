@@ -87,7 +87,7 @@ module Chook
     # from the Event::EVENTS Hash.
     EVENT_NAME_CONST = 'EVENT_NAME'.freeze
 
-    # Event subclasses will have an SUBJECT_CLASS constant,
+    # Event subclasses will have a SUBJECT_CLASS constant,
     # which contains the class of the subject of the event, based on one of the
     # values from the Event::EVENTS Hash.
     SUBJECT_CLASS_CONST = 'SUBJECT_CLASS'.freeze

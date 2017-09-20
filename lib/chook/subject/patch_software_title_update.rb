@@ -26,32 +26,32 @@ Chook::Subject.classes[Chook::Subject::PATCH_SW_UPDATE] = {
   name: {
     validation: :patch,
     randomizer: :patch,
-    sampler: :patch_name,
+    # sampler: :patch_name,
     # api_object_attribute: :name
   },
   latestVersion: {
     validation: String,
     randomizer: :version,
-    sampler: :patch_latest_version,
+    # sampler: :patch_latest_version,
     # api_object_attribute:
   },
   lastUpdate: {
     converter: Chook::Procs::JSS_EPOCH_TO_TIME,
     validation: Time,
     randomizer: :time,
-    sampler: :patch_last_update,
+    # sampler: :patch_last_update,
     # api_object_attribute:
   },
   reportUrl: {
     validation: :url,
     randomizer: :url,
-    sampler: :patch_report_url,
+    # sampler: :patch_report_url,
     # api_object_attribute:
   },
   jssID: {
     validation: Integer,
     randomizer: :int,
-    sampler: :patch_id,
+    # sampler: :patch_id,
     # api_object_attribute: :id
   }
 }

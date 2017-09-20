@@ -52,7 +52,6 @@ module Chook
 
         # add the class to the Chook::HandledSubjects namespace module
         Chook::HandledSubjects.const_set classname, new_class
-
       end # classes.each do |classname, attribs|
     end # generate_classes
 
@@ -78,7 +77,6 @@ module Chook
         # set the value.
         instance_variable_set "@#{key}", value
       end # each key value
-
     end # init
 
   end # class handled subject

@@ -31,109 +31,109 @@ Chook::Subject.classes[Chook::Subject::COMPUTER] = {
   udid: {
     validation: String,
     randomizer: :computer_udid,
-    sampler: :udid,
+    # sampler: :udid,
     api_object_attribute: :udid
   },
   deviceName: {
     validation: String,
     randomizer: :word,
-    sampler: :device_name,
+    # sampler: :device_name,
     api_object_attribute: :name
   },
   model: {
     validation: String,
     randomizer: :computer_model,
-    sampler: :model,
+    # sampler: :model,
     api_object_attribute: [:hardware, :model]
   },
   macAddress: {
     validation: String, #:validate_mac_address,
     randomizer: :mac_address,
-    sampler: :mac_address,
+    # sampler: :mac_address,
     api_object_attribute: :mac_address
   },
   alternateMacAddress: {
     validation: String, #:validate_mac_address, # TODO: sometimes this value is nil !!!
     randomizer: :mac_address,
-    sampler: :mac_address,
+    # sampler: :mac_address,
     api_object_attribute: :alt_mac_address
   },
   serialNumber: {
     validation: String, #:validate_serial_number,
     randomizer: :computer_serial_number,
-    sampler: :serial_number,
+    # sampler: :serial_number,
     api_object_attribute: :serial_number
   },
   osVersion: {
     validation: String,
     randomizer: :computer_os_version,
-    sampler: :os_version,
+    # sampler: :os_version,
     api_object_attribute: [:hardware, :os_version]
   },
   osBuild: {
     validation: String,
     randomizer: :os_build,
-    sampler: :os_build,
+    # sampler: :os_build,
     api_object_attribute: [:hardware, :os_build]
   },
   userDirectoryID: {
     validation: String,
     randomizer: :int, # TODO: This returns a a Fixnum, but the value is relayed as a String
-    sampler: :user_directory_id,
+    # sampler: :user_directory_id,
     api_object_attribute: Chook::Procs::COMPUTER_USERID
   },
   username: {
     validation: String,
     randomizer: :word,
-    sampler: :username,
+    # sampler: :username,
     api_object_attribute: :username
   },
   realName: {
     validation: String,
     randomizer: :name,
-    sampler: :real_name,
+    # sampler: :real_name,
     api_object_attribute: :real_name
   },
   emailAddress: {
     validation: String, #:validate_email,
     randomizer: :email_address,
-    sampler: :email_address,
+    # sampler: :email_address,
     api_object_attribute: :email_address
   },
   phone: {
     validation: String, #:validate_phone_number,
     randomizer: :phone,
-    sampler: :phone,
+    # sampler: :phone,
     api_object_attribute: :phone
   },
   position: {
     validation: String,
     randomizer: :word,
-    sampler: :position,
+    # sampler: :position,
     api_object_attribute: :position
   },
   department: {
     validation: String,
     randomizer: :word,
-    sampler: :department,
+    # sampler: :department,
     api_object_attribute: :department
   },
   building: {
     validation: String,
     randomizer: :word,
-    sampler: :building,
+    # sampler: :building,
     api_object_attribute: :building
   },
   room: {
     validation: String,
     randomizer: :room,
-    sampler: :room,
+    # sampler: :room,
     api_object_attribute: :room
   },
   jssID: {
     validation: Integer,
     randomizer: :int,
-    sampler: :jssid,
+    # sampler: :jssid,
     api_object_attribute: :id
   }
 }

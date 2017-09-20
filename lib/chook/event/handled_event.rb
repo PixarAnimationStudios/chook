@@ -64,7 +64,6 @@ module Chook
         # make the new HandledEvent subclass
         the_class = Class.new(Chook::HandledEvent)
 
-
         # Set its EVENT_NAME constant, which is used
         # for finding it's handlers, among other things.
         the_class.const_set Chook::Event::EVENT_NAME_CONST, class_name
@@ -78,7 +77,6 @@ module Chook
       end # each classname, subject
     end # self.generate_classes
 
-
     # Given the raw json from the JSS webhook,
     # create an object of the correct Event subclass
     #
@@ -91,7 +89,6 @@ module Chook
       event_name = event_json[:webhook][:webhookEvent]
       Chook::HandledEvents.const_get(event_name).new raw_event_json
     end
-
 
     #### Attributes
 

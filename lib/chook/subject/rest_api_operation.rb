@@ -50,7 +50,7 @@ Chook::Subject.classes[Chook::Subject::REST_API_OPERATION] = {
   authorizedUsername: {
     validation: String,
     randomizer: :word,
-    sampler: :username,
+    # sampler: :username,
     # api_object_attribute: :authorizedUsername
   },
   restAPIOperationType: {

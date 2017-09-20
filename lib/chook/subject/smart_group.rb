@@ -26,19 +26,19 @@ Chook::Subject.classes[Chook::Subject::SMART_GROUP] = {
   name: {
     validation: String,
     randomizer: :word,
-    sampler: :smart_group,
+    # sampler: :smart_group,
     api_object_attribute: :name
   },
   smartGroup: {
     validation: :boolean,
     randomizer: Chook::Procs::ALWAYS_TRUE, # If this were false, it wouldn't be a Smart Group...
-    sampler: Chook::Procs::ALWAYS_TRUE,
+    # sampler: Chook::Procs::ALWAYS_TRUE,
     api_object_attribute: :is_smart
   },
   jssid: {
     validation: Integer,
     randomizer: :int,
-    sampler: :any_smart_group_id,
+    # sampler: :any_smart_group_id,
     api_object_attribute: :id
   },
   computer: { # SmartGroupComputerMembershipChange == true, SmartGroupMobileDeviceMembershipChange == false
