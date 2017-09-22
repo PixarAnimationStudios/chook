@@ -37,11 +37,8 @@ module Chook
     PRODUCT = proc { |_device| nil }
     ALWAYS_TRUE = proc { |_boolean| True }
     COMPUTER_USERID = proc do |comp|
-      if comp.groups_accounts[:local_accounts].empty?
-        '-1'
-      else
-        comp.groups_accounts[:local_accounts].find { |acct| acct[:name] == comp.username }[:uid] || '-1'
-      end # end if
+      id = '-1' unless comp.groups_accounts[:local_accounts].find { |acct| acct[:name] == comp.username }
+      id.is_a?(Hash) ? id[:uid] : '-1'
     end # end proc do |comp|
 
   end # module Procs
