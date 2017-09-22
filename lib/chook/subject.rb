@@ -52,7 +52,7 @@ module Chook
     # The name of the JSS subject (a.k.a. 'event_object')
     # as known to the JSS. Also the class name of such subjects in
     # Chook::HandledSubjects and Chook::TestSubjects
-    JSS = 'JSS'.freeze
+    JAMF_SOFTWARE_SERVER = 'JSS'.freeze
 
     # The name of the MobileDevice subject (a.k.a. 'event_object')
     # as known to the JSS. Also the class name of such subjects in

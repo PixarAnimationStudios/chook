@@ -22,7 +22,7 @@
 ###    language governing permissions and limitations under the Apache License.
 ###
 ###
-Chook::Subject.classes[Chook::Subject::JSS] = {
+Chook::Subject.classes[Chook::Subject::JAMF_SOFTWARE_SERVER] = {
   institution: {
     validation: String,
     randomizer: :word,
