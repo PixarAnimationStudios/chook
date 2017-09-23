@@ -198,6 +198,7 @@ module Chook
       'Adobe Prelude CC',
       'Adobe Premiere Pro CC',
       'Adobe Shockwave Player',
+      'Google Chrome',
       'Java SE Development Kit 7',
       'Java SE Development Kit 8',
       'Java SE Runtime Environment JRE 7',
@@ -211,6 +212,7 @@ module Chook
       'Microsoft Silverlight',
       'Microsoft Word 2016',
       'Mozilla Firefox Extended Support Release (ESR)',
+      'Mozilla Firefox',
       'Skype',
       'Skype for Business'
     ].freeze
