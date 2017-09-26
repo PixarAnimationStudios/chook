@@ -102,6 +102,16 @@ module Chook
       Chook::Randomizers::PATCH_SOFTWARE_TITLES.include? patch_name
     end # end patch
 
+    # Validate Test Subject
+    #
+    # @param [String] Name of an Event class
+    # @param [Chook::TestSubjects] An instance of a Chook::TestSubjects subclass
+    # @return [Boolean]
+    #
+    def self.valid_test_subject(event_class, subject)
+      Chook::Event::EVENTS[event_class].include? subject.class.to_s.split('::')[-1]
+    end # end valid_test_subject
+
   end # module validators
 
 end # module Chook
