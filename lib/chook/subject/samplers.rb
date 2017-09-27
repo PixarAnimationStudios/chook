@@ -646,7 +646,7 @@ module Chook
       # room
     end # end room
 
-    # SmartGroup
+    #### SmartGroup
 
     # Smart Group Sampler
     #
@@ -703,7 +703,7 @@ module Chook
       [computer_smart_group_jssid, mobile_smart_group_jssid].sample
     end # end any_smart_group_id
 
-    # PatchSoftwareTitleUpdated
+    #### PatchSoftwareTitleUpdated
 
     # Patch ID Sampler
     #
@@ -716,6 +716,7 @@ module Chook
 
     # All Patch IDs
     #
+    # @param [JSS::APIConnection] API Connection object
     # @return [Array<Integer>] An Array of enabled Patch Reporting Software IDs from the JSS
     #
     def self.all_patch_ids(_patch_hash, api: JSS.api)
@@ -734,9 +735,23 @@ module Chook
       Time.now
     end # end patch_last_update
 
+    # Patch Report URL
+    #
+    # @param [JSS::APIConnection] API Connection object
+    # @return [String] description of returned object
+    #
     def self.patch_report_url(_patch_hash, api: JSS.api)
-      api.rest_url
+      api.rest_url.chomp('/JSSResource')
     end # end patch_report_url
+
+    # All Patches
+    #
+    # @param [JSS::APIConnection] API Connection object
+    # @return [Array<Hash>] Array of Hashes containing ids and names of enabled Patches
+    #
+    def self.all_patches(api: JSS.api)
+      api.get_rsrc('patches')[:patch_reporting_software_titles]
+    end # end all_patches
 
     # Patch Name Sampler
     #
@@ -758,8 +773,10 @@ module Chook
     # @param [Hash] raw_patch Hash of output from API query like get_rsrc("patches/id/#{id}")
     # @return [String] The lastest version of a patch software title
     #
-    def self.patch_latest_version(raw_patch) # api: JSS.api)
-      raw_patch[:software_title][:versions].select { |i| i.is_a? String }.first
+    def self.patch_latest_version(raw_patch, api: JSS.api)
+      patch = api.get_rsrc("patches/id/#{raw_patch[:id]}")
+      patch[:software_title][:versions].select { |i| i.is_a? String }.first
+      # raw_patch[:software_title][:versions].select { |i| i.is_a? String }.first
       # all_titles = api.get_rsrc('patches')[:patch_reporting_software_titles]
       # id = all_titles.sample[:id].to_i if id.nil?
       # raw_patch = api.get_rsrc("patches/id/#{id}")
