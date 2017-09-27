@@ -37,6 +37,8 @@ module Chook
   #
   class TestEvent < Chook::Event
 
+    EVENT_ATTRIBUTES = %w(webhook_id webhook_name subject raw_json parsed_json subject).freeze # This should probs move up to Chook::Event
+
     # For each event type in Chook::Event::EVENTS.keys
     # generate a TestEvent class for it, set its SUBJECT_CLASS constant
     # and add it to the TestEvents module.
@@ -44,25 +46,50 @@ module Chook
     # @return [void]
     #
     def self.generate_classes
-      Chook::Event::EVENTS.each do |class_name, subject|
-        next if Chook::TestEvent.const_defined? class_name
-
+      Chook::Event::EVENTS.each do |classname, subject|
+        next if Chook::TestEvents.const_defined? classname
         # make the new TestEvent subclass
-        the_class = Class.new(Chook::TestEvents)
+        new_class = Class.new(Chook::TestEvent) do
+          # Setters & Getters
+          EVENT_ATTRIBUTES.each do |attribute|
+            # Getter
+            attr_reader attribute
+            # Setter
+            if attribute == 'subject'
+              define_method("#{attribute}=") do |new_val|
+                raise "Invalid TestSubject: Chook::TestEvents::#{classname} requires a Chook::TestSubjects::#{EVENTS[classname]}" unless Chook::Validators.send(:valid_test_subject, classname, new_val)
+                instance_variable_set(('@' + attribute.to_s), new_val)
+              end # end define_method
+            else
+              define_method("#{attribute}=") do |new_val|
+                instance_variable_set(('@' + attribute.to_s), new_val)
+              end # end define_method
+            end
+          end # end EVENT_ATTRIBUTES.each do |attribute|
+        end # end new_class
 
         # Set its EVENT_NAME constant
-        the_class.const_set Chook::TestEvent::EVENT_NAME_CONST, class_name
+        new_class.const_set Chook::TestEvent::EVENT_NAME_CONST, classname
 
         # Set its SUBJECT_CLASS constant to the appropriate
         # class in the TestEvents module.
-        the_class.const_set Chook::TestEvent::SUBJECT_CLASS_CONST, Chook::TestSubjects.const_get(subject)
+        new_class.const_set Chook::TestEvent::SUBJECT_CLASS_CONST, Chook::TestSubjects.const_get(subject)
 
         # Add the new class to the HandledEvents module.
-        Chook::TestEvents.const_set(class_name, the_class)
+        Chook::TestEvents.const_set(classname, new_class)
       end # each classname, subject
     end # self.generate_classes
 
-    # define @classes reader in here???
+    def initialize(event_data = nil)
+      if event_data
+        event_data.each do |key, value|
+          next unless EVENT_ATTRIBUTES.include? key
+          instance_variable_set(('@' + key.to_s), value)
+        end # event_data.each
+      else
+        EVENT_ATTRIBUTES.each { |attribute| instance_variable_set(('@' + attribute.to_s), nil) }
+      end # end if event_data
+    end # end init
 
   end # class TestEvent
 
