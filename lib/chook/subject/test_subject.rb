@@ -53,11 +53,11 @@ module Chook
             # setter with validator
             define_method("#{attrib}=") do |new_val|
               if validator.is_a? Class
-                raise "Invalid value for #{attrib}, must be a #{validator}"
+                raise "Invalid value for #{attrib}, must be a #{validator}" unless new_val.is_a? validator
               elsif !validator.nil?
                 raise "Invalid value for #{attrib}" unless Chook::Validators.send validator, new_val
               end
-              instance_variable_set attrib, new_val
+              instance_variable_set(('@' + attrib.to_s), new_val)
             end # end define method
           end # end do |attrib, deets|
         end # end new_class
@@ -81,7 +81,73 @@ module Chook
     # a sampled test subject (real data from real JSS objects)
     # NOTE: a valid ruby-jss JSS::APIConnection must exist
     def self.sample(ids = 'random', api: JSS.api)
-      # Placeholder
+      classname = self.const_get Chook::Subject::NAME_CONSTANT
+      ids = [ids] if ids.is_a? Integer
+      # !!Kernel.const_get('JSS::' + classname) rescue false
+      if classname == 'PatchSoftwareTitleUpdated'
+        all_ids = Chook::Samplers.all_patch_ids('blah', api: api)
+      else
+        all_ids = Kernel.const_get('JSS::' + classname).all_ids(api: api) # (api: api)
+      end
+      ids = [all_ids.sample] if ids == 'random'
+
+      ok = true
+      if ids.is_a? Array
+        ids.each { |id| ok == false unless id.is_a? Integer }
+      else
+        ok = false
+      end
+      raise 'ids must be an Array of Integers' unless ok
+
+      raw_samples = []
+      samples = []
+
+      valid_ids = ids & all_ids
+      raise "Invalid JSS IDs: #{ids}" if valid_ids.empty?
+
+      valid_ids.each do |id|
+        if classname == 'PatchSoftwareTitleUpdated'
+          raw_samples << Chook::Samplers.all_patches(api: api).select { |patch| patch[:id] == id }
+          raw_samples.flatten!
+        else
+          raw_samples << Kernel.const_get('JSS::' + classname).fetch(id: id, api: api)
+        end
+      end
+
+      raw_samples.each do |sample|
+        subject_details = {}
+        Chook::Subject.classes[classname].map do |subject_key, attribute_values|
+          extractor = attribute_values[:api_object_attribute]
+          subject_details[subject_key] =
+            case extractor
+            when Symbol
+              if classname == 'PatchSoftwareTitleUpdated'
+                # If there is a sampler method available, call it.
+                if attribute_values[:sampler]
+                  extractor = attribute_values[:sampler]
+                  Chook::Samplers.send(extractor, sample)
+                else
+                  # Otherwise use it like a hash key
+                  sample[extractor]
+                end
+              else
+                sample.send extractor
+              end
+            when Array
+              extractor = extractor.dup # If this doesn't get duplicated, shift will change attribute_values[:api_object_attribute]
+              method = extractor.shift
+              raw_hash_keys = extractor
+              method_result = sample.send(method)
+              raw_hash_keys.each { |key| method_result = method_result[key] }
+              method_result
+            when Proc
+              extractor.call sample
+            end
+        end # do |subject_key, attribute_values|
+        # This only works for objects that have equivalent classes in ruby-jss
+        samples << Kernel.const_get('Chook::TestSubjects::' + classname).new(subject_details)
+      end # end samples.each do |sample|
+      samples
     end # end sample
 
     # All the subclassses will inherit this constructor
@@ -89,23 +155,27 @@ module Chook
     # The argument is a Hash with keys from the appropriate keys defiend
     # in Chook::Subject.classes
     #
-    def initialize(subject_data)
+    def initialize(subject_data = nil)
       my_classname = self.class.const_get Chook::Subject::NAME_CONSTANT
       my_attribs = Chook::Subject.classes[my_classname]
 
-      subject_data.each do |key, value|
-        # ignore unknown attributes. Shouldn't get any,but....
-        next unless my_attribs[key]
+      if subject_data
+        subject_data.each do |key, value|
+          # ignore unknown attributes. Shouldn't get any,but....
+          next unless my_attribs[key]
 
-        # does the value need conversion?
-        converter = my_attribs[key][:converter]
-        if converter
-          value = converter.is_a?(Symbol) ? value.send(converter) : converter.call(value)
-        end # if converter
-
-        # set the value.
-        instance_variable_set ":@#{key}", value
-      end # each key value
+          # does the value need conversion?
+          converter = my_attribs[key][:converter]
+          if converter
+            value = converter.is_a?(Symbol) ? value.send(converter) : converter.call(value)
+          end # if converter
+          # set the value.
+          # instance_variable_set ":@#{key}", value
+          instance_variable_set(('@' + key.to_s), value)
+        end # each key value
+      else
+        my_attribs.keys.each { |key| instance_variable_set(('@' + key.to_s), nil) }
+      end # if subject_data
     end # init
 
   end # class TestSubject
