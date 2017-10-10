@@ -36,7 +36,7 @@ Chook::Subject.classes[Chook::Subject::PATCH_SW_UPDATE] = {
     api_object_attribute: :patch_latest_version
   },
   lastUpdate: {
-    converter: Chook::Procs::JSS_EPOCH_TO_TIME,
+    to_json: :to_jss_epoch,
     validation: Time,
     randomizer: :time,
     sampler: :patch_last_update,
