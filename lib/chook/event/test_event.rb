@@ -37,7 +37,7 @@ module Chook
   #
   class TestEvent < Chook::Event
 
-    EVENT_ATTRIBUTES = %w(webhook_id webhook_name subject raw_json parsed_json subject).freeze # This should probs move up to Chook::Event
+    EVENT_ATTRIBUTES = %w(webhook_id webhook_name subject).freeze
 
     # For each event type in Chook::Event::EVENTS.keys
     # generate a TestEvent class for it, set its SUBJECT_CLASS constant
@@ -79,6 +79,43 @@ module Chook
         Chook::TestEvents.const_set(classname, new_class)
       end # each classname, subject
     end # self.generate_classes
+
+    # json_hash
+    #
+    # @return [Hash] A JSON Event payload formatted as a Hash. Used by the fire method
+    #
+    def json_hash
+      raw_hash_form = {}
+      raw_hash_form['webhook'.to_sym] = { 'webhookEvent'.to_sym => self.class.to_s.split('::')[-1] }
+      EVENT_ATTRIBUTES.each do |json_attribute|
+        next if json_attribute.include? 'json'
+        if json_attribute == 'subject'
+          raw_hash_form['event'.to_sym] = instance_variable_get('@' + json_attribute).json_hash
+        else
+          json_hash_attribute = json_attribute.split('webhook_')[1] || json_attribute
+          nested_hash = Hash.new do |hash, key|
+            hash[key] = {}
+          end # end nested_hash
+          nested_hash[json_hash_attribute.to_sym] = instance_variable_get('@' + json_attribute)
+          raw_hash_form['webhook'.to_sym][nested_hash.keys[0]] = nested_hash[nested_hash.keys[0]]
+        end
+      end # end EVENT_ATTRIBUTES.each do |json_attribute|
+      raw_hash_form # This is the structural equivalent of the Chook::Event @json_hash form
+    end # end json_hash
+
+    # fire
+    #
+    # @param [String] server_url The URL of a server that can handle an Event
+    # @return [void]
+    #
+    def fire(server_url)
+      raise 'Please provide a destination server URL' unless server_url
+      uri = URI.parse(server_url)
+      raise 'Please provide a valid destination server URL' if uri.host.nil?
+      data = json_hash.to_json # This is the structural equivalent of the Chook::Event @raw_json form
+      http_connection = Net::HTTP.new uri.host, uri.port
+      http_connection.post(uri, data, header = nil)
+    end # end fire
 
     def initialize(event_data = nil)
       if event_data
