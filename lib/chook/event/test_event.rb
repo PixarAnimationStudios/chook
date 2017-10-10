@@ -114,7 +114,7 @@ module Chook
       raise 'Please provide a valid destination server URL' if uri.host.nil?
       data = json_hash.to_json # This is the structural equivalent of the Chook::Event @raw_json form
       http_connection = Net::HTTP.new uri.host, uri.port
-      http_connection.post(uri, data, header = nil)
+      http_connection.post(uri, data)
     end # end fire
 
     def initialize(event_data = nil)
