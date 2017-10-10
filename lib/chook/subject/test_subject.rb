@@ -116,15 +116,15 @@ module Chook
 
       raw_samples.each do |sample|
         subject_details = {}
-        Chook::Subject.classes[classname].map do |subject_key, attribute_values|
-          extractor = attribute_values[:api_object_attribute]
+        Chook::Subject.classes[classname].map do |subject_key, details|
+          extractor = details[:api_object_attribute]
           subject_details[subject_key] =
             case extractor
             when Symbol
               if classname == 'PatchSoftwareTitleUpdated'
                 # If there is a sampler method available, call it.
-                if attribute_values[:sampler]
-                  extractor = attribute_values[:sampler]
+                if details[:sampler]
+                  extractor = details[:sampler]
                   Chook::Samplers.send(extractor, sample)
                 else
                   # Otherwise use it like a hash key
@@ -134,7 +134,7 @@ module Chook
                 sample.send extractor
               end
             when Array
-              extractor = extractor.dup # If this doesn't get duplicated, shift will change attribute_values[:api_object_attribute]
+              extractor = extractor.dup # If this doesn't get duplicated, shift will change details[:api_object_attribute]
               method = extractor.shift
               raw_hash_keys = extractor
               method_result = sample.send(method)
@@ -143,12 +143,26 @@ module Chook
             when Proc
               extractor.call sample
             end
-        end # do |subject_key, attribute_values|
-        # This only works for objects that have equivalent classes in ruby-jss
+        end # do |subject_key, details|
         samples << Kernel.const_get('Chook::TestSubjects::' + classname).new(subject_details)
       end # end samples.each do |sample|
       samples
     end # end sample
+
+    def json_hash
+      # Verify that input is a child of TestSubjects, raise if not
+      raise 'Invalid TestSubject' unless self.class.superclass == Chook::TestSubject
+      test_subject_attributes = Chook::Subject.classes[self.class.to_s.split('::')[-1]]
+      raw_hash_form = {}
+      test_subject_attributes.each do |attribute, details|
+        if details.keys.include? :to_json
+          raw_hash_form[attribute] = send(attribute).send details[:to_json]
+        else
+          raw_hash_form[attribute] = instance_variable_get('@' + attribute.to_s)
+        end
+      end # end test_subject_attributes.keys.each do |attribute, details|
+      raw_hash_form
+    end # end json_hash
 
     # All the subclassses will inherit this constructor
     #
@@ -156,25 +170,23 @@ module Chook
     # in Chook::Subject.classes
     #
     def initialize(subject_data = nil)
-      my_classname = self.class.const_get Chook::Subject::NAME_CONSTANT
-      my_attribs = Chook::Subject.classes[my_classname]
+      classname = self.class.const_get Chook::Subject::NAME_CONSTANT
+      attribs = Chook::Subject.classes[classname]
 
       if subject_data
         subject_data.each do |key, value|
-          # ignore unknown attributes. Shouldn't get any,but....
-          next unless my_attribs[key]
+          # ignore unknown attributes. Shouldn't get any, but...
+          next unless attribs[key]
 
           # does the value need conversion?
-          converter = my_attribs[key][:converter]
+          converter = attribs[key][:converter]
           if converter
             value = converter.is_a?(Symbol) ? value.send(converter) : converter.call(value)
           end # if converter
-          # set the value.
-          # instance_variable_set ":@#{key}", value
           instance_variable_set(('@' + key.to_s), value)
         end # each key value
       else
-        my_attribs.keys.each { |key| instance_variable_set(('@' + key.to_s), nil) }
+        attribs.keys.each { |key| instance_variable_set(('@' + key.to_s), nil) }
       end # if subject_data
     end # init
 
