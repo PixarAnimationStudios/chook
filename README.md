@@ -1,91 +1,91 @@
 
-# WebHooks for ruby-jss
+# Chook
 
 - [Introduction](#introduction)
 - [The Framework](#the-framework)
   - [Event Handlers](#event-handlers)
     - [Internal Handlers](#internal-handlers)
     - [External Handlers](#external-handlers)
-  - [Putting it together](#putting-it-together)
-  - [Events and Event objects](#events-and-event-objects)
+  - [Putting It Together](#putting-it-together)
+  - [Events and Subjects](#events-and-subjects)
 - [The Server](#the-server)
-- [Installing Chook into ruby-jss](#installing-jsswebhooks-into-ruby-jss)
+- [Installing Chook alongside ruby-jss](#installing-chook-alongside-ruby-jss)
 - [TODOs](#todos)
 
 
 ## Introduction
 
-Chook is a Ruby module which implements a framework for working with WebHook events
+Chook is a Ruby module that implements a framework for working with webhook events
 sent by the JSS, the core of [Jamf Pro](https://www.jamf.com/products/jamf-pro/),
 a management tool for Apple devices.
 
-Chook also provides a simple, sinatra-based http server, for handling those events,
-and classes for sending simulated JSS WebHook events to a webhook server.
+Chook also provides a simple, sinatra-based HTTP server for handling those Events,
+and classes for sending simulated TestEvents to a webhook handling server.
 
-**You do not need to be a Ruby programmer to make use of this framework!**
+** You do not need to be a Ruby developer to use this framework! **
 
 The webhook handling server that comes with Chook can use "Event Handlers" written in
-any language. See _Event Handlers_ and _The Server_ below for more info.
+any language. See _Event Handlers_ and _The Server_ below for more information.
 
-Chook is still in early development. While the basics seem to work,
-there's much to do before it can be considered a released project.
+Chook is still in development. While many of the basics work,
+there is much to be done before it can be considered complete.
 
-While Chook integrates well with [ruby-jss](http://pixaranimationstudios.github.io/ruby-jss/index.html),
-it's a separate tool and the two projects aren't dependent. However Chook
-will become a requirement for [d3](http://pixaranimationstudios.github.io/depot3/index.html),
-as the means by which d3 responds to Jamf Pro's PatchSoftwareTitleUpdated events.
+Although Chook integrates well with [ruby-jss](http://pixaranimationstudios.github.io/ruby-jss/index.html),
+it's a separate tool, and the two projects aren't dependent. However, ruby-jss
+does become a requirement when using sampling features to generate TestEvents.
 
-For details about the JSS WebHooks API, and the JSON data it passes, please see
-[Bryson Tyrrell's excellent
-documentation.](https://unofficial-jss-api-docs.atlassian.net/wiki/display/JRA/Webhooks+API)
+For more detail about the JSS webhooks API and the JSON data it passes, please see
+[Bryson Tyrrell's documentation.](https://unofficial-jss-api-docs.atlassian.net/wiki/display/JRA/Webhooks+API)
 
-**Note:** when creating WebHooks in your JSS to be handled by the framework, you must
-specify JSON in the 'Content Type' section. This framework doesn't support XML
-formatted WebHook data.
+**Note:** When creating webhooks from your JSS to be handled by the framework, you must
+specify JSON in the "Content Type" section. This framework does not support XML.
 
 ## The Framework
 
-The Chook framework abstracts WebHook events and their parts as Ruby
-classes. When the JSON payload of a JSS WebHook POST request is passed into the
+The Chook framework abstracts webhook Events and their components as Ruby
+classes. When the JSON payload of a JSS webhook POST request is passed into the
 `Chook::Event.parse_event` method, an instance of the appropriate subclass
 of `Chook::Event` is returned, for example
-`Chook::ComputerInventoryCompletedEvent`
+`Chook::Event::ComputerInventoryCompletedEvent`
 
-Each event instance contains these important attributes:
+Each Event instance contains these important attributes:
 
-* **webhook:** A read-only instance of `Chook::Event::WebHook`
-  representing the WebHook stored in the JSS which cause the POST request. This
-  object has attributes matching those in the "webhook" dict. of the POSTed
-  JSON.
+* **webhook_id:** A read-only instance of the webhook ID stored in the JSS
+  which caused the POST request. This attribute matches the "webhook[:id]"
+  dictionary of the POSTed JSON.
 
-* **event_object:** A read-only instance of a `Chook::EventObject::<Class>`
-  representing the 'event object' that accompanies the event that triggered the
-  WebHook. It comes from the 'object' dict of the POSTed JSON, and different
-  events come with different objects attached. For example, the
-  ComputerInventoryCompleted event comes with a "computer" object, containing
+* **webhook_name:** A read-only instance of the webhook name stored in the JSS
+  which caused the POST request. This attribute matches the "webhook[:name]"
+  dictionary of the POSTed JSON.
+
+* **subject:** A read-only instance of a `Chook::Subject::<Class>`
+  representing the "subject" that accompanies the event that triggered the
+  webhook. It comes from the "event" dictionary of the POSTed JSON, and
+  different events come with different subjects attached. For example, the
+  ComputerInventoryCompleted event comes with a "computer" subject containing
   data about the JSS computer that completed inventory.
 
   This is not full `JSS::Computer` object from the REST API, but rather a group
-  of named attributes about that computer. At the moment the Chook
-  framework makes no attempt to use the event object to look up the object in
-  the API, but the handlers written for the event could easily do so if needed.
+  of named attributes about that computer. At the moment, only the Chook Samplers
+  module attempts to look up subject data from the API, but any
+  Handlers written for the event could easily do a similar operation.
 
 * **event_json:** The JSON content from the POST request, parsed into
   a Ruby hash with symbolized keys (meaning the JSON key "deviceName" becomes
-  the symbol :deviceName)
+  the symbol :deviceName).
 
 * **raw_json:** A String containing the raw JSON from the POST
   request.
 
-* **handlers:** An Array of custom plugins for working with the
+* **handlers:** An Array of custom plug-ins for working with the
   event. See _Event Handlers_, below.
 
 
 ### Event Handlers
 
 A handler is a file containing code to run when a webhook event occurs. These
-files are located in a specified directory, /Library/Application
-Support/Chook/ by default, and are loaded at runtime. It's up to the Jamf
+files are located in a specified directory, `/Library/Application
+Support/Chook/` by default, and are loaded at runtime. It's up to the Jamf
 administrator to create these handlers to perform desired tasks. Each class of
 event can have as many handlers as desired, all will be executed when the event's
 `handle` method is called.
@@ -94,7 +94,7 @@ Handler files must begin with the name of the event they handle, e.g.
 ComputerAdded, followed by: nothing, a dot, a dash, or an underscore. Handler
 filenames are case-insensitive.
 
-All of these filenames work as handlers for ComputerAdded events:
+All of these file names are valid handlers for ComputerAdded events:
 
 - ComputerAdded
 - computeradded.sh
@@ -116,15 +116,15 @@ a handler for a Chook::ComputerAddedEvent
 
 ```ruby
 Chook.event_handler do |event|
-  cname = event.event_object.deviceName
-  uname = event.event_object.realName
+  cname = event.subject.deviceName
+  uname = event.subject.realName
   puts "Computer '#{cname}' was just added to the JSS for user #{uname}."
 end
 ```
 
-In this example, the codeblock takes one parameter, which it expects to be
-a Chook::ComputerAddedEvent instance, and uses it in the variable "event".
-It then extracts the "deviceName" and "realName" values from the event_object
+In this example, the code block takes one parameter, which it expects to be
+a Chook::ComputerAddedEvent instance, and uses it in the variable "event."
+It then extracts the "deviceName" and "realName" values from the subject
 contained in the event, and uses them to send a message to stdout.
 
 Internal handlers **must not** be executable files. Executability is how the
@@ -153,24 +153,24 @@ echo "Computer '${cname}' was just added to the JSS for user ${uname}."
 External handlers **must** be executable files. Executability is how the
 framework determines if a handler is internal or external.
 
-See data/sample_handlers/RestAPIOperation-executable
+See `data/sample_handlers/RestAPIOperation-executable`
 for a more detailed bash example that handles RestAPIOperation events.
 
-### Putting it together
+### Putting It Together
 
-Here's a commented sample of ruby code that uses the framework to process a
-ComputerAdded event:
+Here is a commented sample of ruby code that uses the framework to process a
+ComputerAdded Event:
 
 ```ruby
-# load in the framework
+# load the framework
 require 'chook'
 
-# The framework comes with sample JSON files for each event type.
+# The framework comes with sample JSON files for each Event type.
 # In reality, a webserver would extract this from the data POSTed from the JSS
 posted_json = Chook.sample_jsons[:ComputerAdded]
 
-# Create Chook::Event::ComputerAddedEvent instance for the event
-event = Chook::Event.parse_event posted_json
+# Create Chook::HandledEvents::ComputerAddedEvent instance for the event
+event = Chook::HandledEvent.parse_event posted_json
 
 # Call the events #handle method, which will execute any ComputerAdded
 # handlers that were in the Handler directory when the framework was loaded.
@@ -179,55 +179,55 @@ event.handle
 
 Of course, you can use the framework without using the built-in #handle method,
 and if you don't have any handlers in the directory, it won't do anything
-anyway. Instead you are welcome to use the Event objects as desired in your own
+anyway. Instead you are welcome to use the objects as desired in your own
 Ruby code.
 
-### Events and Event objects
+### Events and Subjects
 
-Here are the Event classes supported by the framework and the  EventObject classes
+Here are the Event classes supported by the framework and the Subject classes
 they contain.
-For details about the attributes of each EventObject, see [The Unofficial JSS API
-Docs](https://unofficial-jss-api-docs.atlassian.net/wiki/display/JRA/Webhooks+API)
+For details about the attributes of each Subject, see [The Unofficial JSS API
+Docs](https://unofficial-jss-api-docs.atlassian.net/wiki/display/JRA/Webhooks+API).
 
 Each Event class is a subclass of `Chook::Event`, where all of their
 functionality is defined.
 
-The EventObject classes aren't subclasses, but are dynamically-defined members of
-the `Chook::EventObjects` module.
+The Subject classes aren't subclasses, but are dynamically-defined members of
+the `Chook::Subjects` module.
 
-| Event Classes | Event Object Classes |
+| Event Classes | Subject Classes |
 | -------------- | ------------ |
-| Chook::ComputerAddedEvent | Chook::EventObjects::Computer |
-| Chook::ComputerCheckInEvent | Chook::EventObjects::Computer |
-| Chook::ComputerInventoryCompletedEvent | Chook::EventObjects::Computer |
-| Chook::ComputerPolicyFinishedEvent | Chook::EventObjects::Computer |
-| Chook::ComputerPushCapabilityChangedEvent | Chook::EventObjects::Computer |
-| Chook::JSSShutdownEvent | Chook::EventObjects::JSS |
-| Chook::JSSStartupEvent | Chook::EventObjects::JSS |
-| Chook::MobilDeviceCheckinEvent | Chook::EventObjects::MobileDevice |
-| Chook::MobilDeviceCommandCompletedEvent | Chook::EventObjects::MobileDevice |
-| Chook::MobilDeviceEnrolledEvent | Chook::EventObjects::MobileDevice |
-| Chook::MobilDevicePushSentEvent | Chook::EventObjects::MobileDevice |
-| Chook::MobilDeviceUnenrolledEvent | Chook::EventObjects::MobileDevice |
-| Chook::PatchSoftwareTitleUpdateEvent | Chook::EventObjects::PatchSoftwareTitleUpdate |
-| Chook::PushSentEvent | Chook::EventObjects::Push |
-| Chook::RestAPIOperationEvent | Chook::EventObjects::RestAPIOperation |
-| Chook::SCEPChallengeEvent | Chook::EventObjects::SCEPChallenge |
-| Chook::SmartGroupComputerMembershipChangeEvent | Chook::EventObjects::SmartGroup |
-| Chook::SmartGroupMobileDeviveMembershipChangeEvent | Chook::EventObjects::SmartGroup |
+| Chook::ComputerAddedEvent | Chook::Subjects::Computer |
+| Chook::ComputerCheckInEvent | Chook::Subjects::Computer |
+| Chook::ComputerInventoryCompletedEvent | Chook::Subjects::Computer |
+| Chook::ComputerPolicyFinishedEvent | Chook::Subjects::Computer |
+| Chook::ComputerPushCapabilityChangedEvent | Chook::Subjects::Computer |
+| Chook::JSSShutdownEvent | Chook::Subjects::JSS |
+| Chook::JSSStartupEvent | Chook::Subjects::JSS |
+| Chook::MobileDeviceCheckinEvent | Chook::Subjects::MobileDevice |
+| Chook::MobileDeviceCommandCompletedEvent | Chook::Subjects::MobileDevice |
+| Chook::MobileDeviceEnrolledEvent | Chook::Subjects::MobileDevice |
+| Chook::MobileDevicePushSentEvent | Chook::Subjects::MobileDevice |
+| Chook::MobileDeviceUnenrolledEvent | Chook::Subjects::MobileDevice |
+| Chook::PatchSoftwareTitleUpdateEvent | Chook::Subjects::PatchSoftwareTitleUpdate |
+| Chook::PushSentEvent | Chook::Subjects::Push |
+| Chook::RestAPIOperationEvent | Chook::Subjects::RestAPIOperation |
+| Chook::SCEPChallengeEvent | Chook::Subjects::SCEPChallenge |
+| Chook::SmartGroupComputerMembershipChangeEvent | Chook::Subjects::SmartGroup |
+| Chook::SmartGroupMobileDeviveMembershipChangeEvent | Chook::Subjects::SmartGroup |
 
 
 ## The Server
 
-Chook comes with a simple http server that uses the Chook framework
+Chook comes with a simple HTTP server that uses the Chook framework
 to handle all incoming webhook POST requests from the JSS via a single URL.
 
-To use it you'll need to install the [sinatra](http://www.sinatrarb.com/
-) ruby gem (`gem install sinatra`).
+To use it you'll need the [sinatra](http://www.sinatrarb.com/)
+ruby gem (`gem install sinatra`).
 
-After that, just run the `jss-webhook-server` command located in the bin
-directory for ruby-jss and then point your WebHooks at:
-http://_my_hostname_/handle_webhook_event
+After that, just run the `chook-server` command located in the bin
+directory for chook and then point your webhooks at:
+http://my_hostname/handle_webhook_event
 
 It will then process all incoming webhook POST requests using whatever handlers
 you have installed.
@@ -237,24 +237,23 @@ that command and keep it running.
 
 ## Installing Chook
 
-`gem install chook -n /usr/local/bin`. It will also install the dependencies 'sinatra' & 'immutable-struct'
+`gem install chook -n /usr/local/bin`. It will also install "sinatra."
 
-Then fire up `irb` and `require jss/webhooks` to start playing around. (remember
-the sample JSON strings available in `Chook.sample_jsons`)
+Then fire up `irb` and `require chook` to start playing around.
 
 OR
 
-run `/usr/local/bin/chook` and point some WebHooks at your machine.
+run `/usr/local/bin/chook` and point some JSS webhooks at that machine.
 
 
 ## TODOs
 
 - Add SSL support to the server
-- Better (any!) thread management for handlers
+- Improved thread management for handlers
 - Logging and Debug options
-- handler reloading for individual, or all, Event subclasses
+- Handler reloading for individual, or all, Event subclasses
 - Better YARD docs
-- better namespace protection for internal handlers
-- Use and improve the configuration stuff.
-- write proper documentation beyond this README
+- Better namespace protection for internal handlers
+- Improved configuration
+- Proper documentation beyond this README
 - I'm sure there's more to do...
