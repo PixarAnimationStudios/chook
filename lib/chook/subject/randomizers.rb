@@ -482,7 +482,7 @@ module Chook
     # @return [Time] A random date and time
     #
     def self.time
-      Time.at(rand * Time.now.to_i) # .to_i
+      Time.at(rand * Time.now.to_i)
     end # end time
 
     # Random URL-formatted String

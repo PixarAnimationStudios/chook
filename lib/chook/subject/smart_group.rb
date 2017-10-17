@@ -38,7 +38,7 @@ Chook::Subject.classes[Chook::Subject::SMART_GROUP] = {
   jssid: {
     validation: Integer,
     randomizer: :int,
-    # sampler: :any_smart_group_id,
+    # sampler: :smart_group_jssid,
     api_object_attribute: :id
   },
   computer: { # SmartGroupComputerMembershipChange == true, SmartGroupMobileDeviceMembershipChange == false

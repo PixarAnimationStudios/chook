@@ -43,7 +43,7 @@ Chook::Subject.classes[Chook::Subject::REST_API_OPERATION] = {
   },
   objectTypeName: {
     validation: String,
-    randomizer: :word, # Most (but not all) API resources. e.g. "Patch Reporting Software Title", "Mobile Device", "Static Computer Group"
+    randomizer: :word, 
     # sampler: ,
     # api_object_attribute: :objectTypeName
   },

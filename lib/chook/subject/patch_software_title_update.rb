@@ -26,7 +26,6 @@ Chook::Subject.classes[Chook::Subject::PATCH_SW_UPDATE] = {
   name: {
     validation: :patch,
     randomizer: :patch,
-    # sampler: :patch_name,
     api_object_attribute: :name
   },
   latestVersion: {
@@ -51,7 +50,6 @@ Chook::Subject.classes[Chook::Subject::PATCH_SW_UPDATE] = {
   jssID: {
     validation: Integer,
     randomizer: :int,
-    # sampler: :patch_id,
     api_object_attribute: :id
   }
 }
