@@ -146,7 +146,6 @@ module Chook
       end
 
       @subject = self.class::SUBJECT_CLASS.new subject_data
-
     end
 
   end # class Event
