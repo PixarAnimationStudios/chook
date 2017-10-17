@@ -11,14 +11,18 @@ Gem::Specification.new do |s|
   s.date        = Time.now.utc.strftime('%Y-%m-%d')
   s.summary     = 'A Ruby framework for simulating and processing Jamf Pro Webhooks'
   s.description = <<-EOD
-  Details Coming soon
+  Chook is a Ruby module which implements a framework for working with webhook events
+  sent by the JSS, the core of Jamf Pro, a management tool for Apple devices.
+
+  Chook also provides a simple, sinatra-based HTTP server, for handling those Events,
+  and classes for sending simulated TestEvents to a webhook handling server.
   EOD
   s.authors     = ['Chris Lasell', 'Aurica Hayes']
-  s.email       = 'ruby-jss@pixar.com'
+  s.email       = 'chook@pixar.com'
   s.files       = Dir['lib/**/*.rb']
   s.files      += Dir['data/**/*']
   s.files      += Dir['bin/**/*']
-  s.homepage    = 'http://wiki.pixar.com//'
+  s.homepage    = 'https://github.com/PixarAnimationStudios/chook'
 
   # Dependencies
 
