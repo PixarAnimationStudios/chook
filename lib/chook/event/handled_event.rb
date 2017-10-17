@@ -28,6 +28,20 @@ require 'chook/event/handled_event/handlers'
 #
 module Chook
 
+  # Load sample JSON files, one per event type
+  @sample_jsons = {}
+  base_dir = Pathname.new(__FILE__)
+  data_dir = base_dir.parent.parent.parent.parent
+  sample_json_dir = Pathname.new(data_dir.to_s + '/data/sample_jsons')
+  sample_json_dir.children.each do |jf|
+    event = jf.basename.to_s.chomp(jf.extname).to_sym
+    @sample_jsons[event] = jf.read
+  end
+
+  def self.sample_jsons
+    @sample_jsons
+  end
+
   # An event that has been recieved and needs to be handled.
   #
   # This is the parent class to all of the classes in the
@@ -124,8 +138,7 @@ module Chook
       "Processed by #{handlers.count} handlers\n"
     end # def handle
 
-    # TODO: have something here that
-    # cleans up old threads and forks
+    # TODO: Add something here that cleans up old threads and forks
     def pipe_to_executable(handler)
       _thread = Thread.new do
         IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
