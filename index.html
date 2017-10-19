@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Chook">
+  <meta name="author" content="chook@pixar.com">
+
+  <title>Chook</title>
+
+  <!-- Bootstrap Core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Scrolling nav CSS -->
+  <link href="css/scrolling-nav.css" rel="stylesheet">
+
+  <!-- Font Awesome CSS -->
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- Fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:300,700,400' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+  <!-- Main CSS -->
+  <link href="css/main.css" rel="stylesheet">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+</head>
+
+<!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+      <div class="navbar-header page-scroll">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand page-scroll" href="#page-top">Chook</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+          <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+          <li class="hidden">
+            <a class="page-scroll" href="#page-top"></a>
+          </li>
+          <li>
+            <a class="page-scroll" href="#about"> <i class="fa fa-gears"></i> About</a>
+          </li>
+          <li>
+            <a class="page-scroll" href="#contact"><i class="fa fa-envelope-o"></i> Contact</a>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+  </nav>
+
+  <!-- Intro Section -->
+  <section id="intro" class="intro-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+          <h1>Chook</h1>
+          <p>
+            The Chook project provides the chook module, a Ruby framework for handling and simulating webhook events from the JAMF Software Server (JSS), the core of Jamf Pro, from <a href="http://jamfsoftware.com/">JAMF Software, LLC</a>. The module abstracts webhook events and their subjects as Ruby classes, which allow testing and automation of Jamf Pro's webhook-related tasks. This module can be used as a webhook handler without any knowledge of the Ruby language.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <hr />
+
+        <div class="col-sm-4">
+          <a class="homePanelLink" href="https://rubygems.org/gems/chook">
+            <div class="panel panel-default homePanel">
+              <div class="panel-body">
+                <h2>Installation</h2>
+                <img class="homeIcon" src="images/rubygemsorg.png">
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-sm-4">
+          <a class="homePanelLink" href="https://github.com/PixarAnimationStudios/chook">
+            <div class="panel panel-default homePanel">
+              <div class="panel-body">
+                <h2>Source</h2>
+                <img class="homeIcon" src="images/Octocat.png">
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-sm-4">
+          <a class="homePanelLink" href="http://www.rubydoc.info/gems/chook/">
+            <div class="panel panel-default homePanel">
+              <div class="panel-body">
+                <h2>Documentation</h2>
+                <img class="homeIcon" src="images/Chook_Al_McWhiggin_Logo_Web.png">
+              </div>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          <h1><i class="fa fa-gears"></i> About</h1>
+
+          <div id="aboutText">
+
+            <p>
+              Chook is a GitHub project and a Ruby gem.
+              It simplifies testing and handling of the webhook data from a JAMF Software Server (JSS),
+              the core of Jamf Pro from <a href="http://jamfsoftware.com/">JAMF Software, LLC</a>,
+              an enterprise-level management tool for Apple devices.<br>
+            </p>
+
+            <p>
+              The module abstracts webhook Events and their Subjects such as Computers, Mobile Devices,
+              and PatchSoftwareTitleUpdate, as Ruby objects. It provides methods for creating and randomly generating webhook Events by
+              populating them with data from a Jamf Pro database. It also, conveniently, functions as a webhook handling service, even
+              for those who aren't particularly familiar with the Ruby language.
+            </p>
+
+            <p>
+              The module does not include a complete implementation of all webhook Subjects,
+              because not all Subjects are fully available via the API. Of those, we've focused
+              on Computers, Mobile Devices, and PatchSoftwareTitleUpdated. Certain data points
+              unavailable via the API have been substituted with strictly-typed randomization.
+            </p>
+            
+            <p>
+              We've implemented the things we need in our environment, and as the 
+              API is developed, we'll add more. Hopefully others will find it useful, and
+              add more to it as well.
+            </p>
+
+            <p>
+              Chook is released under a modified Apache License v2.0. Please see the LICENSE.txt file for details.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- contact Section -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1><i class="fa fa-envelope-o"></i> Contact</h1>
+          <p><a href="mailto:chook@pixar.com">&raquo; chook@pixar.com</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- jQuery Version 1.11.0 -->
+  <script src="js/jquery-1.11.0.js"></script>
+
+  <!-- Bootstrap Core JavaScript -->
+  <script src="js/bootstrap.min.js"></script>
+
+  <!-- Scrolling Nav JavaScript -->
+  <script src="js/jquery.easing.min.js"></script>
+  <script src="js/scrolling-nav.js"></script>
+
+</body>
+
+</html>
