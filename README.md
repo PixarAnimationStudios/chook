@@ -9,7 +9,7 @@
   - [Putting It Together](#putting-it-together)
   - [Events and Subjects](#events-and-subjects)
 - [The Server](#the-server)
-- [Installing Chook alongside ruby-jss](#installing-chook-alongside-ruby-jss)
+- [Installing Chook](#installing-chook)
 - [TODOs](#todos)
 
 
