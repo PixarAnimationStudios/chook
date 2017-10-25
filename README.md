@@ -1,6 +1,8 @@
 
 # Chook
 
+Documentation is a work in progress. Please get in touch for assistance. <3
+
 - [Introduction](#introduction)
 - [The Framework](#the-framework)
   - [Event Handlers](#event-handlers)
@@ -195,27 +197,40 @@ functionality is defined.
 The Subject classes aren't subclasses, but are dynamically-defined members of
 the `Chook::Subjects` module.
 
-| Event Classes | Subject Classes |
+| Handled Event Classes | Handled Subject Classes |
 | -------------- | ------------ |
-| Chook::ComputerAddedEvent | Chook::Subjects::Computer |
-| Chook::ComputerCheckInEvent | Chook::Subjects::Computer |
-| Chook::ComputerInventoryCompletedEvent | Chook::Subjects::Computer |
-| Chook::ComputerPolicyFinishedEvent | Chook::Subjects::Computer |
-| Chook::ComputerPushCapabilityChangedEvent | Chook::Subjects::Computer |
-| Chook::JSSShutdownEvent | Chook::Subjects::JSS |
-| Chook::JSSStartupEvent | Chook::Subjects::JSS |
-| Chook::MobileDeviceCheckinEvent | Chook::Subjects::MobileDevice |
-| Chook::MobileDeviceCommandCompletedEvent | Chook::Subjects::MobileDevice |
-| Chook::MobileDeviceEnrolledEvent | Chook::Subjects::MobileDevice |
-| Chook::MobileDevicePushSentEvent | Chook::Subjects::MobileDevice |
-| Chook::MobileDeviceUnenrolledEvent | Chook::Subjects::MobileDevice |
-| Chook::PatchSoftwareTitleUpdateEvent | Chook::Subjects::PatchSoftwareTitleUpdate |
-| Chook::PushSentEvent | Chook::Subjects::Push |
-| Chook::RestAPIOperationEvent | Chook::Subjects::RestAPIOperation |
-| Chook::SCEPChallengeEvent | Chook::Subjects::SCEPChallenge |
-| Chook::SmartGroupComputerMembershipChangeEvent | Chook::Subjects::SmartGroup |
-| Chook::SmartGroupMobileDeviveMembershipChangeEvent | Chook::Subjects::SmartGroup |
+| Chook::HandledEvents::ComputerAddedEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::ComputerCheckInEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::ComputerInventoryCompletedEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::ComputerPolicyFinishedEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::ComputerPushCapabilityChangedEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::JSSShutdownEvent | Chook::HandledSubjects::JSS |
+| Chook::HandledEvents::JSSStartupEvent | Chook::HandledSubjects::JSS |
+| Chook::HandledEvents::MobileDeviceCheckinEvent | Chook::HandledSubjects::MobileDevice |
+| Chook::HandledEvents::MobileDeviceCommandCompletedEvent | Chook::HandledSubjects::MobileDevice |
+| Chook::HandledEvents::MobileDeviceEnrolledEvent | Chook::HandledSubjects::MobileDevice |
+| Chook::HandledEvents::MobileDevicePushSentEvent | Chook::HandledSubjects::MobileDevice |
+| Chook::HandledEvents::MobileDeviceUnenrolledEvent | Chook::HandledSubjects::MobileDevice |
+| Chook::HandledEvents::PatchSoftwareTitleUpdateEvent | Chook::HandledSubjects::PatchSoftwareTitleUpdate |
+| Chook::HandledEvents::PushSentEvent | Chook::HandledSubjects::Push |
+| Chook::HandledEvents::RestAPIOperationEvent | Chook::HandledSubjects::RestAPIOperation |
+| Chook::HandledEvents::SCEPChallengeEvent | Chook::HandledSubjects::SCEPChallenge |
+| Chook::HandledEvents::SmartGroupComputerMembershipChangeEvent | Chook::HandledSubjects::SmartGroup |
+| Chook::HandledEvent::SmartGroupMobileDeviveMembershipChangeEvent | Chook::HandledSubjects::SmartGroup |
 
+| Test Event Classes | Test Subject Classes |
+| -------------- | ------------ |
+| Chook::TestEvents::ComputerAddedEvent | Chook::TestSubjects::Computer |
+| Chook::TestEvents::ComputerCheckInEvent | Chook::TestSubjects::Computer |
+| Chook::TestEvents::ComputerInventoryCompletedEvent | Chook::TestSubjects::Computer |
+| Chook::TestEvents::ComputerPolicyFinishedEvent | Chook::TestSubjects::Computer |
+| Chook::TestEvents::ComputerPushCapabilityChangedEvent | Chook::TestSubjects::Computer |
+| Chook::TestEvents::MobileDeviceCheckinEvent | Chook::TestSubjects::MobileDevice |
+| Chook::TestEvents::MobileDeviceCommandCompletedEvent | Chook::TestSubjects::MobileDevice |
+| Chook::TestEvents::MobileDeviceEnrolledEvent | Chook::TestSubjects::MobileDevice |
+| Chook::TestEvents::MobileDevicePushSentEvent | Chook::TestSubjects::MobileDevice |
+| Chook::TestEvents::MobileDeviceUnenrolledEvent | Chook::TestSubjects::MobileDevice |
+| Chook::TestEvents::PatchSoftwareTitleUpdateEvent | Chook::TestSubjects::PatchSoftwareTitleUpdate |
 
 ## The Server
 
@@ -243,7 +258,7 @@ Then fire up `irb` and `require chook` to start playing around.
 
 OR
 
-run `/usr/local/bin/chook` and point some JSS webhooks at that machine.
+run `/usr/local/bin/chook-server` and point some JSS webhooks at that machine.
 
 
 ## TODOs
