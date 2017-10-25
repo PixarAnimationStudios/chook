@@ -40,7 +40,8 @@ For more detail about the JSS webhooks API and the JSON data it passes, please s
 [Bryson Tyrrell's documentation.](https://unofficial-jss-api-docs.atlassian.net/wiki/display/JRA/Webhooks+API)
 
 **Note:** When creating webhooks from your JSS to be handled by the framework, you must
-specify JSON in the "Content Type" section. This framework does not support XML.
+specify JSON in the "Content Type" section. This framework does not support XML and
+will only generate Events in JSON format.
 
 ## The Framework
 
