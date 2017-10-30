@@ -109,6 +109,7 @@ module Chook
 
     def handle
       handlers = Handlers.handlers[self.class.const_get(Chook::Event::EVENT_NAME_CONST)]
+      return unless handlers.is_a? Array
       handlers.each do |handler|
         case handler
         when Pathname
