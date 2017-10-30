@@ -42,7 +42,7 @@ module Chook
 
         # new subclass of Chook::HandledSubject
         new_class = Class.new(Chook::HandledSubject) do
-          # add getters for all the attribes.
+          # add getters for all the attributes.
           # no need for setters, as handled objects are immutable
           attribs.keys.each { |attrib| attr_reader attrib }
         end

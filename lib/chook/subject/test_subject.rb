@@ -72,8 +72,8 @@ module Chook
     # a random test subject,
     def self.random
       random_vals = {}
-      Chook::Subject.classes[].each do |attrib, deets|
-        random_vals[attrib] = Chook::Randomizers.send deets[:randomizer]
+      Chook::Subject.classes[self.const_get NAME_CONSTANT].each do |attrib, deets|
+        random_vals[attrib] = Chook::Randomizers.send deets[:randomizer] if deets[:randomizer]
       end # each do |attr_def|
       new random_vals
     end # end random

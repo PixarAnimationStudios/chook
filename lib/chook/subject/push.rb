@@ -23,7 +23,7 @@
 ###
 ###
 Chook::Subject.classes[Chook::Subject::PUSH] = {
-  type: { # "PushSent" for a Computer or "MobileDevicePushSent" for a Mobile Device
+  type: { # TODO: "PushSent" for a Computer or "MobileDevicePushSent" for a Mobile Device
     validation: String,
     randomizer: :push,
     # sampler:,
@@ -32,7 +32,7 @@ Chook::Subject.classes[Chook::Subject::PUSH] = {
   jssID: {
     validation: Integer,
     randomizer: :int,
-    # sampler: :jssid, # TODO: This should be computer_jssid or mobile_jssid based on the type:
+    # sampler: :jssid, # TODO: This should be computer_jssid or mobile_jssid based on the type, see above
     # api_object_attribute: :id
   }
 }

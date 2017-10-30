@@ -29,7 +29,7 @@ module Chook
   class Server < Sinatra::Base
 
     get '/' do
-      body "Hello, this is Chook, the JSS WebHook handling service\n"
+      body "Hello, this is Chook, a Jamf Pro WebHook handling service from Pixar Animation Studios!\n"
     end # get /
 
   end # class

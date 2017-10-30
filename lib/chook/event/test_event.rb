@@ -81,8 +81,9 @@ module Chook
     end # self.generate_classes
 
     # json_hash
+    # Used by the fire method
     #
-    # @return [Hash] A JSON Event payload formatted as a Hash. Used by the fire method
+    # @return [Hash] A JSON Event payload formatted as a Hash.
     #
     def json_hash
       raw_hash_form = {}
@@ -117,6 +118,12 @@ module Chook
       http_connection.post(uri, data)
     end # end fire
 
+    # initialize
+    # The optional argument is a Hash with the appropriate keys defiend
+    #
+    # @param [Hash] event_data nil or Hash
+    # @return [TestEvent] A new TestEvents subclass object
+    #
     def initialize(event_data = nil)
       if event_data
         event_data.each do |key, value|
