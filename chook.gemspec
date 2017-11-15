@@ -24,6 +24,9 @@ Gem::Specification.new do |s|
   s.files      += Dir['bin/**/*']
   s.homepage    = 'https://github.com/PixarAnimationStudios/chook'
 
+  # Executables
+  s.executables << 'chook-server'
+
   # Dependencies
 
   # http://www.sinatrarb.com/  MIT License (requires 'rack' also MIT)
