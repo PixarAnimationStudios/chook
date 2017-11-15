@@ -237,7 +237,7 @@ that command and keep it running.
 
 ## Installing Chook
 
-`gem install chook -n /usr/local/bin`. It will also install "sinatra."
+`gem install chook -n /usr/local/bin --pre`. It will also install "sinatra."
 
 Then fire up `irb` and `require chook` to start playing around.
 
