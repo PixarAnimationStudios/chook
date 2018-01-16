@@ -37,7 +37,7 @@ it's a separate tool, and the two projects aren't dependent. However, ruby-jss
 does become a requirement when using sampling features to generate TestEvents.
 
 For more detail about the JSS webhooks API and the JSON data it passes, please see
-[Bryson Tyrrell's documentation.](https://unofficial-jss-api-docs.atlassian.net/wiki/display/JRA/Webhooks+API)
+[JAMF's developer reference.](http://developer.jamf.com/webhooks)
 
 **Note:** When creating webhooks from your JSS to be handled by the framework, you must
 specify JSON in the "Content Type" section. This framework does not support XML and
