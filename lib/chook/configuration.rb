@@ -37,14 +37,23 @@ module Chook
 
     # The attribute keys we maintain, and the type they should be stored as
     CONF_KEYS = {
-      server_port: :to_i,
-      server_engine:  :to_sym,
+      port: :to_i,
+      engine:  :to_sym,
+      concurrency: Chook::Procs::STRING_TO_BOOLEAN,
       handler_dir: nil,
       use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
       ssl_private_key_path: Chook::Procs::STRING_TO_PATHNAME,
-      ssl_private_key_pw_path: nil,
       ssl_cert_path: Chook::Procs::STRING_TO_PATHNAME,
-      ssl_cert_name: nil
+
+      log_file: Chook::Procs::STRING_TO_PATHNAME,
+      # one of fatal, error, warn, info, or debug
+      # can be overriden on the commandline with chook-server --log
+      log_level: Chook::Procs::STRING_TO_LOG_LEVEL,
+      log_max_megs:  :to_i,
+      logs_to_keep: :to_i,
+
+      webhooks_user: nil,
+      webhooks_user_pw: nil
     }.freeze
 
     # Class Variables
@@ -193,6 +202,8 @@ module Chook
   end # class Configuration
 
   # The single instance of Configuration
-  CONFIG = Chook::Configuration.instance
+  def self.config
+    Chook::Configuration.instance
+  end
 
 end # module

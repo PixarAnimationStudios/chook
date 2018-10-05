@@ -25,7 +25,6 @@
 
 require 'chook/event/handled_event/handlers'
 
-#
 module Chook
 
   # Load sample JSON files, one per event type
@@ -62,9 +61,6 @@ module Chook
 
     #### Class Methods
 
-    # Given some raw_json from the jss, create and return the correct
-    # HandledEvent subclass
-
     # For each event type in Chook::Event::EVENTS
     # generate a class for it, set its SUBJECT_CLASS constant
     # and add it to the HandledEvents module.
@@ -99,6 +95,7 @@ module Chook
     # @return [JSSWebHooks::Event subclass] the Event subclass matching the event
     #
     def self.parse_event(raw_event_json)
+      return nil if raw_event_json.to_s.empty?
       event_json = JSON.parse(raw_event_json, symbolize_names: true)
       event_name = event_json[:webhook][:webhookEvent]
       Chook::HandledEvents.const_get(event_name).new raw_event_json
@@ -122,13 +119,15 @@ module Chook
     end # init
 
     def handle
-      handlers = Handlers.handlers[self.class.const_get(Chook::Event::EVENT_NAME_CONST)]
-      return unless handlers.is_a? Array
+      handler_key = self.class.const_get(Chook::Event::EVENT_NAME_CONST)
+      handlers = Handlers.handlers[handler_key]
+      return 'No handlers loaded' unless handlers.is_a? Array
+
       handlers.each do |handler|
         case handler
         when Pathname
           pipe_to_executable handler
-        when Proc
+        when Object
           handle_with_proc handler
         end # case
       end # @handlers.each do |handler|
@@ -136,18 +135,17 @@ module Chook
       # the handle method should return a string,
       # which is the body of the HTTP result for
       # POSTing the event
-      "Processed by #{handlers.count} handlers\n"
+      "Processed by #{handlers.count} handlers"
     end # def handle
 
-    # TODO: Add something here that cleans up old threads and forks
     def pipe_to_executable(handler)
-      _thread = Thread.new do
-        IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
-      end
+      Chook.log.debug "Event #{object_id}: Sending JSON to stdin of '#{handler}'"
+      IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
     end
 
     def handle_with_proc(handler)
-      _thread = Thread.new { handler.call self }
+      Chook.log.debug "Event #{object_id}: Running Handler defined in #{handler.handler_file}"
+      handler.handle self
     end
 
   end # class HandledEvent

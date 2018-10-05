@@ -30,12 +30,34 @@ module Chook
   module Procs
 
     TRUE_RE = /^\s*(true|yes)\s*$/i
+
     JSS_EPOCH_TO_TIME = proc { |val| Time.strptime val.to_s[0..-4], '%s' }
+
     STRING_TO_BOOLEAN = proc { |val| val =~ TRUE_RE ? true : false }
+
     STRING_TO_PATHNAME = proc { |val| Pathname.new val }
+
+    STRING_TO_LOG_LEVEL = proc do |level|
+      if (0..5).cover? level
+        level
+      else
+        case level.to_s
+        when 'fatal' then Logger::FATAL
+        when 'error' then Logger::ERROR
+        when 'warn' then Logger::WARN
+        when 'info' then Logger::INFO
+        when 'debug' then Logger::DEBUG
+        else Logger::UNKNOWN
+        end # case level
+      end # if..else
+    end
+
     MOBILE_USERID = proc { |_device| '-1' }
+
     PRODUCT = proc { |_device| nil }
-    ALWAYS_TRUE = proc { |_boolean| True }
+
+    ALWAYS_TRUE = proc { |_boolean| true }
+
     COMPUTER_USERID = proc do |comp|
       id = '-1' unless comp.groups_accounts[:local_accounts].find { |acct| acct[:name] == comp.username }
       id.is_a?(Hash) ? id[:uid] : '-1'

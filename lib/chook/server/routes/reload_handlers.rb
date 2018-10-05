@@ -23,10 +23,17 @@
 ###
 ###
 
-###
 module Chook
 
-  ### The version of the Chook framework
-  VERSION = '1.1.0.a1'.freeze
+  # see server.rb
+  class Server < Sinatra::Base
+
+    get '/reload_handlers' do
+      logger.info 'Reloading handlers'
+      Chook::HandledEvent::Handlers.load_handlers reload: true
+      'Handlers reloaded'
+    end # get /
+
+  end # class
 
 end # module

@@ -122,9 +122,8 @@ module Chook
     #       Proc: Pass an API object to the PROC to get a value
     #
     def self.classes
-      @classes
+      @classes ||= {}
     end
-    @classes = {}
 
   end # class Subject
 

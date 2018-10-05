@@ -23,11 +23,9 @@
 ###
 ###
 
-HANDLER_NAME = File.basename __FILE__
-CHANGELOG = '/tmp/smart-computer-group-changes.log'.freeze
 
 Chook.event_handler do |event|
-  now = Time.now.strftime '%Y-%m-%d %H:%M:%S'
-  msg = "#{now} #{HANDLER_NAME}: Smart Computer Group '#{event.event_object.name}' changed.\n"
-  open(CHANGELOG, 'a') { |file| file.write msg }
+  Chook.log.debug "Computer Smart Group Changed: #{event.subject.name}"
+  Chook.log.debug "  Additions: #{event.subject.groupAddedDevicesIds.join ', '}"
+  Chook.log.debug "  Removals: #{event.subject.groupRemovedDevicesIds.join ', '}"
 end

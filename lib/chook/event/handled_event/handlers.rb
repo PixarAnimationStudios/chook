@@ -22,15 +22,25 @@
 ###    language governing permissions and limitations under the Apache License.
 ###
 ###
+
 module Chook
 
-  # This method is used by the Ruby event-handler files.
+  # This method is used by the Ruby 'internal' event-handler files.
   #
-  # Loading them should call this method and pass in a block
+  # those handlers are defined by passing a block to this method, like so:
+  #
+  #   Chook.event_handler do |event|
+  #     # so something with the event
+  #   end
+  #
+  # Loading them will call this method and pass in a block
   # with one parameter: a Chook::HandledEvent subclass instance.
   #
-  # The block is then converted to a Proc instance in @loaded_event_handler
-  # and from there can be stored for use by the event identified by the filename.
+  # The block is then converted to a #handle method in an anonymous object.
+  # The object is stored for use by the event identified by the filename.
+  #
+  # By storing it as a method in an object, the handlers themselves
+  # can use #break or #return to exit (or even #next)
   #
   # NOTE: the files should be read with 'load' not 'require', so that they can
   # be re-loaded as needed
@@ -44,7 +54,12 @@ module Chook
   # @return [Proc] the block converted to a Proc
   #
   def self.event_handler(&block)
-    HandledEvent::Handlers.loaded_handler = Proc.new(&block)
+    obj = Object.new
+    obj.define_singleton_method(:handle, &block)
+    # Loading the file created the object by calling this method
+    # but to access it after loading the file, we need to
+    # store it in here:
+    HandledEvent::Handlers.loaded_handler = obj
   end
 
   # the server class
@@ -76,10 +91,10 @@ module Chook
 
       # Setter for @loaded_event_handler
       #
-      # @param a_proc [Proc]  a Proc object for storage in @handlers
+      # @param a_proc [Object]  An object instance with a #handle method
       #
-      def self.loaded_handler=(a_proc)
-        @loaded_handler = a_proc
+      def self.loaded_handler=(anon_obj)
+        @loaded_handler = anon_obj
       end
 
       # A hash of loaded handlers.
@@ -112,7 +127,7 @@ module Chook
       #
       # @return [void]
       #
-      def self.load_handlers(from_dir: Chook::CONFIG.handler_dir, reload: false)
+      def self.load_handlers(from_dir: Chook.config.handler_dir, reload: false)
         from_dir ||= DEFAULT_HANDLER_DIR
         if reload
           @handlers_loaded_from = nil
@@ -121,14 +136,17 @@ module Chook
         end
 
         handler_dir = Pathname.new(from_dir)
-        return unless handler_dir.directory? && handler_dir.readable?
+        unless handler_dir.directory? && handler_dir.readable?
+          Chook.log.info "Handler directory '#{from_dir}' not a readable directory. No handlers loaded. "
+          return
+        end
 
         handler_dir.children.each do |handler_file|
           load_handler(handler_file) if handler_file.file? && handler_file.readable?
         end
 
         @handlers_loaded_from = handler_dir
-        @handlers.values.flatten.size
+        Chook.log.info "Loaded #{@handlers.values.flatten.size} handlers for #{@handlers.keys.size} event triggers"
       end # load handlers
 
       # Load an event handler from a file.
@@ -169,20 +187,22 @@ module Chook
           # store as a Pathname, we'll pipe JSON to it
           unless @handlers[event_name].include? handler_file
             @handlers[event_name] << handler_file
-            puts "===> Loaded executable handler file '#{handler_file.basename}'"
+            Chook.log.info "Loaded executable handler file '#{handler_file.basename}' for #{event_name} events"
           end
           return
         end
 
         # load the file. If written correctly, it will
-        # put a Proc into @loaded_handler
+        # put n Object into @loaded_handler with a #handle method
+        @loaded_handler = nil
         load handler_file.to_s
         if @loaded_handler
+          @loaded_handler.define_singleton_method(:handler_file) { handler_file.basename.to_s }
           @handlers[event_name] << @loaded_handler
-          puts "===> Loaded internal handler file '#{handler_file.basename}'"
+          Chook.log.info "Loaded internal handler file '#{handler_file.basename}' for #{event_name} events"
           @loaded_handler = nil
         else
-          puts "===> FAILED loading internal handler file '#{handler_file.basename}'"
+          Chook.log.info "FAILED loading internal handler file '#{handler_file.basename}'"
         end
       end # self.load_handler(handler_file)
 

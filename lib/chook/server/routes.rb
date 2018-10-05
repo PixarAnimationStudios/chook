@@ -23,5 +23,22 @@
 ###
 ###
 
+module Chook
+
+  # the server
+  class Server < Sinatra::Base
+
+    # log errors in production (in dev, they go to stdout and the browser)
+    error do
+      logger.error "ERROR: #{env['sinatra.error'].message}"
+      env['sinatra.error'].backtrace.each { |l| logger.error "..#{l}" }
+      500
+    end
+
+  end # server
+
+end # Chook
+
 require 'chook/server/routes/home'
 require 'chook/server/routes/handle_webhook_event'
+require 'chook/server/routes/reload_handlers'

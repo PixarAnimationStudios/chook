@@ -24,5 +24,29 @@
 ###    language governing permissions and limitations under the Apache License.
 ###
 ###
+
+
+require 'getoptlong'
+
+# The CLI options for GetoptLong
+OPTS = GetoptLong.new(
+  ['--log', '-l',  GetoptLong::REQUIRED_ARGUMENT],
+  ['--dev', '-d',  GetoptLong::NO_ARGUMENT]
+)
+
+env = :production
+log_level = nil
+
+OPTS.each do |opt, arg|
+  case opt
+  when '--log'
+    log_level = arg
+  when '--dev'
+    env = :development
+  end # case
+end # opts.each
+
+ENV['APP_ENV'] = env.to_s
+
 require 'chook/server'
-Chook::Server.run!
+Chook::Server.run! log_level: log_level

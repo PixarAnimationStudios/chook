@@ -23,23 +23,30 @@
 ###
 ###
 
-Chook.event_handler do |event|
-  eobject = event.event_object
-  whook = event.webhook
+# this module is just a namespace so we don't conflict with other handlers
+module APIOpHandler
 
   REPORT_ACTIONS = {
     'PUT' => 'update',
     'POST' => 'create',
     'DELETE' => 'delete'
-  }.freeze unless defined? REPORT_ACTIONS
+  }.freeze
 
-  action = REPORT_ACTIONS[eobject.restAPIOperationType]
+end
+
+
+Chook.event_handler do |event|
+
+  Chook.log.debug "This is a handler-level debug message for event #{event.object_id}"
+
+  action = APIOpHandler::REPORT_ACTIONS[event.subject.restAPIOperationType]
 
   return nil unless action
 
   puts <<-ENDMSG
-The JSS WebHook named '#{whook.name}' was just triggered.
-It indicates that Casper user '#{eobject.authorizedUsername}' just used the JSS API to #{action}
-the JSS #{eobject.objectTypeName} named '#{eobject.objectName}' (id #{eobject.objectID})
+The JSS WebHook named '#{event.webhook_name}' was just triggered.
+It indicates that Casper user '#{event.subject.authorizedUsername}' just used the JSS API to #{action}
+the JSS #{event.subject.objectTypeName} named '#{event.subject.objectName}' (id #{event.subject.objectID})
 ENDMSG
+
 end

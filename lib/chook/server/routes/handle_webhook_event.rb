@@ -30,8 +30,22 @@ module Chook
 
     post '/handle_webhook_event' do
       request.body.rewind # in case someone already read it
-      event = Chook::HandledEvent.parse_event request.body.read
-      event.handle
+      raw_json = request.body.read
+
+      event = Chook::HandledEvent.parse_event raw_json
+      if event.nil?
+        logger.error "Empty JSON from #{request.ip}"
+        result = 400
+      else
+
+        logger.info "Event #{event.object_id}: START From #{request.ip}, WebHook '#{event.webhook_name}' (id: #{event.webhook_id})"
+        logger.debug "Event #{event.object_id}: JSON: #{JSON.pretty_generate(event.parsed_json)}"
+
+        result = event.handle
+
+        logger.info "Event #{event.object_id}: END Result: #{result}"
+      end
+      result
     end # post
 
   end # class

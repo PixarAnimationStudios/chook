@@ -27,6 +27,8 @@
 require 'json'
 require 'open-uri'
 require 'pathname'
+require 'logger'
+require 'English'
 
 require 'chook/version'
 require 'chook/procs' # must load before configuration

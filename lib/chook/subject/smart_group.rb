@@ -41,6 +41,12 @@ Chook::Subject.classes[Chook::Subject::SMART_GROUP] = {
     # sampler: :smart_group_jssid,
     api_object_attribute: :id
   },
+  groupAddedDevicesIds: {
+    validation: Array
+  },
+  groupRemovedDevicesIds: {
+    validation: Array
+  },
   computer: { # SmartGroupComputerMembershipChange == true, SmartGroupMobileDeviceMembershipChange == false
     validation: :boolean,
     randomizer: :bool,
