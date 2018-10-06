@@ -25,30 +25,55 @@
 
 module Chook
 
-  # see server.rb
-  class Server < Sinatra::Base
+  # a simple object embedded in a Handled Event that
+  # allows a standardize way to note event-related log entries
+  # with the event object_id.
+  #
+  # Every Handled Event has one of these instances exposed in it's
+  # #logger attribute, and usable from within 'internal' handlers
+  #
+  # Here's an example.
+  #
+  # Say you have a ComputerSmartGroupMembershipChanged event
+  #
+  # calling `event.logger.info "foobar"` will generate the log message:
+  #
+  #    Event 1234567: foobar
+  #
+  class HandledEventLogger
 
-    post '/handle_webhook_event' do
-      request.body.rewind # in case someone already read it
-      raw_json = request.body.read
+    def initialize(event)
+      @event = event
+    end
 
-      event = Chook::HandledEvent.parse_event raw_json
-      if event.nil?
-        logger.error "Empty JSON from #{request.ip}"
-        result = 400
-      else
+    def event_message(msg)
+      "Event #{@event.object_id}: #{msg}"
+    end
 
-        event.logger.info "START From #{request.ip}, WebHook '#{event.webhook_name}' (id: #{event.webhook_id})"
+    def debug(msg)
+      Chook::Server::Log.logger.debug event_message(msg)
+    end
 
-        event.logger.debug "JSON: #{JSON.pretty_generate(event.parsed_json)}"
+    def info(msg)
+      Chook::Server::Log.logger.info event_message(msg)
+    end
 
-        result = event.handle
+    def warn(msg)
+      Chook::Server::Log.logger.warn event_message(msg)
+    end
 
-        event.logger.info "END Result: #{result}"
-      end
-      result
-    end # post
+    def error(msg)
+      Chook::Server::Log.logger.error event_message(msg)
+    end
 
-  end # class
+    def fatal(msg)
+      Chook::Server::Log.logger.fatal event_message(msg)
+    end
+
+    def unknown(msg)
+      Chook::Server::Log.logger.unknown event_message(msg)
+    end
+
+  end # class HandledEventLogger
 
 end # module

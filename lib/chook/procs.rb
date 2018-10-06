@@ -41,14 +41,8 @@ module Chook
       if (0..5).cover? level
         level
       else
-        case level.to_s
-        when 'fatal' then Logger::FATAL
-        when 'error' then Logger::ERROR
-        when 'warn' then Logger::WARN
-        when 'info' then Logger::INFO
-        when 'debug' then Logger::DEBUG
-        else Logger::UNKNOWN
-        end # case level
+        lvl = Chook::Server::Log::LOG_LEVELS[level.to_sym]
+        lvl ? lvl : Logger::UNKNOWN
       end # if..else
     end
 

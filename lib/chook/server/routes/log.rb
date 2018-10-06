@@ -23,9 +23,30 @@
 ###
 ###
 
+module Chook
 
-Chook.event_handler do |event|
-  event.logger.debug "Computer Smart Group Changed: #{event.subject.name}"
-  event.logger.debug "  Additions: #{event.subject.groupAddedDevicesIds.join ', '}"
-  event.logger.debug "  Removals: #{event.subject.groupRemovedDevicesIds.join ', '}"
-end
+  # see server.rb
+  class Server < Sinatra::Base
+
+    # Body must be a JSON object (Hash) wth 2 keys 'level' and 'message'
+    # where both values are strings
+    post '/log' do
+      request.body.rewind # in case someone already read it
+      raw = request.body.read
+      begin
+        entry = JSON.parse raw, symbolize_names: true
+        raise if entry[:level].to_s.empty? || entry[:message].to_s.empty?
+      rescue
+        msg = "Malformed log entry JSON: #{raw}"
+        Chook::Server::Log.logger.error msg
+        halt 409, msg
+      end
+      level = Chook::Server::Log::LOG_LEVELS[entry[:level].to_sym]
+      level ||= Logger::UNKNOWN
+      Chook::Server::Log.logger.send level, entry[:message]
+      { result: "logged, level: #{level}" }.to_json
+    end # post /
+
+  end # class
+
+end # module

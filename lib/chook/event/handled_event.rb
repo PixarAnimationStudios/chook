@@ -139,13 +139,17 @@ module Chook
     end # def handle
 
     def pipe_to_executable(handler)
-      Chook.log.debug "Event #{object_id}: Sending JSON to stdin of '#{handler}'"
+      logger.debug "Event #{object_id}: Sending JSON to stdin of '#{handler}'"
       IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
     end
 
     def handle_with_proc(handler)
-      Chook.log.debug "Event #{object_id}: Running Handler defined in #{handler.handler_file}"
+      logger.debug "Event #{object_id}: Running Handler defined in #{handler.handler_file}"
       handler.handle self
+    end
+
+    def logger
+      @logger ||= HandledEventLogger.new self
     end
 
   end # class HandledEvent

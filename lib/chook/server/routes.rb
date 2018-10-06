@@ -42,3 +42,4 @@ end # Chook
 require 'chook/server/routes/home'
 require 'chook/server/routes/handle_webhook_event'
 require 'chook/server/routes/reload_handlers'
+require 'chook/server/routes/log'

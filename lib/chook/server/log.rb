@@ -23,13 +23,54 @@
 ###
 ###
 
+# the main module
 module Chook
 
+  # the server app
   class Server < Sinatra::Base
 
+    # the CustomLogger helper allows us to
+    # use our own Logger instance as the
+    # Sinatra `logger` available in routes vis `set :logger...`
     helpers Sinatra::CustomLogger
 
+    # This module defines our custom Logger instance from the config settings
+    # and makes it available in the .logger module method,
+    # which is used anywhere outside of a route
+    # (inside of a route, the #logger method is locally available)
+    #
+    # General access to the logger:
+    #   from anywhere in Chook, as long as a server is running, the Logger
+    #   instance is available at Chook.logger or Chook::Server::Log.logger
+    #
+    #
+    # Logging from inside a route:
+    #   inside a Sinatra route, the local `logger` method returnes the
+    #   Logger instance.
+    #
+    # Logging from an internal handler:
+    #  In an internal WebHook handler, starting with `Chook.event_handler do |event|`
+    #  the logger should be accesses via the event's own wrapper: event.logger
+    #  Each message will be prepended with the event'd ID
+    #
+    # Logging from an external handler:
+    #  from an external handler you can POST a JSON formatted log entry to
+    #  http(s)://chookserver/log. The body must be a JSON object with 2 keys:
+    #  'level' and 'message', with non-empty strings.
+    #  The level must be one of: fatal, error, warn, info, or debug. Any other
+    #  value as the level will always be logged regardless of current logging
+    #  level. NOTE: if your server requires authentication, you must provide it
+    #  when using this route.
+    #
     module Log
+
+      LOG_LEVELS = {
+        fatal: Logger::FATAL,
+        error: Logger::ERROR,
+        warn: Logger::WARN,
+        info: Logger::INFO,
+        debug: Logger::DEBUG
+      }.freeze
 
       DEFAULT_FILE = Pathname.new '/var/log/chook-server.log'
       DEFAULT_MAX_MEGS = 10
@@ -76,7 +117,7 @@ module Chook
       end # log
 
       # general access to the logger
-      def self.log
+      def self.logger
         @logger
       end
 
@@ -85,8 +126,8 @@ module Chook
   end # server
 
   # access from everywhere as Chook.log
-  def self.log
-    Server::Log.log
+  def self.logger
+    Server::Log.logger
   end
 
 end # Chook

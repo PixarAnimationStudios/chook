@@ -68,7 +68,7 @@ module Chook
             server.ssl_options = {
               cert_chain_file: Chook.config.ssl_cert_path.to_s,
               private_key_file: Chook.config.ssl_private_key_path.to_s,
-              verify_peer: false,
+              verify_peer: false
             }
           end # super do
         else
@@ -88,8 +88,10 @@ module Chook
         enable :lock unless Chook.config.concurrency
         set :show_exceptions, :after_handler if development?
       end # configure
+
       return unless Chook.config.webhooks_user
 
+      # turn on HTTP basic auth
       @webhooks_user_pw = webhooks_user_pw
       use Rack::Auth::Basic, 'Restricted Area' do |username, password|
         (username == Chook.config.webhooks_user) && (password.chomp == @webhooks_user_pw)
