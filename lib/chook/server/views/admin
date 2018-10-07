@@ -1,0 +1,44 @@
+[image] Chook v.XXX
+
+
+Log (view/hide)        Log Level: [popup list] (set)
+--------- hidable text area with streaming log -----------
+
+
+Current Handlers
+  filename/type (view/edit) (remove)
+  ...
+  ...
+  (Add new handler)
+--------- text area with editable handler -----------
+  (save)
+
+
+Configuration (save)
+--------- text area with editable (?) config file -----------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(c) Pixar....  [links]

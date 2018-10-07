@@ -1,0 +1,30 @@
+!!!
+%html{ lang: 'en' }
+
+  %head
+
+    %meta{ charset: 'UTF-8' }
+    %title
+      Chook
+
+    / CSS
+    %link{ href: '/css/chook.css', rel: 'stylesheet' }
+
+    / JavaScript
+    %script{ type: 'text/javascript', language: 'javascript', src: '/js/chook.js' }
+
+  %body
+
+    %img{ alt: 'Chook Logo - Al McWhiggin', height: '72', width: '75', src: '/imgs/ChookLogoAlMcWhiggin.png' }
+    %h1 Chook
+    %p
+      \/tʃʊk/
+      %small (also chookie /ˈtʃʊki/ )
+      %strong noun
+      %i
+        %small Australian/NZ informal
+      a chicken or fowl
+      %br
+      v#{Chook::VERSION}
+
+    = yield

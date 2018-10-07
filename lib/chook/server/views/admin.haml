@@ -1,0 +1,8 @@
+Log Level: [popup list] (set)
+%hr/
+
+#log_label
+  The live Chook webhook handling log (view/hide) &nbsp;&nbsp;&nbsp;&nbsp;
+  %input#pause_log{ type: 'checkbox', checked: false, onclick: 'toggle_logbox();' } pause
+#logbox_div
+  %textarea.logbox#logbox{ readonly: true, rows: 20, cols: 150 }

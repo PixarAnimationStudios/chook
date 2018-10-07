@@ -25,6 +25,7 @@
 
 require 'sinatra/base'
 require 'sinatra/custom_logger'
+#require 'haml'
 require 'openssl'
 require 'chook/event_handling'
 require 'chook/server/log'
