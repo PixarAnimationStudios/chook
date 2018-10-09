@@ -29,6 +29,7 @@ module Chook
   class Server < Sinatra::Base
 
     get '/reload_handlers' do
+      protected!
       logger.info 'Reloading handlers'
       Chook::HandledEvent::Handlers.load_handlers reload: true
       'Handlers reloaded'

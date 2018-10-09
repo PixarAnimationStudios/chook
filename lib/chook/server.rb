@@ -87,22 +87,22 @@ module Chook
         set :bind, '0.0.0.0'
         set :server, Chook.config.engine
         set :port, Chook.config.port
-        enable :lock unless Chook.config.concurrency
         set :show_exceptions, :after_handler if development?
+        set :root, "#{File.dirname __FILE__}/server"
+        enable :static
+        enable :lock unless Chook.config.concurrency
       end # configure
-
       return unless Chook.config.webhooks_user
 
-      # turn on HTTP basic auth
-      @webhooks_user_pw = webhooks_user_pw
-      use Rack::Auth::Basic, 'Restricted Area' do |username, password|
-        (username == Chook.config.webhooks_user) && (password.chomp == @webhooks_user_pw)
-      end
+      # use Rack::Auth::Basic, 'Restricted Area' do |username, password|
+      #   (username == Chook.config.webhooks_user) && (password.chomp == @webhooks_user_pw)
+      # end
     end # chook_configure
 
     # Learn the client password
     ###################################
     def self.webhooks_user_pw
+      return @webhooks_user_pw if @webhooks_user_pw
       return nil unless Chook.config.webhooks_user_pw
 
       setting = Chook.config.webhooks_user_pw
@@ -110,23 +110,24 @@ module Chook
       # if the path ends with a pipe, its a command that will
       # return the desired password, so remove the pipe,
       # execute it, and return stdout from it.
-      if setting.end_with? '|'
-        cmd = setting.chomp '|'
-        output = `#{cmd} 2>&1`.chomp
-        raise "Can't get webhooks user password: #{output}" unless $CHILD_STATUS.exitstatus.zero?
-        output
-      else
-        # otherwise its a file path, and read the pw from the contents
-        file = Pathname.new setting
-        return nil unless file.file?
-        stat = file.stat
-        mode = format('%o', stat.mode)
-        raise 'Password file for webhooks user has insecure mode, must be 0600.' unless mode.end_with?('0600')
-        raise "Password file for webhooks user has insecure owner, must be owned by UID #{Process.euid}." unless stat.owned?
+      @webhooks_user_pw =
+        if setting.end_with? '|'
+          cmd = setting.chomp '|'
+          output = `#{cmd} 2>&1`.chomp
+          raise "Can't get webhooks user password: #{output}" unless $CHILD_STATUS.exitstatus.zero?
+          output
+        else
+          # otherwise its a file path, and read the pw from the contents
+          file = Pathname.new setting
+          return nil unless file.file?
+          stat = file.stat
+          mode = format('%o', stat.mode)
+          raise 'Password file for webhooks user has insecure mode, must be 0600.' unless mode.end_with?('0600')
+          raise "Password file for webhooks user has insecure owner, must be owned by UID #{Process.euid}." unless stat.owned?
 
-        # chomping an empty string removes all trailing \n's and \r\n's
-        file.read.chomp('')
-      end # if else
+          # chomping an empty string removes all trailing \n's and \r\n's
+          file.read.chomp('')
+        end # if else
     end # self.webhooks_user_pw
 
   end # class server

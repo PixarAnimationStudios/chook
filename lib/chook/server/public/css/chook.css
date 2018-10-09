@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+.chook_title {
+  font-weight: bold;
+  font-size: 2.5em;
+  }
+
+#header_version {
+  font-size: 0.5em;
+}
+
+#definition {
+  line-height: 1.6;
+}
+
+.def_pronunciation {
+  font-style: italic;
+  font-size: 1.2em;
+}
+
+.def_part_of_speech {
+  font-weight: bold;
+}
+
+.def_dialect {
+  font-style: italic;
+}
+
+.def_definition {
+  font-size: 1.2em;
+}
+
+#hide_log_btn {
+  display: none;
+}
+
+#logbox_div {
+  display: none;
+}
+
+#logbox {
+  font-family: "Lucida Console", Monaco, monospace;
+}

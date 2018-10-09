@@ -29,19 +29,25 @@ module Chook
   class Server < Sinatra::Base
 
     get '/' do
-      body "Hello, this is Chook, a Jamf Pro WebHook handling service from Pixar Animation Studios!\n"
-    end # get /
+      protected!
 
-    # AJAXy access to a log stream
-    get '/subscribe_to_log_stream' do
-      # register a client's interest in server events
-      stream(:keep_open) do |out|
-        # add this connection for streaming
-        Chook::Server::Log.log_streams << out
-        # purge dead connections
-        log_streams.reject!(&:closed?)
-      end
-    end
+      @handlers_for_admin_page = []
+      Chook::HandledEvent::Handlers.handlers.each do |eventname, handlers|
+        handlers.each do |handler|
+          file = handler.is_a?(Pathname) ? handler.basename.to_s : handler.handler_file.basename.to_s
+          if handler.is_a?(Pathname)
+            file = handler
+            type = :external
+          else
+            file = handler.handler_file.basename.to_s
+            type = :internal
+          end # if else
+        end # handlers each
+        @handlers_for_admin_page << { event: eventname, file: file, type: type }
+      end # Handlers.handlers.each
+
+      haml :admin
+    end # get /
 
   end # class
 

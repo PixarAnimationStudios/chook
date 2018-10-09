@@ -62,22 +62,35 @@ module Chook
     #  level. NOTE: if your server requires authentication, you must provide it
     #  when using this route.
     #
+    # Here's an example with curl, split to multi-line for clarity:
+    #
+    # curl -H "Content-Type: application/json" \
+    #   -X POST \
+    #   --data '{"level":"debug", "message":"It Worked"}' \
+    #   https://user:passwd@chookserver.myorg.org:443/log
+    #
     module Log
 
-      # this just sends logfile writes to any
-      # registered streams as well
+      # Using an instance of this as the Logger target sends logfile writes
+      # to all registered streams as well as the file
       class LogFileWithStream < File
+
+        # ServerSent Events data lines always start with this
+        LOGSTREAM_DATA_PFX = 'data:'.freeze
 
         def write(str)
           super # writes out to the file
-          Chook::Server::Log.log_streams.each do |out|
-            # notify client that a new message has arrived
-            out << str << "\n"
-            # indicate client to connect again
-            out.close
+          flush
+          Chook::Server::Log.log_streams.keys.each do |active_stream|
+            # ignore streams closed at the client end,
+            # they get removed when a new stream starts
+            # see the route: get '/subscribe_to_log_stream'
+            next if active_stream.closed?
+
+            # send new data to the stream
+            active_stream << "#{LOGSTREAM_DATA_PFX}#{str}\n\n"
           end
         end
-
       end # class
 
       LOG_LEVELS = {
@@ -117,21 +130,27 @@ module Chook
       # and return it so it can be used by the server
       # when it does `set :logger, Log.startup(@log_level)`
       def self.startup(level = Chook.config.log_level)
+        # create the logger using a LogFileWithStream instance
         @logger = Logger.new(
-          LogFileWithStream.new(Chook.config.log_file)
+          LogFileWithStream.new(Chook.config.log_file, 'a'),
           Chook.config.logs_to_keep,
           (Chook.config.log_max_megs * 1024 * 1024)
         )
+
+        # date and line format
         @logger.datetime_format = '%Y-%m-%d %H:%M:%S'
 
-        @logger.formatter = proc do |_severity, datetime, _progname, msg|
-          "#{datetime}: #{msg}\n"
+        @logger.formatter = proc do |severity, datetime, _progname, msg|
+          "#{datetime}: [#{severity}] #{msg}\n"
         end
 
+        # level
         level &&= Chook::Procs::STRING_TO_LOG_LEVEL.call level
         level ||= Chook.config.log_level
         level ||= DEFAULT_LEVEL
         @logger.level = level
+
+        # first startup entry
         @logger.unknown "Chook Server v#{Chook::VERSION} starting up. PID: #{$PROCESS_ID}, Port: #{Chook.config.port}, SSL: #{Chook.config.use_ssl}"
 
         # if debug, log our config
@@ -142,19 +161,33 @@ module Chook
           end
         end
 
+        # return the logger, the server uses it as a helper
         @logger
       end # log
 
-      # general access to the logger
+      # general access to the logger as Chook::Server::Log.logger
       def self.logger
-        @logger
+        @logger ||= startup
       end
 
-
-      # an array of registered log streams
+      # a Hash  of registered log streams
+      # streams are keys, valus are their IP addrs
+      # see the `get '/subscribe_to_log_stream'` route
+      #
       def self.log_streams
-        @log_streams ||= []
+        @log_streams ||= {}
       end
+
+      def self.clean_log_streams
+        log_streams.delete_if do |stream, ip|
+          if stream.closed?
+            logger.debug "Removing closed log stream for #{ip}"
+            true
+          else
+            false
+          end # if
+        end # delete if
+      end # clean_log_streams
 
     end # module
 

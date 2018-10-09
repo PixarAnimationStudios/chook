@@ -37,7 +37,7 @@ end
 
 Chook.event_handler do |event|
 
-  Chook.log.debug "This is a handler-level debug message for event #{event.object_id}"
+  event.logger.debug "This is a handler-level debug message for event #{event.object_id}"
 
   action = APIOpHandler::REPORT_ACTIONS[event.subject.restAPIOperationType]
 

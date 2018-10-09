@@ -68,28 +68,20 @@ module Chook
     # The Handlers namespace module
     module Handlers
 
-      # Module Constants
-      ############################
-
       DEFAULT_HANDLER_DIR = '/Library/Application Support/Chook'.freeze
 
-      # Module Instance Variables, & accessors
-      ############################
-
-      # This holds the most recently loaded Proc handler
-      # until it can be stored in the @handlers Hash
-      @loaded_handler = nil
-
-      # Getter for @loaded_handler
+      # self loaded_handler=
       #
-      # @return [Proc,nil] the most recent Proc loaded from a handler file.
+      # @return [Obj,nil] the most recent Proc loaded from a handler file.
       # destined for storage in @handlers
       #
       def self.loaded_handler
         @loaded_handler
       end
 
-      # Setter for @loaded_event_handler
+      # A holding place for internal handlers as they are loaded
+      # before being added to the @handlers Hash
+      # see Chook.event_handler(&block)
       #
       # @param a_proc [Object]  An object instance with a #handle method
       #
@@ -97,24 +89,18 @@ module Chook
         @loaded_handler = anon_obj
       end
 
-      # A hash of loaded handlers.
-      # Keys are Strings - the name of the events handled
-      # Values are Arrays of either Procs, or Pathnames to executable files.
-      # See the .handlers getter Methods
-      @handlers = {}
-
-      # Getter for @event_handlers
+      # Getter for @handlers
       #
-      # @return [Hash{String => Array}] a mapping of Event Names as the come from
-      # the JSS to an Array of handlers for the event. The handlers are either
-      # Proc objects to call from within ruby, or Pathnames to executable files
-      # which will take raw JSON on stdin.
+      # @return [Hash{String => Array}] a mapping of Event Names as they
+      # come from the JSS to an Array of handlers for the event.
+      # The handlers are either Pathnames to executable external handlers
+      # or Objcts with a #handle method, for internal handlers
+      #  (The objects also have a #handler_file attribute that is the Pathname)
+      #
       def self.handlers
         @handlers
       end
-
-      # Module Methods
-      ############################
+      @handlers ||= {}
 
       # Load all the event handlers from the handler_dir or an arbitrary dir.
       #
@@ -128,7 +114,9 @@ module Chook
       # @return [void]
       #
       def self.load_handlers(from_dir: Chook.config.handler_dir, reload: false)
+        # use default if needed
         from_dir ||= DEFAULT_HANDLER_DIR
+
         if reload
           @handlers_loaded_from = nil
           @handlers = {}
@@ -136,8 +124,9 @@ module Chook
         end
 
         handler_dir = Pathname.new(from_dir)
+
         unless handler_dir.directory? && handler_dir.readable?
-          Chook.log.info "Handler directory '#{from_dir}' not a readable directory. No handlers loaded. "
+          Chook.logger.info "Handler directory '#{from_dir}' not a readable directory. No handlers loaded. "
           return
         end
 
@@ -146,7 +135,7 @@ module Chook
         end
 
         @handlers_loaded_from = handler_dir
-        Chook.log.info "Loaded #{@handlers.values.flatten.size} handlers for #{@handlers.keys.size} event triggers"
+        Chook.logger.info "Loaded #{@handlers.values.flatten.size} handlers for #{@handlers.keys.size} event triggers"
       end # load handlers
 
       # Load an event handler from a file.
@@ -187,7 +176,7 @@ module Chook
           # store as a Pathname, we'll pipe JSON to it
           unless @handlers[event_name].include? handler_file
             @handlers[event_name] << handler_file
-            Chook.log.info "Loaded executable handler file '#{handler_file.basename}' for #{event_name} events"
+            Chook.logger.info "Loaded executable handler file '#{handler_file.basename}' for #{event_name} events"
           end
           return
         end
@@ -199,10 +188,10 @@ module Chook
         if @loaded_handler
           @loaded_handler.define_singleton_method(:handler_file) { handler_file.basename.to_s }
           @handlers[event_name] << @loaded_handler
-          Chook.log.info "Loaded internal handler file '#{handler_file.basename}' for #{event_name} events"
+          Chook.logger.info "Loaded internal handler file '#{handler_file.basename}' for #{event_name} events"
           @loaded_handler = nil
         else
-          Chook.log.info "FAILED loading internal handler file '#{handler_file.basename}'"
+          Chook.logger.info "FAILED loading internal handler file '#{handler_file.basename}'"
         end
       end # self.load_handler(handler_file)
 

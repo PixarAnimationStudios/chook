@@ -29,7 +29,11 @@ module Chook
   class Server < Sinatra::Base
 
     post '/handle_webhook_event' do
-      request.body.rewind # in case someone already read it
+      # enforce http basic auth if needed
+      protected!
+
+      # rewind to ensure read-pointer is at the start
+      request.body.rewind #
       raw_json = request.body.read
 
       event = Chook::HandledEvent.parse_event raw_json

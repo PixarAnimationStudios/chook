@@ -28,6 +28,32 @@ module Chook
   # the server
   class Server < Sinatra::Base
 
+    # These two helpers let us decude which routes need
+    # http basic auth and which don't
+    #
+    # To protect a route, put `protected!` as the
+    # first line of code in the route.
+    #
+    # See http://sinatrarb.com/faq.html#auth
+    #
+    helpers do
+      def protected!
+        # don't protect if user isn't defined
+        return unless Chook.config.webhooks_user
+        return if authorized?
+        headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+        halt 401, "Not authorized\n"
+      end
+
+      def authorized?
+        @auth ||= Rack::Auth::Basic::Request.new(request.env)
+        @auth.provided? && \
+          @auth.basic? && \
+          @auth.credentials && \
+          @auth.credentials == [Chook.config.webhooks_user, Chook::Server.webhooks_user_pw]
+      end
+    end
+
     # log errors in production (in dev, they go to stdout and the browser)
     error do
       logger.error "ERROR: #{env['sinatra.error'].message}"

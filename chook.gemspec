@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.authors     = ['Chris Lasell', 'Aurica Hayes']
   s.email       = 'chook@pixar.com'
-  s.files       = Dir['lib/**/*.rb']
+  s.files       = Dir['lib/**/*']
   s.files      += Dir['data/**/*']
   s.files      += Dir['bin/**/*']
   s.homepage    = 'https://github.com/PixarAnimationStudios/chook'
