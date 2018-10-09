@@ -25,7 +25,7 @@
 
 require 'sinatra/base'
 require 'sinatra/custom_logger'
-#require 'haml'
+# require 'haml'
 require 'openssl'
 require 'chook/event_handling'
 require 'chook/server/log'
@@ -38,8 +38,8 @@ module Chook
   class Server < Sinatra::Base
 
     DEFAULT_SERVER_ENGINE = :webrick
-    DEFAULT_PORT = 8000
-    DEFAULT_SSL_PORT = 8443
+    DEFAULT_PORT = 80
+    DEFAULT_SSL_PORT = 443
     DEFAULT_CONCURRENCY = true
 
     # set defaults in config
@@ -61,6 +61,7 @@ module Chook
 
       case Chook.config.engine.to_sym
       when :webrick
+        Chook.logger.warn 'SSL not available with webrick engine, please install thin' if Chook.config.use_ssl
         super
       when :thin
         if Chook.config.use_ssl

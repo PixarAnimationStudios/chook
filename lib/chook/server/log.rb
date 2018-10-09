@@ -64,6 +64,22 @@ module Chook
     #
     module Log
 
+      # this just sends logfile writes to any
+      # registered streams as well
+      class LogFileWithStream < File
+
+        def write(str)
+          super # writes out to the file
+          Chook::Server::Log.log_streams.each do |out|
+            # notify client that a new message has arrived
+            out << str << "\n"
+            # indicate client to connect again
+            out.close
+          end
+        end
+
+      end # class
+
       LOG_LEVELS = {
         fatal: Logger::FATAL,
         error: Logger::ERROR,
@@ -71,6 +87,19 @@ module Chook
         info: Logger::INFO,
         debug: Logger::DEBUG
       }.freeze
+
+      # log Streaming
+      # ServerSent Events data lines always start with this
+      LOGSTREAM_DATA_PFX = 'data:'.freeze
+
+      # Send this to the clients at least every LOGSTREAM_KEEPALIVE_MAX secs
+      # even if there's no data for the stream
+      LOGSTREAM_KEEPALIVE_MSG = "#{LOGSTREAM_DATA_PFX} I'm Here!\n\n".freeze
+      LOGSTREAM_KEEPALIVE_MAX = 10
+
+      # the clients will recognize M3_LOG_STREAM_CLOSED and stop trying
+      # to connect via ssh.
+      LOGSTREAM_CLOSED_PFX = "#{LOGSTREAM_DATA_PFX} M3_LOG_STREAM_CLOSED:".freeze
 
       DEFAULT_FILE = Pathname.new '/var/log/chook-server.log'
       DEFAULT_MAX_MEGS = 10
@@ -89,7 +118,7 @@ module Chook
       # when it does `set :logger, Log.startup(@log_level)`
       def self.startup(level = Chook.config.log_level)
         @logger = Logger.new(
-          Chook.config.log_file.to_s,
+          LogFileWithStream.new(Chook.config.log_file)
           Chook.config.logs_to_keep,
           (Chook.config.log_max_megs * 1024 * 1024)
         )
@@ -119,6 +148,12 @@ module Chook
       # general access to the logger
       def self.logger
         @logger
+      end
+
+
+      # an array of registered log streams
+      def self.log_streams
+        @log_streams ||= []
       end
 
     end # module

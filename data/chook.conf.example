@@ -1,0 +1,109 @@
+#################
+# This sample config file uses default settings.
+#
+# Each setting is defined on one line like so:
+#
+#     key: value
+#
+# Values may have spaces.
+#
+# Blank lines and those starting with # are ignored.
+
+#################
+# The webserver engine to use. either 'thin' (preferred for production)
+# or 'webrick' (built-in to Ruby)
+# Default: webrick
+#
+engine: webrick
+
+#################
+# The port used by the server.
+# Default: 443 when use_ssl is true, 80 otherwise
+#
+port: 80
+
+#################
+# By default incoming webhooks are handled in parallel
+# If you have problems (e.g. a handler isn't thread-safe) try setting this
+# to false and hooks will be handled one at a time, in the order received.
+# Default: true
+#
+concurrency: true
+
+#################
+# The directory holding the internal and external handlers.
+# Their filenames must start with a known webhook name, and
+# their executability determines internal (not executable)
+# versus external (executable). See README.md for details.
+# Default: /Library/Application Support/Chook
+#
+handler_dir: /Library/Application Support/Chook
+
+#################
+# Should the server use SSL (https)? Ignored unless the engine is 'thin'
+# Default: false
+#
+use_ssl: false
+
+#################
+# When using SSL, the path to the SSL certificate to use, in PEM format
+# Required if use_ssl == true and engine == thin
+# Default: none
+#
+ssl_cert_path:
+
+#################
+# When using SSL, the path to the private key for the SSL certificate, in PEM format
+# Required if use_ssl == true and engine == thin
+# Default: none
+#
+ssl_private_key_path:
+
+#################
+# The path to the file used for chook server logging
+# Default: /var/log/chook-server.log
+#
+log_file: /var/log/chook-server.log
+
+#################
+# The detail level for the log. One of:
+# fatal (only fatal errors logged), error, warn, info, or debug (everything logged)
+# Default: info
+#
+log_level: info
+
+#################
+# The log file rotates automatically when it reaches this size in megabytes.
+# Default: 10
+#
+log_max_megs: 10
+
+#################
+# How many old log files to keep when rotating?
+# Default: 10
+#
+logs_to_keep: 10
+
+#################
+# Any value here will turn on 'HTTP Basic Authentication' and this will be the username
+# required to make any connection to the Chook server.
+# Leaving this empty will allow any connection without authentication
+# Default: none
+#
+webhooks_user:
+
+#################
+# When 'HTTP Basic Authentication' is enabled by setting webhooks_user, this
+# tells chook how to learn the password for that user:
+#
+# - If its a path to a file, the file contains the password and nothing else.
+#   The file must be owned by the user running the chook server, and must have
+#   mode 0600.
+#
+# - If it ends with a pipe character (|), everything execpt the pipe is considered
+#   to be a shell command, executable by the user running the chook server.
+#   The standard-output of the command will be the password.
+#
+# Default: none
+#
+webhooks_user_pw:

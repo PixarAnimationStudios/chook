@@ -32,6 +32,17 @@ module Chook
       body "Hello, this is Chook, a Jamf Pro WebHook handling service from Pixar Animation Studios!\n"
     end # get /
 
+    # AJAXy access to a log stream
+    get '/subscribe_to_log_stream' do
+      # register a client's interest in server events
+      stream(:keep_open) do |out|
+        # add this connection for streaming
+        Chook::Server::Log.log_streams << out
+        # purge dead connections
+        log_streams.reject!(&:closed?)
+      end
+    end
+
   end # class
 
 end # module
