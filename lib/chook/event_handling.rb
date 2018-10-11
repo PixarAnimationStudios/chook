@@ -37,4 +37,5 @@ Chook::HandledSubject.generate_classes
 # events
 require 'chook/event'
 require 'chook/event/handled_event'
+require 'chook/event/handled_event_logger'
 Chook::HandledEvent.generate_classes

@@ -31,21 +31,33 @@ module Chook
     get '/' do
       protected!
 
+      # a list of current handlers for the admin page
       @handlers_for_admin_page = []
-      Chook::HandledEvent::Handlers.handlers.each do |eventname, handlers|
-        handlers.each do |handler|
-          file = handler.is_a?(Pathname) ? handler.basename.to_s : handler.handler_file.basename.to_s
-          if handler.is_a?(Pathname)
+
+      Chook::HandledEvent::Handlers.handlers.keys.sort.each do |eventname|
+        Chook::HandledEvent::Handlers.handlers[eventname].each do |handler|
+          if handler.is_a? Pathname
             file = handler
             type = :external
           else
-            file = handler.handler_file.basename.to_s
+            file = Pathname.new(Chook.config.handler_dir) + handler.handler_file
             type = :internal
           end # if else
+          @handlers_for_admin_page << { event: eventname, file: file, type: type }
         end # handlers each
-        @handlers_for_admin_page << { event: eventname, file: file, type: type }
       end # Handlers.handlers.each
 
+      # the current config, for the admin page
+      @config_text =
+        if Chook::Configuration::DEFAULT_CONF_FILE.file?
+          Chook::Configuration::DEFAULT_CONF_FILE.read
+
+        elsif Chook::Configuration::SAMPLE_CONF_FILE.file?
+          Chook::Configuration::SAMPLE_CONF_FILE.read
+
+        else
+          "No #{Chook::Configuration::DEFAULT_CONF_FILE} or sample config file found."
+        end
       haml :admin
     end # get /
 

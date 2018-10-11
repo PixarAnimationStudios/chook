@@ -35,6 +35,8 @@ module Chook
     # The location of the default config file
     DEFAULT_CONF_FILE = Pathname.new '/etc/chook.conf'
 
+    SAMPLE_CONF_FILE = Pathname.new(__FILE__).parent.parent.parent + 'data/chook.conf.example'
+
     # The attribute keys we maintain, and how they should be converted to
     # the value used by chook internally.
     #
@@ -44,7 +46,7 @@ module Chook
       engine:  :to_sym,
       port: :to_i,
       concurrency: Chook::Procs::STRING_TO_BOOLEAN,
-      handler_dir: nil,
+      handler_dir: Chook::Procs::STRING_TO_PATHNAME,
       use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
       ssl_cert_path: Chook::Procs::STRING_TO_PATHNAME,
       ssl_private_key_path: Chook::Procs::STRING_TO_PATHNAME,

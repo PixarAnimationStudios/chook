@@ -149,7 +149,7 @@ module Chook
     end
 
     def logger
-      @logger ||= HandledEventLogger.new self
+      @logger ||= Chook::HandledEventLogger.new self
     end
 
   end # class HandledEvent

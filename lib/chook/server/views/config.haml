@@ -1,0 +1,14 @@
+.section_label#config_label
+  %button#view_config_btn{ type: 'button', onClick: 'view_config();', title: 'view the config file' }
+    View
+  %button#hide_config_btn{ type: 'button', onClick: 'hide_config();', title: 'hide the config file' }
+    Hide
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  Current Configuration from #{Chook::Configuration::DEFAULT_CONF_FILE}
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+
+#config_div
+  %textarea.monospaced#config_box{ readonly: true, rows: 20, cols: 150 }= @config_text

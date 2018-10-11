@@ -1,5 +1,14 @@
 @charset "UTF-8";
 
+/* ******* General Styling ******* */
+
+.monospaced {
+  font-family: "Lucida Console", Monaco, monospace;
+}
+
+
+/* ******* Title Header Area ******* */
+
 .chook_title {
   font-weight: bold;
   font-size: 2.5em;
@@ -30,6 +39,14 @@
   font-size: 1.2em;
 }
 
+/* ******* Section Label Areas ******* */
+
+.section_label {
+  padding-bottom: 5px;
+}
+
+/* ******* Live Log Section ******* */
+
 #hide_log_btn {
   display: none;
 }
@@ -38,6 +55,61 @@
   display: none;
 }
 
-#logbox {
-  font-family: "Lucida Console", Monaco, monospace;
+#logbox_btns {
+  padding-bottom: 5px;
+}
+
+/* ******* Handlers Section ******* */
+
+#hide_handlers_btn {
+  display: none;
+}
+
+#handlers_div {
+  display: none;
+}
+
+#handlers_table {
+  width: 100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding-bottom: 5px;
+}
+
+#handlers_table_header_row {
+  text-align: left;
+  border: 1px solid black;
+  border-collapse: collapse;
+  background-color: LightGrey;
+  padding-top: 4px;
+  padding-left: 3px;
+}
+
+.handlers_table_cell {
+  text-align: left;
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding-top: 4px;
+  padding-left: 3px;
+}
+
+#handler_viewer_div {
+  display: none;
+  padding-top: 15px;
+}
+
+#handler_viewer {
+  width: 95%;
+  border: 3px solid black;
+  padding-top: 5px;
+}
+
+/* ******* Handlers Section ******* */
+
+#hide_config_btn {
+  display: none;
+}
+
+#config_div {
+  display: none;
 }

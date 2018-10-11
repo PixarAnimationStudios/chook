@@ -1,0 +1,28 @@
+.section_label#log_label
+  %button#view_log_btn{ type: 'button', onClick: 'view_log();', title: 'view the live Chook log' }
+    View
+  %button#hide_log_btn{ type: 'button', onClick: 'hide_log();', title: 'hide the live Chook log' }
+    Hide
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  The Live Chook Log
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  Log Level:
+  %select#log_level_select{ onchange: 'change_log_level();' }
+    %option{ value: 'fatal', selected: Chook.logger.level == Logger::FATAL } fatal
+    %option{ value: 'error', selected: Chook.logger.level == Logger::ERROR } error
+    %option{ value: 'warn', selected: Chook.logger.level == Logger::WARN } warn
+    %option{ value: 'info', selected: Chook.logger.level == Logger::INFO } info
+    %option{ value: 'debug', selected: Chook.logger.level == Logger::DEBUG } debug
+
+#logbox_div
+  #logbox_btns
+    %input#pause_log{ type: 'checkbox', checked: false, onclick: 'update_logbox();' }
+      Pause
+    &nbsp;&nbsp;&nbsp;&nbsp;
+
+    %button#clear_log_btn{ type: 'button', onClick: 'clear_log();', title: 'clear the live Chook log' }
+      Clear
+
+  %textarea.monospaced#logbox{ readonly: true, rows: 20, cols: 150 }
