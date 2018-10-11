@@ -16,6 +16,7 @@ Documentation is a work in progress. Please get in touch for assistance. <3
   - [SSL](#ssl)
   - [Logging](#logging)
   - [Admin Interface](#admin-interface)
+  - [Pointing Jamf Pro at your Chook server](#pointing-jamf-pro-at-your-chook-server)
 - [TODOs](#todos)
 
 
@@ -424,7 +425,24 @@ the sample config file is shown, since it shows the default values.
 The admin page cannot be used to edit or upload handlers or change the config. For security
 reasons, you must do that on the server itself though normal administrative methods.
 
+### Pointing Jamf Pro at your Chook server
 
+Once your server is up and running, you can create webhooks in your Jamf Pro interface.
+
+1. Navigate to Settings => Global Management => Webhooks
+2. Click "New"
+3. Give your webhook a display name
+4. Enter the URL for your Chook server, ending with 'handle_webhook_event', e.g:
+  - `http://my.chookserver.edu/handle_webhook_event`
+  - `https://my.chookserver.edu:8443/handle_webhook_event`
+5. If you use Basic Authentication, enter the name and password
+6. The default timeouts should be OK, but raise them a bit if you're experiencing errors.
+7. Set the content type to JSON
+8. Select the event that triggers the webook
+9. Click "Enabled" at the top.
+10. Click "Save"
+
+Watch the Chook log, with the level at info or debug, to see events come in.
 
 ## TODOs
 
