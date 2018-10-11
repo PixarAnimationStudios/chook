@@ -5,10 +5,11 @@
     Hide
   &nbsp;&nbsp;&nbsp;&nbsp;
 
-  Current Configuration from #{Chook::Configuration::DEFAULT_CONF_FILE}
-  &nbsp;&nbsp;&nbsp;&nbsp;
-
-
+  Configuration
 
 #config_div
-  %textarea.monospaced#config_box{ readonly: true, rows: 20, cols: 150 }= @config_text
+  Config file:
+  %span.monospaced= @config_src
+
+  #config_viewer_div
+    %textarea.monospaced#config_box{ readonly: true, rows: 20, cols: 150 }= @config_text

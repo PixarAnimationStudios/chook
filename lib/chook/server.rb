@@ -37,13 +37,11 @@ module Chook
   # the engine of your choice.
   class Server < Sinatra::Base
 
-    DEFAULT_SERVER_ENGINE = :webrick
     DEFAULT_PORT = 80
     DEFAULT_SSL_PORT = 443
     DEFAULT_CONCURRENCY = true
 
     # set defaults in config
-    Chook.config.engine ||= DEFAULT_SERVER_ENGINE
     Chook.config.port ||= Chook.config.use_ssl ? DEFAULT_SSL_PORT : DEFAULT_PORT
 
     # can't use ||= here cuz nil and false have different meanings
@@ -55,51 +53,34 @@ module Chook
       log_level ||= Chook.config.log_level
       @log_level = Chook::Procs::STRING_TO_LOG_LEVEL.call log_level
 
-      chook_configure
-
-      Chook::HandledEvent::Handlers.load_handlers
-
-      case Chook.config.engine.to_sym
-      when :webrick
-        Chook.logger.warn 'SSL not available with webrick engine, please install thin' if Chook.config.use_ssl
-        super
-      when :thin
-        if Chook.config.use_ssl
-          super do |server|
-            server.ssl = true
-            server.ssl_options = {
-              cert_chain_file: Chook.config.ssl_cert_path.to_s,
-              private_key_file: Chook.config.ssl_private_key_path.to_s,
-              verify_peer: false
-            }
-          end # super do
-        else
-          super
-        end # if use ssl
-      end # case
-    end # self.run
-
-    # Configure the server
-    ###################################
-    def self.chook_configure
       configure do
         set :logger, Log.startup(@log_level)
+        set :server, :thin
         set :bind, '0.0.0.0'
-        set :server, Chook.config.engine
         set :port, Chook.config.port
         set :show_exceptions, :after_handler if development?
         set :root, "#{File.dirname __FILE__}/server"
         enable :static
         enable :lock unless Chook.config.concurrency
       end # configure
-      return unless Chook.config.webhooks_user
 
-      # use Rack::Auth::Basic, 'Restricted Area' do |username, password|
-      #   (username == Chook.config.webhooks_user) && (password.chomp == @webhooks_user_pw)
-      # end
-    end # chook_configure
+      Chook::HandledEvent::Handlers.load_handlers
 
-    # Learn the client password
+      if Chook.config.use_ssl
+        super do |server|
+          server.ssl = true
+          server.ssl_options = {
+            cert_chain_file: Chook.config.ssl_cert_path.to_s,
+            private_key_file: Chook.config.ssl_private_key_path.to_s,
+            verify_peer: false
+          }
+        end # super do
+      else
+        super
+      end # if use ssl
+    end # self.run
+
+    # Learn the client password, if we're using basic auth
     ###################################
     def self.webhooks_user_pw
       return @webhooks_user_pw if @webhooks_user_pw
@@ -107,15 +88,16 @@ module Chook
 
       setting = Chook.config.webhooks_user_pw
 
-      # if the path ends with a pipe, its a command that will
-      # return the desired password, so remove the pipe,
-      # execute it, and return stdout from it.
       @webhooks_user_pw =
         if setting.end_with? '|'
+          # if the path ends with a pipe, its a command that will
+          # return the desired password, so remove the pipe,
+          # execute it, and return stdout from it.
           cmd = setting.chomp '|'
           output = `#{cmd} 2>&1`.chomp
           raise "Can't get webhooks user password: #{output}" unless $CHILD_STATUS.exitstatus.zero?
           output
+
         else
           # otherwise its a file path, and read the pw from the contents
           file = Pathname.new setting
@@ -127,6 +109,7 @@ module Chook
 
           # chomping an empty string removes all trailing \n's and \r\n's
           file.read.chomp('')
+
         end # if else
     end # self.webhooks_user_pw
 

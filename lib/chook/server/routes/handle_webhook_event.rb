@@ -44,7 +44,7 @@ module Chook
 
         event.logger.info "START From #{request.ip}, WebHook '#{event.webhook_name}' (id: #{event.webhook_id})"
 
-        event.logger.debug "JSON: #{JSON.pretty_generate(event.parsed_json)}"
+        event.logger.debug "JSON: #{raw_json}"
 
         result = event.handle
 

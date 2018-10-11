@@ -59,6 +59,10 @@
   padding-bottom: 5px;
 }
 
+#logbox {
+  width: 100%;
+}
+
 /* ******* Handlers Section ******* */
 
 #hide_handlers_btn {
@@ -73,6 +77,7 @@
   width: 100%;
   border: 1px solid black;
   border-collapse: collapse;
+  margin-top: 5px;
   padding-bottom: 5px;
 }
 
@@ -112,4 +117,9 @@
 
 #config_div {
   display: none;
+}
+
+#config_viewer_div {
+  margin-top: 5px;
+  padding-bottom: 5px;
 }

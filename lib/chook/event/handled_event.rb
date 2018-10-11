@@ -139,7 +139,7 @@ module Chook
     end # def handle
 
     def pipe_to_executable(handler)
-      logger.debug "Event #{object_id}: Sending JSON to stdin of '#{handler}'"
+      logger.debug "Sending JSON to stdin of '#{handler}'"
       IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
     end
 

@@ -40,6 +40,7 @@ module Chook
       def protected!
         # don't protect if user isn't defined
         return unless Chook.config.webhooks_user
+
         return if authorized?
         headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
         halt 401, "Not authorized\n"

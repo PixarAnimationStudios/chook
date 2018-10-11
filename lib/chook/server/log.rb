@@ -81,6 +81,7 @@ module Chook
         def write(str)
           super # writes out to the file
           flush
+          # send to any active streams
           Chook::Server::Log.log_streams.keys.each do |active_stream|
             # ignore streams closed at the client end,
             # they get removed when a new stream starts
@@ -93,6 +94,7 @@ module Chook
         end
       end # class
 
+      # mapping of integer levels to symbols
       LOG_LEVELS = {
         fatal: Logger::FATAL,
         error: Logger::ERROR,
@@ -131,11 +133,16 @@ module Chook
       # when it does `set :logger, Log.startup(@log_level)`
       def self.startup(level = Chook.config.log_level)
         # create the logger using a LogFileWithStream instance
-        @logger = Logger.new(
-          LogFileWithStream.new(Chook.config.log_file, 'a'),
-          Chook.config.logs_to_keep,
-          (Chook.config.log_max_megs * 1024 * 1024)
-        )
+        @logger =
+          if Chook.config.logs_to_keep && Chook.config.logs_to_keep > 0
+            Logger.new(
+              LogFileWithStream.new(Chook.config.log_file, 'a'),
+              Chook.config.logs_to_keep,
+              (Chook.config.log_max_megs * 1024 * 1024)
+            )
+          else
+            Logger.new(LogFileWithStream.new(Chook.config.log_file, 'a'))
+          end
 
         # date and line format
         @logger.datetime_format = '%Y-%m-%d %H:%M:%S'

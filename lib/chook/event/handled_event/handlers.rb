@@ -1,27 +1,26 @@
-### Copyright 2017 Pixar
-
-###
-###    Licensed under the Apache License, Version 2.0 (the "Apache License")
-###    with the following modification; you may not use this file except in
-###    compliance with the Apache License and the following modification to it:
-###    Section 6. Trademarks. is deleted and replaced with:
-###
-###    6. Trademarks. This License does not grant permission to use the trade
-###       names, trademarks, service marks, or product names of the Licensor
-###       and its affiliates, except as required to comply with Section 4(c) of
-###       the License and to reproduce the content of the NOTICE file.
-###
-###    You may obtain a copy of the Apache License at
-###
-###        http://www.apache.org/licenses/LICENSE-2.0
-###
-###    Unless required by applicable law or agreed to in writing, software
-###    distributed under the Apache License with the above modification is
-###    distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-###    KIND, either express or implied. See the Apache License for the specific
-###    language governing permissions and limitations under the Apache License.
-###
-###
+# Copyright 2017 Pixar
+#
+#    Licensed under the Apache License, Version 2.0 (the "Apache License")
+#    with the following modification; you may not use this file except in
+#    compliance with the Apache License and the following modification to it:
+#    Section 6. Trademarks. is deleted and replaced with:
+#
+#    6. Trademarks. This License does not grant permission to use the trade
+#       names, trademarks, service marks, or product names of the Licensor
+#       and its affiliates, except as required to comply with Section 4(c) of
+#       the License and to reproduce the content of the NOTICE file.
+#
+#    You may obtain a copy of the Apache License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the Apache License with the above modification is
+#    distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#    KIND, either express or implied. See the Apache License for the specific
+#    language governing permissions and limitations under the Apache License.
+#
+#
 
 module Chook
 
@@ -60,6 +59,7 @@ module Chook
     # but to access it after loading the file, we need to
     # store it in here:
     HandledEvent::Handlers.loaded_handler = obj
+    Chook.logger.debug "Code block for 'Chook.event_handler' loaded into \#handle method of runner-object #{obj.object_id}"
   end
 
   # the server class
@@ -69,6 +69,9 @@ module Chook
     module Handlers
 
       DEFAULT_HANDLER_DIR = '/Library/Application Support/Chook'.freeze
+
+      # internal handler files must match this regex somewhere
+      INTERNAL_HANDLER_BLOCK_START_RE = /Chook.event_handler( ?\{| do) *\|/
 
       # self loaded_handler=
       #
@@ -116,17 +119,19 @@ module Chook
       def self.load_handlers(from_dir: Chook.config.handler_dir, reload: false)
         # use default if needed
         from_dir ||= DEFAULT_HANDLER_DIR
+        handler_dir = Pathname.new(from_dir)
+        load_type = 'Loading'
 
         if reload
-          @handlers_loaded_from = nil
           @handlers = {}
           @loaded_handler = nil
+          load_type = 'Re-loading'
         end
 
-        handler_dir = Pathname.new(from_dir)
+        Chook.logger.info "#{load_type} handlers from directory: #{handler_dir}"
 
         unless handler_dir.directory? && handler_dir.readable?
-          Chook.logger.info "Handler directory '#{from_dir}' not a readable directory. No handlers loaded. "
+          Chook.logger.error "Handler directory '#{from_dir}' not a readable directory. No handlers loaded. "
           return
         end
 
@@ -134,8 +139,8 @@ module Chook
           load_handler(handler_file) if handler_file.file? && handler_file.readable?
         end
 
-        @handlers_loaded_from = handler_dir
         Chook.logger.info "Loaded #{@handlers.values.flatten.size} handlers for #{@handlers.keys.size} event triggers"
+        @loaded_handler = nil
       end # load handlers
 
       # Load an event handler from a file.
@@ -165,35 +170,67 @@ module Chook
       # @return [void]
       #
       def self.load_handler(from_file)
+        Chook.logger.debug "Starting load of handler file '#{from_file}'"
         handler_file = Pathname.new from_file
         event_name = event_name_from_handler_filename(handler_file)
-        return unless event_name
+        unless event_name
+          Chook.logger.debug "Ignoring file '#{from_file}'"
+          return
+        end
 
         # create an array for this event's handlers, if needed
         @handlers[event_name] ||= []
 
-        if handler_file.executable?
-          # store as a Pathname, we'll pipe JSON to it
-          unless @handlers[event_name].include? handler_file
-            @handlers[event_name] << handler_file
-            Chook.logger.info "Loaded executable handler file '#{handler_file.basename}' for #{event_name} events"
-          end
+        return if load_external_handler(handler_file, event_name)
+
+        load_internal_handler(handler_file, event_name)
+      end # self.load_handler(handler_file)
+
+      # if the given file is executable, store it's path as a handler for the event
+      #
+      #
+      def self.load_external_handler(handler_file, event_name)
+        return false unless handler_file.executable?
+
+        Chook.logger.info "Loading external handler file '#{handler_file.basename}' for #{event_name} events"
+
+        # store the Pathname, we'll pipe JSON to it
+        @handlers[event_name] << handler_file
+        true
+      end
+
+      # if a given path is not executable, try to load it as an internal handler
+      #
+      #
+      def self.load_internal_handler(handler_file, event_name)
+        # load the file. If written correctly, it will
+        # put an anon. Object with a #handle method into @loaded_handler
+        Chook.logger.info "Loading internal handler file '#{handler_file.basename}' for #{event_name} events"
+
+        unless handler_file.read =~ INTERNAL_HANDLER_BLOCK_START_RE
+          Chook.logger.error "Internal handler file '#{handler_file.basename}' missing event_handler block"
           return
         end
 
-        # load the file. If written correctly, it will
-        # put n Object into @loaded_handler with a #handle method
+        # reset @loaded_handler - the `load` call will refill it
+        # see Chook.event_handler
         @loaded_handler = nil
-        load handler_file.to_s
-        if @loaded_handler
-          @loaded_handler.define_singleton_method(:handler_file) { handler_file.basename.to_s }
-          @handlers[event_name] << @loaded_handler
-          Chook.logger.info "Loaded internal handler file '#{handler_file.basename}' for #{event_name} events"
-          @loaded_handler = nil
-        else
-          Chook.logger.info "FAILED loading internal handler file '#{handler_file.basename}'"
+        begin
+          load handler_file.to_s
+          raise '@loaded handler nil after loading file' unless @loaded_handler
+        rescue => e
+          Chook.logger.error "FAILED loading internal handler file '#{handler_file.basename}': #{e}"
+          return
         end
-      end # self.load_handler(handler_file)
+
+        # add a method to the object to get its filename
+        @loaded_handler.define_singleton_method(:handler_file) { handler_file.basename.to_s }
+
+        @handlers[event_name] << @loaded_handler
+
+        Chook.logger.debug "Loaded internal handler file '#{handler_file.basename}'"
+        @loaded_handler = nil
+      end
 
       # Given a handler filename, return the event name it wants to handle
       #
@@ -205,7 +242,13 @@ module Chook
       def self.event_name_from_handler_filename(filename)
         @event_names ||= Chook::Event::EVENTS.keys
         desired_event_name = filename.basename.to_s.split(/\.|-|_/).first
-        @event_names.select { |n| desired_event_name.casecmp(n).zero? }.first
+        ename = @event_names.select { |n| desired_event_name.casecmp(n).zero? }.first
+        if ename
+          Chook.logger.debug "Found event name '#{ename}' at start of filename '#{filename}'"
+        else
+          Chook.logger.debug "No known event name at start of filename '#{filename}'"
+        end
+        ename
       end
 
     end # module Handler

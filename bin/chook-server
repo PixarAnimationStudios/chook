@@ -25,7 +25,6 @@
 ###
 ###
 
-
 require 'getoptlong'
 
 # The CLI options for GetoptLong
@@ -49,4 +48,9 @@ end # opts.each
 ENV['APP_ENV'] = env.to_s
 
 require 'chook/server'
-Chook::Server.run! log_level: log_level
+begin
+  Chook::Server.run! log_level: log_level
+rescue => e
+  Chook.logger.fatal e.to_s
+  e.backtrace.each { |line| Chook.logger.fatal "..#{line}" }
+end

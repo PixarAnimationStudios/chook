@@ -50,14 +50,18 @@ module Chook
       # the current config, for the admin page
       @config_text =
         if Chook::Configuration::DEFAULT_CONF_FILE.file?
+          @config_src = Chook::Configuration::DEFAULT_CONF_FILE.to_s
           Chook::Configuration::DEFAULT_CONF_FILE.read
 
         elsif Chook::Configuration::SAMPLE_CONF_FILE.file?
+          @config_src = "Using default values, showing sample config file at #{Chook::Configuration::SAMPLE_CONF_FILE}"
           Chook::Configuration::SAMPLE_CONF_FILE.read
 
         else
-          "No #{Chook::Configuration::DEFAULT_CONF_FILE} or sample config file found."
+          @config_src = "No #{Chook::Configuration::DEFAULT_CONF_FILE} or sample config file found."
+          @config_src
         end
+
       haml :admin
     end # get /
 

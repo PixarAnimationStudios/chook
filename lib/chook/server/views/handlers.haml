@@ -6,7 +6,8 @@
   &nbsp;&nbsp;&nbsp;&nbsp;
 
   Current Webhook Handlers (#{@handlers_for_admin_page.size})
-  &nbsp;&nbsp;&nbsp;&nbsp;
+
+#handlers_div
 
   Handler Directory:
   %span.monospaced= Chook.config.handler_dir.to_s
@@ -16,8 +17,6 @@
     Reload
   &nbsp;&nbsp;
   %span#reloaded_notification
-
-#handlers_div
 
   %table#handlers_table
     %tr#handlers_table_header_row

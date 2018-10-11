@@ -10,13 +10,6 @@
 # Blank lines and those starting with # are ignored.
 
 #################
-# The webserver engine to use. either 'thin' (preferred for production)
-# or 'webrick' (built-in to Ruby)
-# Default: webrick
-#
-engine: webrick
-
-#################
 # The port used by the server.
 # Default: 443 when use_ssl is true, 80 otherwise
 #
@@ -73,16 +66,18 @@ log_file: /var/log/chook-server.log
 log_level: info
 
 #################
+# How many old log files to keep when rotating?
+# Set to 0, or don't set at all, to disable auto-rotating
+# of log files.
+# Default: 10
+#
+logs_to_keep: 10
+
+#################
 # The log file rotates automatically when it reaches this size in megabytes.
 # Default: 10
 #
 log_max_megs: 10
-
-#################
-# How many old log files to keep when rotating?
-# Default: 10
-#
-logs_to_keep: 10
 
 #################
 # Any value here will turn on 'HTTP Basic Authentication' and this will be the username

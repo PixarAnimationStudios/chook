@@ -41,9 +41,10 @@ module Chook
     #   https://user:passwd@chookserver.myorg.org:443/log
     #
     post '/log' do
-      # protected!
+      protected!
       request.body.rewind # in case someone already read it
       raw = request.body.read
+
       begin
         logentry = JSON.parse raw, symbolize_names: true
         raise if logentry[:level].to_s.empty? || logentry[:message].to_s.empty?
@@ -69,9 +70,9 @@ module Chook
     #
     # See also logstream.js and views/admin.haml
     #
-    # TODO: add protected!
     #
     get '/subscribe_to_log_stream', provides: 'text/event-stream' do
+      protected!
       content_type 'text/event-stream'
       cache_control 'no-cache'
 
@@ -92,6 +93,12 @@ module Chook
       Chook.logger.level = level
       Chook.logger.unknown "Log level changed, now: #{level}"
       { result: 'level changed', level: level }.to_json
+    end
+
+    # get the log level via the admin page.
+    get '/current_log_level' do
+      protected!
+      Chook::Server::Log::LOG_LEVELS.invert[Chook.logger.level].to_s
     end
 
   end # class

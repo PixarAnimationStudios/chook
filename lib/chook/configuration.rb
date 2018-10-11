@@ -43,7 +43,6 @@ module Chook
     # For descriptions of the keys, see data/chook.conf.example
     #
     CONF_KEYS = {
-      engine:  :to_sym,
       port: :to_i,
       concurrency: Chook::Procs::STRING_TO_BOOLEAN,
       handler_dir: Chook::Procs::STRING_TO_PATHNAME,
