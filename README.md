@@ -1,7 +1,7 @@
 
 # Chook
 
-Documentation is a work in progress. Please get in touch for assistance. <3
+Documentation is a work in progress. Please [get in touch](mailto:chook@pixar.com) for assistance. <3
 
 - [Introduction](#introduction)
 - [Installing Chook](#installing-chook)
