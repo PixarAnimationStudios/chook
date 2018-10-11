@@ -200,9 +200,16 @@ module Chook
 
   end # server
 
-  # access from everywhere as Chook.log
+  # access from everywhere as Chook.logger
   def self.logger
     Server::Log.logger
+  end
+
+  # log an exception - multiple log lines
+  # the first being the error message the rest being indented backtrace
+  def self.log_exception(exception)
+    logger.error exception.to_s
+    exception.backtrace.each { |l| logger.error "..#{l}" }
   end
 
 end # Chook

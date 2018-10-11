@@ -362,6 +362,10 @@ instance, which provides 5 severity levels: fatal (lowest), error, warn, info, a
 The `log_level` config setting defines the level when the server starts up, and log
 messages of that level or lower will be written to the log.
 
+The logger is generally available via `Chook.logger`. If you want to log an exeption with its backtrace, you can use `Chook.log_exception exception` to get the Exception class, message, and backtrace in the log.
+
+However, for logging from inside handlers, read on...
+
 #### Logging from handlers
 
 **Internal handlers**
@@ -376,6 +380,9 @@ Chook.event_handler do |event|
   event.logger.error "This line appears in the log if the level is error, warn, info, or debug"
 end
 ```
+
+If you want to log an exeption with its backtrace, you can pass the entire exception to the
+event loggers  'log_exception' method:  `event.logger.log_exception exception`
 
 Log entries written through event objects are preceded with 'Event *event_id*'  where *event_id* is
 an internal ID number for the specific even that wrote the entry.

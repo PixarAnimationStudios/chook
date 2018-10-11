@@ -74,6 +74,13 @@ module Chook
       Chook::Server::Log.logger.unknown event_message(msg)
     end
 
+    # log an exception - multiple log lines
+    # the first being the error message the rest being indented backtrace
+    def log_exception(exception)
+      error "#{exception.class}: #{exception}"
+      exception.backtrace.each { |l| error "..#{l}" }
+    end
+
   end # class HandledEventLogger
 
 end # module
