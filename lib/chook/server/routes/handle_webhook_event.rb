@@ -48,7 +48,7 @@ module Chook
 
         result = event.handle
 
-        event.logger.info "END Result: #{result}"
+        event.logger.info "END #{result}"
       end
       result
     end # post

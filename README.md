@@ -28,7 +28,7 @@ a management tool for Apple devices.
 Chook also provides a simple, sinatra-based HTTP server for handling those Events,
 and classes for sending simulated TestEvents to a webhook handling server.
 
-** You do not need to be a Ruby developer to use Chook! **
+**You do not need to be a Ruby developer to use Chook!**
 
 The webhook handling server that comes with Chook can use "Event Handlers" written in
 any language. See _Event Handlers_ and _The Server_ below for more information.

@@ -20,12 +20,12 @@ Gem::Specification.new do |s|
 
   s.authors     = ['Chris Lasell', 'Aurica Hayes']
   s.email       = 'chook@pixar.com'
+  s.homepage    = 'https://github.com/PixarAnimationStudios/chook'
+
   s.files       = Dir['lib/**/*']
   s.files      += Dir['data/**/*']
   s.files      += Dir['bin/**/*']
-  s.homepage    = 'https://github.com/PixarAnimationStudios/chook'
-
-  # Executables
+  s.extra_rdoc_files = ['README.md', 'LICENSE.txt', 'CHANGES.md']
   s.executables << 'chook-server'
 
   # Dependencies

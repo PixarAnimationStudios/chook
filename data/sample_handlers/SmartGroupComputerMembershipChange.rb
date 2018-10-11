@@ -23,7 +23,6 @@
 ###
 ###
 
-
 Chook.event_handler do |event|
   event.logger.debug "Computer Smart Group Changed: #{event.subject.name}"
   event.logger.debug "  Additions: #{event.subject.groupAddedDevicesIds.join ', '}"
