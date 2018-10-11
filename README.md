@@ -24,7 +24,7 @@ Documentation is a work in progress. Please [get in touch](mailto:chook@pixar.co
 
 Chook is a Ruby module that implements a framework for working with webhook events
 sent by the JSS, the core of [Jamf Pro](https://www.jamf.com/products/jamf-pro/),
-a management tool for Apple devices.
+a management tool for Apple devices!
 
 Chook also provides a simple, sinatra-based HTTP server for handling those Events,
 and classes for sending simulated TestEvents to a webhook handling server.
