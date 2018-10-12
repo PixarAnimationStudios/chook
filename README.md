@@ -136,45 +136,70 @@ a handler for a Chook::ComputerAddedEvent
 Chook.event_handler do |event|
   cname = event.subject.deviceName
   uname = event.subject.realName
-  puts "Computer '#{cname}' was just added to the JSS for user #{uname}."
+  event.logger.info "Computer '#{cname}' was just added to the JSS for user #{uname}."
 end
 ```
 
-In this example, the code block takes one parameter, which it expects to be
-a Chook::ComputerAddedEvent instance, and uses it in the variable "event."
+The code block takes one parameter, which will be a Chook::ComputerAddedEvent instance,
+and in this example stores it in the variable "event."
+
 It then extracts the "deviceName" and "realName" values from the subject
-contained in the event, and uses them to send a message to stdout.
+contained in the event, and uses them to log a message in the chook log.
+
+**NameSpacing**
 
 Be careful when writing internal handlers - they all run in the same Ruby process!
 
 Not only do they have to be thread-safe, but be wary of cluttering the default
 namespace with constants that might overwrite each other.
 
-A good practice is to put the guts of your code into a Module or a Class
-and use that from inside the handler definition. Here's an example
-of using a module.
+A good, very ruby-like, practice is to put the guts of your code into a Module or a Class
+and use that from inside the handler definition. Here's an example using a Class:
 
 ```ruby
 require 'slack-em' # ficticious Slack-chat gem, for demonstation purposes
 
-module ComputerAdded
+class ComputerAdder
 
   SLACK_CHANNEL = '#mac-notifications'
 
-  def self.notify_admins(event)
-    cname = event.subject.deviceName
-    uname = event.subject.realName
-    SlackEm.send "Computer '#{cname}' was just added to the JSS for user #{uname}.", SLACK_CHANNEL
+  def initialize(event)
+    @event = event
+    @cname = @event.subject.deviceName
+  end
+
+  def run
+    @event.logger.info "Adder Starting for computer #{@cname}"
+    notify_admins
+    @event.logger.info "Adder Finished for computer #{@cname}"
+  end
+
+  def notify_admins
+    SlackEm.send message: "Computer '#{@cname}' was just added to the JSS for user #{@event.subject.realName}.", channel: SLACK_CHANNEL
+    @event.logger.debug "Admins notified about computer #{@cname}"
   end
 
 end
 
 Chook.event_handler do |event|
-  ComputerAdded.notify_admins event
+  ComputerAddeder.new(event).run
 end
 ```
 
-Internal handlers **must not** be executable files. Executability is how the
+Here, the handler file defines a 'ComputerAdder' class that does all the work.
+The handler block merely creates an instance of ComputerAdder with the event,
+and tells the ComputerAdder instance to run. The instance's run method can
+then perform any steps desired.
+
+In this example, the SLACK_CHANNEL constant is defined inside the ComputerAdder class.
+Access to it from inside the class is done using just the constant itself. If you
+need to access that particular value from outside of the class, you can
+use ComputerAdder::SLACK_CHANNEL.
+
+This way, similar handlers can have their own SLACK_CHANNEL constants and
+there won't be any interference.
+
+NOTE: Internal handlers **must not** be executable files. Executability is how the
 framework determines if a handler is internal or external.
 
 #### External Handlers
