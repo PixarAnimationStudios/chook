@@ -8,6 +8,8 @@
     "name": "OddMobileDevs",
     "smartGroup": true,
     "jssid": 99,
-    "computer": false
+    "computer": false,
+    "groupAddedDevicesIds": [1,2,3,4,5],
+    "groupRemovedDevicesIds": [6,7,8,9,10]
   }
 }

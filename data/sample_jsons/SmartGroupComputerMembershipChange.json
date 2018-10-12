@@ -8,6 +8,8 @@
     "name": "OddComputers",
     "smartGroup": true,
     "jssid": 95,
-    "computer": true
+    "computer": true,
+    "groupAddedDevicesIds": [1,2,3,4,5],
+    "groupRemovedDevicesIds": [6,7,8,9,10]
   }
 }
