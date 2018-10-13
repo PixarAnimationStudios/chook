@@ -144,7 +144,7 @@ module Chook
     end
 
     def handle_with_proc(handler)
-      logger.debug "Event #{object_id}: Running Handler defined in #{handler.handler_file}"
+      logger.debug "Running Handler defined in #{handler.handler_file}"
       handler.handle self
     end
 

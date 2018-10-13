@@ -170,11 +170,11 @@ module Chook
       # @return [void]
       #
       def self.load_handler(from_file)
-        Chook.logger.debug "Starting load of handler file '#{from_file}'"
+        Chook.logger.debug "Starting load of handler file '#{from_file.basename}'"
         handler_file = Pathname.new from_file
         event_name = event_name_from_handler_filename(handler_file)
         unless event_name
-          Chook.logger.debug "Ignoring file '#{from_file}'"
+          Chook.logger.debug "Ignoring file '#{from_file.basename}'"
           return
         end
 
@@ -240,8 +240,9 @@ module Chook
       # @return [String,nil] The matching event name or nil if no match
       #
       def self.event_name_from_handler_filename(filename)
+        filename = filename.basename
         @event_names ||= Chook::Event::EVENTS.keys
-        desired_event_name = filename.basename.to_s.split(/\.|-|_/).first
+        desired_event_name = filename.to_s.split(/\.|-|_/).first
         ename = @event_names.select { |n| desired_event_name.casecmp(n).zero? }.first
         if ename
           Chook.logger.debug "Found event name '#{ename}' at start of filename '#{filename}'"
