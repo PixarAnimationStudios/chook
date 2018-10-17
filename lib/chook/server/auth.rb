@@ -47,6 +47,7 @@ module Chook
       #
 
       def protected!
+  puts "protecting #{request.path_info}"
         # don't protect if user isn't defined
         return unless Chook.config.webhooks_user
         return if authorized?
