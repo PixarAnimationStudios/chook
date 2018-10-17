@@ -31,13 +31,13 @@ module Chook
     # reload the handlers
     get '/logout' do
       protected!
-      redirect '/'
+      'Logged Out - shouldnt see this'
     end # get /
 
     # reload the handlers
     get '/login' do
-      puts "LOGIN"
-      redirect '/'
+      Chook.logger.debug 'Showing "Logged Out" page'
+      body 'Logged Out'
     end # get /
 
 

@@ -49,20 +49,21 @@ module Chook
       def protected!
         # don't protect if user isn't defined
         return unless Chook.config.webhooks_user
-        headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
         return if authorized?
+        headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
         halt 401, "Not authorized\n"
       end
 
       def authorized?
         @auth ||= Rack::Auth::Basic::Request.new(request.env)
-
+puts  @auth.credentials
         # gotta have basic auth presented to us
         unless @auth.provided? && @auth.basic? && @auth.credentials
           Chook.logger.debug "No basic auth provided on protected route: #{request.path_info} from: #{request.ip}"
           return false
         end
-
+puts @auth.credentials.first
+puts @auth.credentials.last
         # the logout user at the logout route always gets false
         if @auth.credentials.first == Chook::Server::Auth::LOG_OUT_USER && \
            request.path_info == Chook::Server::Auth::LOG_OUT_ROUTE
