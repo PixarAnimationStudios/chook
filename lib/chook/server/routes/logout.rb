@@ -36,6 +36,7 @@ module Chook
 
     # reload the handlers
     get '/login' do
+      puts "LOGIN"
       redirect '/'
     end # get /
 
