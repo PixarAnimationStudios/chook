@@ -88,6 +88,7 @@ module Chook
 
     # set the log level via the admin page.
     put '/set_log_level/:level' do
+      protected!
       level = params[:level].to_sym
       level = :unknown unless Chook::Server::Log::LOG_LEVELS.key? level
       Chook.logger.level = level

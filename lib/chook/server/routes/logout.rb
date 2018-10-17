@@ -34,6 +34,12 @@ module Chook
       redirect '/'
     end # get /
 
+    # reload the handlers
+    get '/login' do
+      redirect '/'
+    end # get /
+
+
   end # class
 
 end # module
