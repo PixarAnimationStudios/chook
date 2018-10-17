@@ -49,14 +49,14 @@ module Chook
       def authorized?
         @auth ||= Rack::Auth::Basic::Request.new(request.env)
         # gotta have basic auth presented to us
-        return false unless \
-          @auth.provided? && \
-          @auth.basic? && \
-          @auth.credentials
+        unless @auth.provided? && @auth.basic? && @auth.credentials
+          Chook.logger.debug 'No basic auth provided on protected page'
+          return false
+        end
 
         # the webhooks user?
         if @auth.credentials.first == Chook.config.webhooks_user
-          @auth.credentials.last == Chook::Server.webhooks_user_pw
+          authenticate_webhooks_user @auth.credentials
 
         # a Jamf admin?
         elsif Chook.config.auth_via_jamf_server
@@ -68,6 +68,16 @@ module Chook
         end # if
       end # authorized?
 
+      def authenticate_webhooks_user(creds)
+        if creds.last == Chook::Server.webhooks_user_pw
+          Chook.logger.debug "Got basic auth for webhooks user: #{Chook.config.webhooks_user}"
+          true
+        else
+          Chook.logger.warn "FAILED basic auth for webhooks user: #{Chook.config.webhooks_user}"
+          false
+        end
+      end # authenticate_webhooks_user
+
       def authenticate_jamf_admin(creds)
         require 'ruby-jss'
         JSS::APIConnection.new(
@@ -78,8 +88,10 @@ module Chook
           use_ssl: Chook.config.jamf_use_ssl,
           verify_cert: Chook.config.jamf_verify_cert
         )
+        Chook.logger.info "Jamf Admin login for: #{creds.first}"
         true
       rescue JSS::AuthenticationError
+        Chook.logger.warn "Jamf Admin login FAILED for: #{creds.first}"
         false
       end # authenticate_jamf_admin
 
