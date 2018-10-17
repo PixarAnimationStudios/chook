@@ -60,7 +60,7 @@ module Chook
 
         # gotta have basic auth presented to us
         unless @auth.provided? && @auth.basic? && @auth.credentials
-          Chook.logger.debug 'No basic auth provided on protected page'
+          Chook.logger.debug "No basic auth provided on protected route: #{request.path_info} from: #{request.ip}"
           return false
         end
 
