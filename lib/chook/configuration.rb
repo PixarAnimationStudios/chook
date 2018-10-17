@@ -54,7 +54,11 @@ module Chook
       log_max_megs:  :to_i,
       logs_to_keep: :to_i,
       webhooks_user: nil,
-      webhooks_user_pw: nil
+      webhooks_user_pw: nil,
+      auth_via_jamf_server: nil,
+      jamf_port: :to_i,
+      jamf_use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
+      jamf_verify_cert: Chook::Procs::STRING_TO_BOOLEAN
     }.freeze
 
     # Class Variables

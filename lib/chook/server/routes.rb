@@ -48,12 +48,42 @@ module Chook
 
       def authorized?
         @auth ||= Rack::Auth::Basic::Request.new(request.env)
-        @auth.provided? && \
+        # gotta have basic auth presented to us
+        return false unless \
+          @auth.provided? && \
           @auth.basic? && \
-          @auth.credentials && \
-          @auth.credentials == [Chook.config.webhooks_user, Chook::Server.webhooks_user_pw]
-      end
-    end
+          @auth.credentials
+
+        # the webhooks user?
+        if @auth.credentials.first == Chook.config.webhooks_user
+          @auth.credentials.last == Chook::Server.webhooks_user_pw
+
+        # a Jamf admin?
+        elsif Chook.config.auth_via_jamf_server
+          authenticate_jamf_admin @auth.credentials
+
+        # we shouldn't be here
+        else
+          false
+        end # if
+      end # authorized?
+
+      def authenticate_jamf_admin(creds)
+        require 'ruby-jss'
+        JSS::APIConnection.new(
+          user: creds.first,
+          pw: creds.last,
+          server: Chook.config.auth_via_jamf_server,
+          port: Chook.config.jamf_port,
+          use_ssl: Chook.config.jamf_use_ssl,
+          verify_cert: Chook.config.jamf_verify_cert
+        )
+        true
+      rescue JSS::AuthenticationError
+        false
+      end # authenticate_jamf_admin
+
+    end # helpers do
 
     # log errors in production (in dev, they go to stdout and the browser)
     error do
