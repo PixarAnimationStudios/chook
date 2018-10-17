@@ -85,10 +85,10 @@ module Chook
 
       def authenticate_webhooks_user(creds)
         if creds.last == Chook::Server.webhooks_user_pw
-          Chook.logger.debug "Got basic auth for webhooks user: #{Chook.config.webhooks_user}@#{request.ip}, route: #{request.path_info}"
+          Chook.logger.debug "Got auth for webhooks user: #{Chook.config.webhooks_user}@#{request.ip}, route: #{request.path_info}"
           true
         else
-          Chook.logger.warn "FAILED basic auth for webhooks user: #{Chook.config.webhooks_user}@#{request.ip}, route: #{request.path_info}"
+          Chook.logger.warn "FAILED auth for webhooks user: #{Chook.config.webhooks_user}@#{request.ip}, route: #{request.path_info}"
           false
         end
       end # authenticate_webhooks_user
