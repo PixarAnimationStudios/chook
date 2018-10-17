@@ -25,10 +25,11 @@
 
 require 'sinatra/base'
 require 'sinatra/custom_logger'
-# require 'haml'
+require 'haml'
 require 'openssl'
 require 'chook/event_handling'
 require 'chook/server/log'
+require 'chook/server/auth'
 require 'chook/server/routes'
 
 module Chook

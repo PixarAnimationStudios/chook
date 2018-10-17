@@ -25,22 +25,15 @@
 
 module Chook
 
-  # the server
+  # see server.rb
   class Server < Sinatra::Base
 
-    # log errors in production (in dev, they go to stdout and the browser)
-    error do
-      logger.error "ERROR: #{env['sinatra.error'].message}"
-      env['sinatra.error'].backtrace.each { |l| logger.error "..#{l}" }
-      500
-    end
+    # reload the handlers
+    get '/logout' do
+      protected!
+      redirect '/'
+    end # get /
 
-  end # server
+  end # class
 
-end # Chook
-
-require 'chook/server/routes/home'
-require 'chook/server/routes/handle_webhook_event'
-require 'chook/server/routes/handlers'
-require 'chook/server/routes/logout'
-require 'chook/server/routes/log'
+end # module
