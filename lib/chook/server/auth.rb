@@ -64,8 +64,10 @@ module Chook
           return false
         end
 
-        # the logout user always gets false
-        if @auth.credentials.first == Chook::Server::Auth::LOG_OUT_USER
+        # the logout user at the logout route always gets false
+        if @auth.credentials.first == Chook::Server::Auth::LOG_OUT_USER && \
+           request.path_info == LOG_OUT_ROUTE
+
           Chook.logger.debug "Logging out Basic Auth for IP: #{request.ip}"
           false
 
