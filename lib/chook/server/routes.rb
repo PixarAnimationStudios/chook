@@ -70,10 +70,10 @@ module Chook
 
       def authenticate_webhooks_user(creds)
         if creds.last == Chook::Server.webhooks_user_pw
-          Chook.logger.debug "Got basic auth for webhooks user: #{Chook.config.webhooks_user}"
+          Chook.logger.debug "Got basic auth for webhooks user: #{Chook.config.webhooks_user}, route: #{request.path_info}"
           true
         else
-          Chook.logger.warn "FAILED basic auth for webhooks user: #{Chook.config.webhooks_user}"
+          Chook.logger.warn "FAILED basic auth for webhooks user: #{Chook.config.webhooks_user}, route: #{request.path_info}"
           false
         end
       end # authenticate_webhooks_user
@@ -88,10 +88,10 @@ module Chook
           use_ssl: Chook.config.jamf_use_ssl,
           verify_cert: Chook.config.jamf_verify_cert
         )
-        Chook.logger.info "Jamf Admin login for: #{creds.first}"
+        Chook.logger.debug "Jamf Admin auth for: #{creds.first}, route: #{request.path_info}"
         true
       rescue JSS::AuthenticationError
-        Chook.logger.warn "Jamf Admin login FAILED for: #{creds.first}"
+        Chook.logger.warn "Jamf Admin auth FAILED for: #{creds.first}, route: #{request.path_info}"
         false
       end # authenticate_jamf_admin
 
