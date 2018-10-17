@@ -34,6 +34,8 @@
               %span.def_dialect Australian/NZ informal
               %br/
               %span.def_definition a chicken or fowl
-
+    #logout_btn_div
+      %button#logout_btn{ type: 'button', onClick: 'logout();', title: 'Reset Basic Auth to login again' }
+        Log Out
 
     = yield

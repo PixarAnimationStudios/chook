@@ -28,6 +28,10 @@ module Chook
   # the server
   class Server < Sinatra::Base
 
+    # an auth attempt with this user always fails, which
+    # resets the browser to prompt again
+    LOG_OUT_USER = 'LOG_OUT'.freeze
+
     # These two helpers let us decude which routes need
     # http basic auth and which don't
     #
@@ -48,14 +52,20 @@ module Chook
 
       def authorized?
         @auth ||= Rack::Auth::Basic::Request.new(request.env)
+
         # gotta have basic auth presented to us
         unless @auth.provided? && @auth.basic? && @auth.credentials
           Chook.logger.debug 'No basic auth provided on protected page'
           return false
         end
 
+        # the logout user always gets false
+        if @auth.credentials.first == Chook::Server::LOG_OUT_USER
+          Chook.logger.debug "Logging out Basic Auth for IP: #{request.ip}"
+          false
+
         # the webhooks user?
-        if @auth.credentials.first == Chook.config.webhooks_user
+        elsif @auth.credentials.first == Chook.config.webhooks_user
           authenticate_webhooks_user @auth.credentials
 
         # a Jamf admin?
@@ -70,10 +80,10 @@ module Chook
 
       def authenticate_webhooks_user(creds)
         if creds.last == Chook::Server.webhooks_user_pw
-          Chook.logger.debug "Got basic auth for webhooks user: #{Chook.config.webhooks_user}, route: #{request.path_info}"
+          Chook.logger.debug "Got basic auth for webhooks user: #{Chook.config.webhooks_user}@#{request.ip}, route: #{request.path_info}"
           true
         else
-          Chook.logger.warn "FAILED basic auth for webhooks user: #{Chook.config.webhooks_user}, route: #{request.path_info}"
+          Chook.logger.warn "FAILED basic auth for webhooks user: #{Chook.config.webhooks_user}@#{request.ip}, route: #{request.path_info}"
           false
         end
       end # authenticate_webhooks_user
@@ -88,10 +98,10 @@ module Chook
           use_ssl: Chook.config.jamf_use_ssl,
           verify_cert: Chook.config.jamf_verify_cert
         )
-        Chook.logger.debug "Jamf Admin auth for: #{creds.first}, route: #{request.path_info}"
+        Chook.logger.debug "Jamf Admin auth for: #{creds.first}@#{request.ip}, route: #{request.path_info}"
         true
       rescue JSS::AuthenticationError
-        Chook.logger.warn "Jamf Admin auth FAILED for: #{creds.first}, route: #{request.path_info}"
+        Chook.logger.warn "Jamf Admin auth FAILED for: #{creds.first}@#{request.ip}, route: #{request.path_info}"
         false
       end # authenticate_jamf_admin
 
