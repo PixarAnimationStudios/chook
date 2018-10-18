@@ -55,10 +55,12 @@ module Chook
       logs_to_keep: :to_i,
       webhooks_user: nil,
       webhooks_user_pw: nil,
-      auth_via_jamf_server: nil,
+      admin_user: nil, # if 'use_jamf'
+      admin_pw: nil,
       jamf_port: :to_i,
       jamf_use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
-      jamf_verify_cert: Chook::Procs::STRING_TO_BOOLEAN
+      jamf_verify_cert: Chook::Procs::STRING_TO_BOOLEAN,
+      jamf_session_expires: :to_i
     }.freeze
 
     # Class Variables

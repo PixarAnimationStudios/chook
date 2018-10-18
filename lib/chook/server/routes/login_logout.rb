@@ -30,14 +30,16 @@ module Chook
 
     # reload the handlers
     get '/logout' do
-      protected!
-      'Logged Out - shouldnt see this'
+      session[:authed_jamf_admin] = nil
+      @logged_out = true
+      haml :admin
     end # get /
 
     # reload the handlers
-    get '/login' do
-      Chook.logger.debug 'Showing "Logged Out" page'
-      body 'Logged Out'
+    post '/login' do
+      Chook.logger.debug "Attempting to log in #{params[:username]}"
+      @auth_failed = !authenticate_admin(params[:username], params[:password])
+      haml :admin
     end # get /
 
 

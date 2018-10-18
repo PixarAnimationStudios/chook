@@ -41,9 +41,11 @@ module Chook
     DEFAULT_PORT = 80
     DEFAULT_SSL_PORT = 443
     DEFAULT_CONCURRENCY = true
+    DEFAULT_SESSION_EXPIRE = 24 * 60 * 60 # one day
 
     # set defaults in config
     Chook.config.port ||= Chook.config.use_ssl ? DEFAULT_SSL_PORT : DEFAULT_PORT
+    Chook.config.jamf_session_expires ||= DEFAULT_SESSION_EXPIRE
 
     # can't use ||= here cuz nil and false have different meanings
     Chook.config.concurrency = DEFAULT_CONCURRENCY if Chook.config.concurrency.nil?
@@ -62,6 +64,7 @@ module Chook
         set :show_exceptions, :after_handler if development?
         set :root, "#{File.dirname __FILE__}/server"
         enable :static
+        enable :sessions, expire_after: Chook.config.jamf_session_expires if Chook.config.auth_via_jamf_server
         enable :lock unless Chook.config.concurrency
       end # configure
 
@@ -80,39 +83,6 @@ module Chook
         super
       end # if use ssl
     end # self.run
-
-    # Learn the client password, if we're using basic auth
-    ###################################
-    def self.webhooks_user_pw
-      return @webhooks_user_pw if @webhooks_user_pw
-      return nil unless Chook.config.webhooks_user_pw
-
-      setting = Chook.config.webhooks_user_pw
-
-      @webhooks_user_pw =
-        if setting.end_with? '|'
-          # if the path ends with a pipe, its a command that will
-          # return the desired password, so remove the pipe,
-          # execute it, and return stdout from it.
-          cmd = setting.chomp '|'
-          output = `#{cmd} 2>&1`.chomp
-          raise "Can't get webhooks user password: #{output}" unless $CHILD_STATUS.exitstatus.zero?
-          output
-
-        else
-          # otherwise its a file path, and read the pw from the contents
-          file = Pathname.new setting
-          return nil unless file.file?
-          stat = file.stat
-          mode = format('%o', stat.mode)
-          raise 'Password file for webhooks user has insecure mode, must be 0600.' unless mode.end_with?('0600')
-          raise "Password file for webhooks user has insecure owner, must be owned by UID #{Process.euid}." unless stat.owned?
-
-          # chomping an empty string removes all trailing \n's and \r\n's
-          file.read.chomp('')
-
-        end # if else
-    end # self.webhooks_user_pw
 
   end # class server
 

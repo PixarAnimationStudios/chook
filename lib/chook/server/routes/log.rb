@@ -41,7 +41,6 @@ module Chook
     #   https://user:passwd@chookserver.myorg.org:443/log
     #
     post '/log' do
-      protected!
       request.body.rewind # in case someone already read it
       raw = request.body.read
 
@@ -72,7 +71,6 @@ module Chook
     #
     #
     get '/subscribe_to_log_stream', provides: 'text/event-stream' do
-      protected!
       content_type 'text/event-stream'
       cache_control 'no-cache'
 
@@ -88,7 +86,6 @@ module Chook
 
     # set the log level via the admin page.
     put '/set_log_level/:level' do
-      protected!
       level = params[:level].to_sym
       level = :unknown unless Chook::Server::Log::LOG_LEVELS.key? level
       Chook.logger.level = level
@@ -98,7 +95,6 @@ module Chook
 
     # get the log level via the admin page.
     get '/current_log_level' do
-      protected!
       Chook::Server::Log::LOG_LEVELS.invert[Chook.logger.level].to_s
     end
 

@@ -28,6 +28,13 @@ module Chook
   # the server
   class Server < Sinatra::Base
 
+    HANDLE_EVENT_ROUTE = '/handle_webhook_event'.freeze
+
+    before do
+      break if request.path_info == Chook::Server::HANDLE_EVENT_ROUTE
+      redirect '/' unless session[:authed_jamf_admin]
+    end
+
     # log errors in production (in dev, they go to stdout and the browser)
     error do
       logger.error "ERROR: #{env['sinatra.error'].message}"
@@ -42,5 +49,5 @@ end # Chook
 require 'chook/server/routes/home'
 require 'chook/server/routes/handle_webhook_event'
 require 'chook/server/routes/handlers'
-require 'chook/server/routes/logout'
+require 'chook/server/routes/login_logout'
 require 'chook/server/routes/log'

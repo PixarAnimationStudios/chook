@@ -29,7 +29,6 @@ module Chook
   class Server < Sinatra::Base
 
     get '/' do
-      protected!
 
       # a list of current handlers for the admin page
       @handlers_for_admin_page = []

@@ -28,9 +28,9 @@ module Chook
   # see server.rb
   class Server < Sinatra::Base
 
-    post '/handle_webhook_event' do
+    post Chook::Server::HANDLE_EVENT_ROUTE do
       # enforce http basic auth if needed
-      protected!
+      protect_webooks!
 
       # rewind to ensure read-pointer is at the start
       request.body.rewind #

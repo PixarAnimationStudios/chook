@@ -34,8 +34,24 @@
               %span.def_dialect Australian/NZ informal
               %br/
               %span.def_definition a chicken or fowl
-    #logout_btn_div
-      %button#logout_btn{ type: 'button', onClick: 'logout();', title: 'Reset Basic Auth to login again' }
-        Log Out
 
-    = yield
+    - if Chook.config.auth_via_jamf_server
+      #login_logout_div
+
+      - if session[:authed_jamf_admin]
+
+        %button#logout_btn{ type: 'button', onClick: 'logout();', title: 'Reset Basic Auth to login again' }
+          Log Out
+        = yield
+
+      - else
+        %form#login_form{ name: 'login_form', method: 'POST', action: '/login' }
+          Jamf Pro User name:
+          %input#username{ type: :text, name: 'username' }
+          Password:
+          %input#password{ type: :password, name: 'password' }
+          %input#login_btn{ type: :submit }
+            Log In
+
+    - else
+      = yield
