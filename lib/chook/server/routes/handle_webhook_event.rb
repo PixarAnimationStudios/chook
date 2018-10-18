@@ -28,7 +28,7 @@ module Chook
   # see server.rb
   class Server < Sinatra::Base
 
-    post Chook::Server::HANDLE_EVENT_ROUTE do
+    post '/handle_webhook_event' do
       # enforce http basic auth if needed
       protect_webooks!
 
