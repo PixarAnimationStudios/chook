@@ -57,7 +57,7 @@ module Chook
       webhooks_user_pw: nil,
       admin_user: nil, # if 'use_jamf'
       admin_pw: nil,
-      jamf_server: nil
+      jamf_server: nil,
       jamf_port: :to_i,
       jamf_use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
       jamf_verify_cert: Chook::Procs::STRING_TO_BOOLEAN,
