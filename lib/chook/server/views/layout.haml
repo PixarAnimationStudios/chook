@@ -35,7 +35,7 @@
               %br/
               %span.def_definition a chicken or fowl
 
-    - if Chook.config.auth_via_jamf_server
+    - if Chook.config.admin_user
       #login_logout_div
 
       - if session[:authed_jamf_admin]
@@ -45,6 +45,8 @@
         = yield
 
       - else
+        - if @auth_failed
+          Login Incorrect! &nbsp;&nbsp;&nbsp;
         %form#login_form{ name: 'login_form', method: 'POST', action: '/login' }
           Jamf Pro User name:
           %input#username{ type: :text, name: 'username' }
