@@ -89,7 +89,7 @@ module Chook
         JSS::APIConnection.new(
           user: user,
           pw: pw,
-          server: Chook.config.auth_via_jamf_server,
+          server: Chook.config.jamf_server,
           port: Chook.config.jamf_port,
           use_ssl: Chook.config.jamf_use_ssl,
           verify_cert: Chook.config.jamf_verify_cert

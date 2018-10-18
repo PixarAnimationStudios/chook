@@ -64,7 +64,8 @@ module Chook
         set :show_exceptions, :after_handler if development?
         set :root, "#{File.dirname __FILE__}/server"
         enable :static
-        enable :sessions, expire_after: Chook.config.jamf_session_expires if Chook.config.auth_via_jamf_server
+        enable :sessions
+        set :sessions, expire_after: Chook.config.jamf_session_expires if Chook.config.admin_user
         enable :lock unless Chook.config.concurrency
       end # configure
 

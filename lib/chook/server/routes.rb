@@ -32,7 +32,8 @@ module Chook
 
     before do
       break if request.path_info == Chook::Server::HANDLE_EVENT_ROUTE
-      redirect '/' unless session[:authed_jamf_admin]
+  #    break if request.path_info == '/' && session[:authed_jamf_admin]
+  #    redirect '/' unless session[:authed_jamf_admin]
     end
 
     # log errors in production (in dev, they go to stdout and the browser)

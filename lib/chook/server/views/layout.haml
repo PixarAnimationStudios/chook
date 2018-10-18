@@ -48,7 +48,9 @@
         - if @auth_failed
           Login Incorrect! &nbsp;&nbsp;&nbsp;
         %form#login_form{ name: 'login_form', method: 'POST', action: '/login' }
-          Jamf Pro User name:
+          - if Chook.config.admin_user == Chook::Server::Auth::USE_JAMF_ADMIN_USER
+            Jamf Pro
+          User name:
           %input#username{ type: :text, name: 'username' }
           Password:
           %input#password{ type: :password, name: 'password' }
