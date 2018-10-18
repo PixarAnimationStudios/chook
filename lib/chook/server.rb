@@ -45,7 +45,7 @@ module Chook
 
     # set defaults in config
     Chook.config.port ||= Chook.config.use_ssl ? DEFAULT_SSL_PORT : DEFAULT_PORT
-    Chook.config.jamf_session_expires ||= DEFAULT_SESSION_EXPIRE
+    Chook.config.admin_session_expires ||= DEFAULT_SESSION_EXPIRE
 
     # can't use ||= here cuz nil and false have different meanings
     Chook.config.concurrency = DEFAULT_CONCURRENCY if Chook.config.concurrency.nil?
@@ -53,6 +53,24 @@ module Chook
     # Run the server
     ###################################
     def self.run!(log_level: nil)
+      prep_to_run
+
+      if Chook.config.use_ssl
+        super do |server|
+          server.ssl = true
+          server.ssl_options = {
+            cert_chain_file: Chook.config.ssl_cert_path.to_s,
+            private_key_file: Chook.config.ssl_private_key_path.to_s,
+            verify_peer: false
+          }
+        end # super do
+
+      else # no ssl
+        super
+      end # if use ssl
+    end # self.run
+
+    def self.prep_to_run
       log_level ||= Chook.config.log_level
       @log_level = Chook::Procs::STRING_TO_LOG_LEVEL.call log_level
 
@@ -65,25 +83,12 @@ module Chook
         set :root, "#{File.dirname __FILE__}/server"
         enable :static
         enable :sessions
-        set :sessions, expire_after: Chook.config.jamf_session_expires if Chook.config.admin_user
+        set :sessions, expire_after: Chook.config.admin_session_expires if Chook.config.admin_user
         enable :lock unless Chook.config.concurrency
       end # configure
 
       Chook::HandledEvent::Handlers.load_handlers
-
-      if Chook.config.use_ssl
-        super do |server|
-          server.ssl = true
-          server.ssl_options = {
-            cert_chain_file: Chook.config.ssl_cert_path.to_s,
-            private_key_file: Chook.config.ssl_private_key_path.to_s,
-            verify_peer: false
-          }
-        end # super do
-      else
-        super
-      end # if use ssl
-    end # self.run
+    end # prep to run
 
   end # class server
 

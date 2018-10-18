@@ -139,12 +139,12 @@ module Chook
     end # def handle
 
     def pipe_to_executable(handler)
-      logger.debug "Sending JSON to stdin of '#{handler}'"
+      logger.debug "EXTERNAL: Sending JSON to stdin of '#{handler.basename}'"
       IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
     end
 
     def handle_with_proc(handler)
-      logger.debug "Running Handler defined in #{handler.handler_file}"
+      logger.debug "INTERNAL: Running Handler defined in #{handler.handler_file}"
       handler.handle self
     end
 

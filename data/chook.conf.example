@@ -80,9 +80,12 @@ logs_to_keep: 10
 log_max_megs: 10
 
 #################
-# Any value here will turn on 'HTTP Basic Authentication' and this will be the username
-# required to make any connection to the Chook server.
-# Leaving this empty will allow any connection without authentication
+# Any value here will turn on 'HTTP Basic Authentication' for webhooks,
+# and this will be the username required for a Jamf Pro server to send
+# webhooks to the Chook server.
+#
+# Leaving this empty will allow receiving of webooks with no authentication
+#
 # Default: none
 #
 webhooks_user:
@@ -102,3 +105,79 @@ webhooks_user:
 # Default: none
 #
 webhooks_user_pw:
+
+#################
+# Any value here will require authentication to view the admin web page.
+#
+# Leaving this empty will allow anyone to see the admin web page.
+#
+# If the value here is 'use_jamf' then anyone can log in with their
+# Jamf Pro credentials, and the admin_pw setting is ignored
+# (see the jamf_* settings below)
+#
+# If the value is anything else, it is the username required to
+# log in to the admin web page.
+#
+# Default: none
+#
+admin_user:
+
+#################
+# When admin page authentication is enabled by setting admin_user, this
+# tells chook how to learn the password for that user:
+#
+# - if the admin_user is 'use_jamf' then this is ignored, see the jamf_* settings below
+#
+# - If its a path to a file, the file contains the password and nothing else.
+#   The file must be owned by the user running the chook server, and must have
+#   mode 0600.
+#
+# - If it ends with a pipe character (|), everything execpt the pipe is considered
+#   to be a shell command, executable by the user running the chook server.
+#   The standard-output of the command will be the password.
+#
+# Default: none
+#
+admin_pw:
+
+#################
+# When admin page authentication is enabled by setting admin_user,
+# this is how many seconds before the browser session expires and the
+# admin must log in again.
+#
+# Default: 86400 (24 hours)
+#
+admin_session_expires: 86400
+
+#################
+# When the admin_user is 'use_jamf', this is the hostname of the
+# Jamf Pro server to use for authentication
+#
+# Default: none, but /etc/ruby-jss.conf will be honored
+#
+jamf_server:
+
+#################
+# When the admin_user is 'use_jamf', this is the port of the
+# Jamf Pro server to use for Authentication
+#
+# Default: none, but /etc/ruby-jss.conf will be honored
+#
+jamf_port:
+
+#################
+# When the admin_user is 'use_jamf', should SSL be used when
+# connection to the jamf_server? true or false
+#
+# Default: none, but /etc/ruby-jss.conf will be honored
+#
+jamf_use_ssl:
+
+#################
+# When the admin_user is 'use_jamf', and jamf_use_ssl is true,
+# should SSL certificates from the jamf server be
+# validated?
+#
+# Default: none, but /etc/ruby-jss.conf will be honored
+#
+jamf_verify_cert:

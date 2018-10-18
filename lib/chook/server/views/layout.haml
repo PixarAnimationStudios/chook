@@ -34,27 +34,26 @@
               %span.def_dialect Australian/NZ informal
               %br/
               %span.def_definition a chicken or fowl
-
+    %hr/
     - if Chook.config.admin_user
       #login_logout_div
 
-      - if session[:authed_jamf_admin]
-
-        %button#logout_btn{ type: 'button', onClick: 'logout();', title: 'Reset Basic Auth to login again' }
-          Log Out
+      - if session[:authed_admin]
+        %a{ href: '/logout' }
+          %button#logout_btn{ type: 'button' } Log Out
         = yield
 
       - else
-        - if @auth_failed
-          Login Incorrect! &nbsp;&nbsp;&nbsp;
         %form#login_form{ name: 'login_form', method: 'POST', action: '/login' }
           - if Chook.config.admin_user == Chook::Server::Auth::USE_JAMF_ADMIN_USER
             Jamf Pro
-          User name:
+          Username:
           %input#username{ type: :text, name: 'username' }
           Password:
           %input#password{ type: :password, name: 'password' }
           %input#login_btn{ type: :submit, value: 'Log In' }
+          - if session[:auth_failed]
+            %span#login_incorrect &nbsp;&nbsp;&nbsp; Login Incorrect!
 
     - else
       = yield

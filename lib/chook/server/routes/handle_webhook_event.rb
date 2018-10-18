@@ -30,7 +30,7 @@ module Chook
 
     post '/handle_webhook_event' do
       # enforce http basic auth if needed
-      protect_webooks!
+      protect_via_basic_auth!
 
       # rewind to ensure read-pointer is at the start
       request.body.rewind #

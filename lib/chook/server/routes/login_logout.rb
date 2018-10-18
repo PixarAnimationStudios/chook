@@ -30,16 +30,16 @@ module Chook
 
     # reload the handlers
     get '/logout' do
-      session[:authed_jamf_admin] = nil
-      @logged_out = true
-      haml :admin
+      session[:authed_admin] = nil
+      session[:auth_failed] = nil
+      redirect '/'
     end # get /
 
     # reload the handlers
     post '/login' do
       Chook.logger.debug "Attempting to log in #{params[:username]}"
-      @auth_failed = !authenticate_admin(params[:username], params[:password])
-      haml :admin
+      session[:auth_failed] = !authenticate_admin(params[:username], params[:password])
+      redirect '/'
     end # get /
 
 

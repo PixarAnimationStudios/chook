@@ -30,7 +30,6 @@ module Chook
 
     # reload the handlers
     get '/reload_handlers' do
-      protected!
       logger.info 'Reloading handlers'
       Chook::HandledEvent::Handlers.load_handlers reload: true
       'Handlers reloaded'
@@ -38,7 +37,6 @@ module Chook
 
     # used by javascript to fetch the content of a handler
     get '/handler_code/:file' do
-      protected!
       file = Chook.config.handler_dir + params[:file]
       if file.file?
         body file.read

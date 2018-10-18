@@ -33,7 +33,7 @@ module Chook
 
       USE_JAMF_ADMIN_USER = 'use_jamf'.freeze
 
-      def protect_webooks!
+      def protect_via_basic_auth!
         # don't protect if user isn't defined
         return unless Chook.config.webhooks_user
         return if webhook_user_authorized?
@@ -74,11 +74,11 @@ module Chook
       def authenticate_admin_user(user, pw)
         if user == Chook.config.admin_user && pw == Chook::Server.admin_user_pw
           Chook.logger.debug "Got auth for admin user: #{user}@#{request.ip}"
-          session[:authed_jamf_admin] = user
+          session[:authed_admin] = user
           true
         else
           Chook.logger.warn "FAILED auth for admin user: #{user}@#{request.ip}"
-          session[:authed_jamf_admin] = nil
+          session[:authed_admin] = nil
           false
         end
       end
@@ -96,11 +96,11 @@ module Chook
         )
         Chook.logger.debug "Jamf Admin login for: #{user}@#{request.ip}"
 
-        session[:authed_jamf_admin] = user
+        session[:authed_admin] = user
         true
       rescue JSS::AuthenticationError
         Chook.logger.warn "Jamf Admin login FAILED for: #{user}@#{request.ip}"
-        session[:authed_jamf_admin] = nil
+        session[:authed_admin] = nil
         false
       end # authenticate_jamf_admin
 

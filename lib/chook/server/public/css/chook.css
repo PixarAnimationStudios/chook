@@ -39,6 +39,10 @@
   font-size: 1.2em;
 }
 
+#login_incorrect {
+  color: red;
+}
+
 /* ******* Section Label Areas ******* */
 
 .section_label {

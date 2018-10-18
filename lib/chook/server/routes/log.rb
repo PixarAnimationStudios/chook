@@ -41,6 +41,8 @@ module Chook
     #   https://user:passwd@chookserver.myorg.org:443/log
     #
     post '/log' do
+      protect_via_basic_auth!
+
       request.body.rewind # in case someone already read it
       raw = request.body.read
 
