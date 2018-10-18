@@ -54,8 +54,7 @@
           %input#username{ type: :text, name: 'username' }
           Password:
           %input#password{ type: :password, name: 'password' }
-          %input#login_btn{ type: :submit }
-            Log In
+          %input#login_btn{ type: :submit, value: 'Log In' }
 
     - else
       = yield
