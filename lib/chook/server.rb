@@ -84,7 +84,11 @@ module Chook
         enable :static
         enable :sessions
         set :sessions, expire_after: Chook.config.admin_session_expires if Chook.config.admin_user
-        enable :lock unless Chook.config.concurrency
+        if Chook.config.concurrency
+          set :threaded, true
+        else
+          enable :lock
+        end
       end # configure
 
       Chook::HandledEvent::Handlers.load_handlers
