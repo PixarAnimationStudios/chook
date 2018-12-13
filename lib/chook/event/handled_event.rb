@@ -138,14 +138,19 @@ module Chook
       "Processed by #{handlers.count} handlers"
     end # def handle
 
+    # TODO: these threads will die midstream when the server stops.
+    # Find a way to .join them or otherwise clean them up.
+
     def pipe_to_executable(handler)
       logger.debug "EXTERNAL: Sending JSON to stdin of '#{handler.basename}'"
-      IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
+      _thread = Thread.new do
+        IO.popen([handler.to_s], 'w') { |h| h.puts @raw_json }
+      end
     end
 
     def handle_with_proc(handler)
       logger.debug "INTERNAL: Running Handler defined in #{handler.handler_file}"
-      handler.handle self
+      _thread = Thread.new { handler.call self }
     end
 
     def logger
