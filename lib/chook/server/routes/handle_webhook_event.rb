@@ -43,8 +43,7 @@ module Chook
       else
 
         event.logger.info "START From #{request.ip}, WebHook '#{event.webhook_name}' (id: #{event.webhook_id})"
-
-        event.logger.debug "JSON: #{raw_json}"
+        event.logger.debug "Thread id: #{Thread.current.object_id}; JSON: #{raw_json}"
 
         result = event.handle
 
