@@ -49,6 +49,12 @@ module Chook
 
         event.logger.info "END #{result}"
       end
+
+      # this route shouldn't have a session expiration
+      # And when it does, the date format is wrong, and the
+      # JAMFSoftwareServerLog complains about it for every
+      # webhook sent.
+      env['rack.session.options'].delete :expire_after
       result
     end # post
 
