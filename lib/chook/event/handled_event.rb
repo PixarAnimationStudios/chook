@@ -150,7 +150,7 @@ module Chook
 
     def handle_with_proc(handler)
       logger.debug "INTERNAL: Running Handler defined in #{handler.handler_file}"
-      _thread = Thread.new { handler.call self }
+      _thread = Thread.new { handler.handle self }
     end
 
     def logger
