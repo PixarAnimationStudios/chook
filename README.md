@@ -29,10 +29,9 @@ Chook also provides a simple [sinatra](http://sinatrarb.com/)-based HTTP server 
 
 **You do not need to be a Ruby developer to use Chook!**
 
-The Chook webhook handling server can use "Event Handlers" written in
-any language. See below for more information.
+The Chook webhook handling server can use "Event Handlers" written in any language. See below for more information.
 
-Although Chook integrates well with [ruby-jss](http://pixaranimationstudios.github.io/ruby-jss/index.html), especially for processing webjook events,
+Although Chook integrates well with [ruby-jss](http://pixaranimationstudios.github.io/ruby-jss/index.html), especially for processing webhook events,
 it's a separate tool. However, ruby-jss is required when using Jamf-based admin page authentication, or using sampling features to generate TestEvents.
 
 For more detail about the Jamf Pro Webhooks API and the JSON data it passes, please see
@@ -387,33 +386,31 @@ Watch the Chook log, with the level at info or debug, to see events come in.
 
 ## The Framework
 
-The Chook framework abstracts webhook Events and their components as Ruby
-classes. When the JSON payload of a JSS webhook POST request is passed into the
-`Chook::Event.parse_event` method, an instance of the appropriate subclass of
-`Chook::Event` is returned, for example
-`Chook::Event::ComputerInventoryCompletedEvent`
+While most folks will get along fine using the chook server and writing handlers, the server is built upon a framework implemented in the `Chook` ruby module, available after doing`require 'chook'`. For those with very specific needs, this framework can be used to implement your own webhook handling service, or to simulate a JamfPro server sending webhook events to some handling service.
 
-Each Event instance contains these important attributes:
+The Chook framework abstracts webhook Events and their components as Ruby classes, grouped in two namespaces: HandledEvents, and TestEvents.
 
-* **webhook_id:** A read-only instance of the webhook ID stored in the JSS
+When the JSON payload of a JSS webhook POST request is passed into the `Chook::Event.parse_event` method, an instance of the appropriate subclass of `Chook::Event` is returned, for example, given the JSON for a ComputerInventoryCompleted webhook event, a `Chook::Event::ComputerInventoryCompletedEvent` instance is returned by `Chook::Event.parse_event`.
+
+Each such event instance contains these important attributes:
+
+* **webhook_id:** The webhook ID stored in the JSS
   which caused the POST request. This attribute matches the "webhook[:id]"
-  dictionary of the POSTed JSON.
+  value of the POSTed JSON.
 
 * **webhook_name:** A read-only instance of the webhook name stored in the JSS
   which caused the POST request. This attribute matches the "webhook[:name]"
-  dictionary of the POSTed JSON.
+  value of the POSTed JSON.
 
 * **subject:** A read-only instance of a `Chook::Subject::<Class>`
   representing the "subject" that accompanies the event that triggered the
-  webhook. It comes from the "event" dictionary of the POSTed JSON, and
+  webhook. It comes from the "event" object of the POSTed JSON, and
   different events come with different subjects attached. For example, the
   ComputerInventoryCompleted event comes with a "computer" subject containing
   data about the JSS computer that completed inventory.
 
-  This is not full `JSS::Computer` object from the REST API, but rather a group
-  of named attributes about that computer. At the moment, only the Chook Samplers
-  module attempts to look up subject data from the API, but any
-  Handlers written for the event could easily do a similar operation.
+  This is not a ruby-jss `JSS::Computer` object from the REST API, but rather a group
+  of named attributes about that computer.
 
 * **event_json:** The JSON content from the POST request, parsed into
   a Ruby hash with symbolized keys (meaning the JSON key "deviceName" becomes
@@ -422,17 +419,19 @@ Each Event instance contains these important attributes:
 * **raw_json:** A String containing the raw JSON from the POST
   request.
 
-* **handlers:** An Array of custom plug-ins for working with the
-  event. See _Event Handlers_, below.
-
-
-
 ### Events and Subjects
 
 Here are the Event classes supported by the framework and the Subject classes
 they contain.
-For details about the attributes of each Subject, see [The Unofficial JSS API
-Docs](https://unofficial-jss-api-docs.atlassian.net/wiki/display/JRA/Webhooks+API).
+
+For details about the attributes of each Subject, see [the Jamf Developer documentation](https://developer.jamf.com/webhooks).
+
+**A special note about Subjects**
+
+In Jamf's documentation, what Chook refers to as a 'Subject' is
+called an 'event object' because it is a JSON 'object' (a.k.a. dictionary, hash, associative array)
+labeled 'event'. We've chosen the word 'subject' to make talking about this thing a
+bit more clear in the context of object-oriented programming.
 
 Each Event class is a subclass of `Chook::Event`, where all of their
 functionality is defined.
@@ -504,4 +503,4 @@ Ruby code.
 ## TODOs
 
 - Better YARD docs
-- Proper documentation beyond this README
+- more documentation beyond this README
