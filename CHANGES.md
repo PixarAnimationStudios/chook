@@ -1,5 +1,17 @@
 # Chook Change Log
 
+## v 1.1.2,  2019-01-24
+
+- code cleanup & bugfixes
+
+- thread ids show up in debug logging
+
+- go back to calling Thread.new explicitly, so that the JSS gets immediate acknowlegment of reciept of the POST
+
+- don't use sessions for the event-handling route
+
+- update README.md to be more server focused, since thats the primary use of Chook
+
 ## v 1.1.1,  2018-10-18
 
 - Admin web page authentication is now separated from Webhooks HTTP Basic Auth.
