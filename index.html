@@ -83,7 +83,12 @@
 			  <strong>noun</strong> <i><small>Australian/NZ informal</small></i><br>a chicken or fowl<br>
           </p>
           <p>
-            The Chook project provides the chook module, a Ruby framework for handling and simulating webhook events from the JAMF Software Server (JSS), the core of Jamf Pro, from <a href="http://jamfsoftware.com/">JAMF Software, LLC</a>. The module abstracts webhook events and their subjects as Ruby classes, which allow testing and automation of Jamf Pro's webhook-related tasks. This module can be used as a webhook handler without any knowledge of the Ruby language.
+	   Chook is a ruby module and http(s) server that implement a 'handler' for 
+           <a href="https://developer.jamf.com/webhooks" >webhook events</a> from a <a href="https://www.jamf.com/products/jamf-pro/" >Jamf Pro</a> server.
+	   The webhook handling server can execute your own code to handle different events as they arrive. Your handler
+	   code can be written in any language, and will run externally to the server process, or if written in ruby using
+	   the Chook module, can run as a thread internal to the server process. The module can also be used to implement
+	   your own handling server, or to simulate events in a test environment.
           </p>
         </div>
       </div>
@@ -138,30 +143,28 @@
           <div id="aboutText">
 
             <p>
-              Chook is a GitHub project and a Ruby gem.
-              It simplifies testing and handling of the webhook data from a JAMF Software Server (JSS),
-              the core of Jamf Pro from <a href="http://jamfsoftware.com/">JAMF Software, LLC</a>,
-              an enterprise-level management tool for Apple devices.<br>
+              Chook simplifies handling and testing of <a href="https://developer.jamf.com/webhooks" >webhook</a> data 
+	      from <a href="https://www.jamf.com/products/jamf-pro/" >Jamf Pro</a>, an enterprise-level management tool
+	      for Apple devices.<br>
             </p>
 
             <p>
-              The module abstracts webhook Events and their Subjects such as Computers, Mobile Devices,
-              and PatchSoftwareTitleUpdate, as Ruby objects. It provides methods for creating and randomly generating webhook Events by
-              populating them with data from a Jamf Pro database. It also, conveniently, functions as a webhook handling service, even
-              for those who aren't particularly familiar with the Ruby language.
+              The most common use of Chook is to run a webhook-handling http(s) server, which will accept 
+              webhook event data from a Jamf Pro server and process it using your custom code. That code 
+              can be in any language, and the Chook server will simply pass the JSON data to the standard-input 
+              of your executable. However, if you are a ruby programmer, you can write handlers using Chook's 
+              own framework and they can run internally as server threads, potentially sharing resources.
             </p>
 
             <p>
-              The module does not include a complete implementation of all webhook Subjects,
-              because not all Subjects are fully available via the API. Of those, we've focused
-              on Computers, Mobile Devices, and PatchSoftwareTitleUpdated. Certain data points
-              unavailable via the API have been substituted with strictly-typed randomization.
+              The ruby framework can also be used to implement your own server, if the built-in one is not 
+              sufficient, or if you'd like to write middleware for some other server backend. The framework 
+              also provides classes for simulating webhooks and sending them to any handling server.
             </p>
             
             <p>
-              We've implemented the things we need in our environment, and as the 
-              API is developed, we'll add more. Hopefully others will find it useful, and
-              add more to it as well.
+              See <a href="https://www.rubydoc.info/github/PixarAnimationStudios/chook/">the full documentation</a>
+	      for more info about setting up the server or using the framework.
             </p>
 
             <p>
