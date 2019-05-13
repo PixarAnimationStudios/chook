@@ -47,7 +47,7 @@ module Chook
 
         result = event.handle
 
-        event.logger.info "END #{result}"
+        event.logger.debug "END #{result}"
       end
 
       # this route shouldn't have a session expiration
