@@ -118,9 +118,13 @@ module Chook
       super raw_json: raw_event_json
     end # init
 
+    def event_class_name
+      self.class.const_get(Chook::Event::EVENT_NAME_CONST)
+    end
+
     def handle
-      handlers = handlers_for_my_event_class
-      return 'No handlers loaded' unless handlers.is_a? Array
+      handlers = Handlers.handlers[event_class_name]
+      return "No handlers loaded for #{event_class_name} events" unless handlers.is_a? Array
 
       handlers.each do |handler|
         case handler
@@ -140,39 +144,17 @@ module Chook
     # run a single handler specified by filename
     #
     def handle_by_name(handler_to_run)
-      handlers = handlers_for_my_event_class
-      return 'No handlers loaded' unless handlers.is_a? Array
+      handlers = Handlers.named_handlers[event_class_name]
+      return "No handlers loaded for #{event_class_name} events" unless handlers.is_a? Hash
+      return "No named handler '#{handler_to_run}' for #{event_class_name} events" unless handlers.key? handler_to_run
 
-      handled = false
-
-      handlers.each do |handler|
-        case handler
-        when Pathname
-          next unless handler.basename == handler_to_run
-
-          pipe_to_executable handler
-          handled = true
-          break
-
-        when Object
-          next unless handler.handler_file.basename == handler_to_run
-
-          handle_with_proc handler
-          handled = true
-          break
-        end # case
-      end # @handlers.each do |handler|
-
-      return "handle_by_name: Processed by handler '#{handler_to_run}'" if handled
-
-      "handle_by_name: No handler found matching '#{handler_to_run}'"
-    end
-
-    # @return [Array] available handlers for this event class
-    #
-    def handlers_for_my_event_class
-      handler_key = self.class.const_get(Chook::Event::EVENT_NAME_CONST)
-      Handlers.handlers[handler_key]
+      handler = handlers[handler_to_run]
+      if handler.is_a? Pathname
+        pipe_to_executable handler
+      else
+        handle_with_proc handler
+      end # if
+      "handle_by_name: Processed by handler '#{handler_to_run}'"
     end
 
     # TODO: these threads will die midstream when the server stops.
