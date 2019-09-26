@@ -5,18 +5,17 @@
     Hide
   &nbsp;&nbsp;&nbsp;&nbsp;
 
-  Current Webhook Handlers (#{@handlers_for_admin_page.size})
-
-#handlers_div
-
-  Handler Directory:
-  %span.monospaced= Chook.config.handler_dir.to_s
-  &nbsp;&nbsp;&nbsp;&nbsp;
+  Current Webhook Handlers (#{@handlers_for_admin_page.size + @named_handlers_for_admin_page.size})
 
   %button#reload_all_handlers_btn{ type: 'button', onClick: 'reload_handlers();', title: 'reload all handlers' }
-    Reload
+    Reload All
   &nbsp;&nbsp;
   %span#reloaded_notification
+
+#handlers_div
+  General Handler Directory:
+  %span.monospaced= Chook.config.handler_dir.to_s
+  &nbsp;&nbsp;&nbsp;&nbsp;
 
   %table#handlers_table
     %tr#handlers_table_header_row
@@ -31,7 +30,28 @@
         %td.handlers_table_cell= hndlr_info[:type].to_s
         %td.handlers_table_cell= hndlr_info[:file].basename.to_s
         %td.handlers_table_cell
-          %button.edit_handler_btn{ type: 'button', onClick: "edit_handler('#{hndlr_info[:file].basename}', '#{hndlr_info[:type]}');", title: 'View this handler' }
+          %button.edit_handler_btn{ type: 'button', onClick: "edit_handler('#{hndlr_info[:file].basename}', '#{hndlr_info[:type]}', false);", title: 'View this handler' }
+            View
+  %br
+  %br
+  Named Handler Directory:
+  %span.monospaced= Chook.config.handler_dir.to_s + "/#{Chook::HandledEvent::Handlers::NAMED_HANDLER_SUBDIR}"
+  &nbsp;&nbsp;&nbsp;&nbsp;
+
+  %table#handlers_table
+    %tr#handlers_table_header_row
+      %th.handlers_table_cell Event
+      %th.handlers_table_cell{ width: '10%' } Handler Type
+      %th.handlers_table_cell File Name
+      %th.handlers_table_cell Actions
+
+    - @named_handlers_for_admin_page.each do |hndlr_info|
+      %tr
+        %td.handlers_table_cell= hndlr_info[:event]
+        %td.handlers_table_cell= hndlr_info[:type].to_s
+        %td.handlers_table_cell= hndlr_info[:file].basename.to_s
+        %td.handlers_table_cell
+          %button.edit_handler_btn{ type: 'button', onClick: "edit_handler('#{hndlr_info[:file].basename}', '#{hndlr_info[:type]}', true);", title: 'View this handler' }
             View
 
   #handler_viewer_div
@@ -41,7 +61,6 @@
       %button#hide_handler_viewer_btn{ type: 'button', onClick: 'hide_handler_viewer();', title: 'hide the handler editor' }
         Hide
       &nbsp;&nbsp;&nbsp;&nbsp;
-      Viewing handler: &nbsp;&nbsp;
       %span.monospaced#currently_viewing_filename -nothing-
 
 

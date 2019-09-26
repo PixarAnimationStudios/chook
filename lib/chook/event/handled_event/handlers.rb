@@ -168,14 +168,18 @@ module Chook
           load_handler(handler_file) if handler_file.file? && handler_file.readable?
         end
 
+        Chook.logger.info handlers.size.zero? ? 'No general handlers found' : "Loaded #{handlers.values.flatten.size} general handlers for #{handlers.keys.size} event triggers"
+
         if named_handler_dir.directory?
           named_handler_dir.children.each do |handler_file|
             load_handler(handler_file, :named) if handler_file.file? && handler_file.readable?
           end
         end
 
+        Chook.logger.info named_handlers.size.zero? ? 'No named handlers found' : "Loaded #{named_handlers.values.flatten.size} named handlers for #{named_handlers.keys.size} event triggers"
 
-        Chook.logger.info "Loaded #{@handlers.values.flatten.size} handlers for #{@handlers.keys.size} event triggers"
+
+
         @loaded_handler = nil
       end # load handlers
 
@@ -216,10 +220,10 @@ module Chook
 
         if named
           # create an array for this event's handlers, if needed
-          @named_handlers[event_name] ||= {}
+          named_handlers[event_name] ||= {}
         else
           # create an array for this event's handlers, if needed
-          @handlers[event_name] ||= []
+          handlers[event_name] ||= []
         end
 
         return if load_external_handler(handler_file, event_name, named)
@@ -237,10 +241,10 @@ module Chook
         Chook.logger.info "Loading #{say_named}external handler file '#{handler_file.basename}' for #{event_name} events"
 
         if named
-          @named_handlers[event_name][handler_file.basename.to_s] = handler_file
+          named_handlers[event_name][handler_file.basename.to_s] = handler_file
         else
           # store the Pathname, we'll pipe JSON to it
-          @handlers[event_name] << handler_file
+          handlers[event_name] << handler_file
         end
 
         true
@@ -276,13 +280,11 @@ module Chook
         @loaded_handler.define_singleton_method(:handler_file) { handler_file.basename.to_s }
 
         if named
-          @named_handlers[event_name][handler_file.basename.to_s] = @loaded_handler
+          named_handlers[event_name][handler_file.basename.to_s] = @loaded_handler
         else
           # store the Pathname, we'll pipe JSON to it
-          @handlers[event_name] << @loaded_handler
+          handlers[event_name] << @loaded_handler
         end
-
-        @handlers[event_name] << @loaded_handler
 
         Chook.logger.debug "Loaded #{say_named}internal handler file '#{handler_file.basename}'"
         @loaded_handler = nil
