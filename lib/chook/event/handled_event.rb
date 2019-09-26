@@ -153,6 +153,7 @@ module Chook
           pipe_to_executable handler
           handled = true
           break
+
         when Object
           next unless handler.handler_file.basename == handler_to_run
 
@@ -162,9 +163,9 @@ module Chook
         end # case
       end # @handlers.each do |handler|
 
-      return "Processed by handler: #{handler_to_run}" if handled
+      return "handle_by_name: Processed by handler '#{handler_to_run}'" if handled
 
-      "No handler found matching: #{handler_to_run}"
+      "handle_by_name: No handler found matching '#{handler_to_run}'"
     end
 
     # @return [Array] available handlers for this event class
