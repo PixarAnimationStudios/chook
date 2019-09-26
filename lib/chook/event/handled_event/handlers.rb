@@ -101,9 +101,8 @@ module Chook
       #  (The objects also have a #handler_file attribute that is the Pathname)
       #
       def self.handlers
-        @handlers
+        @handlers ||= {}
       end
-      @handlers ||= {}
 
       # Load all the event handlers from the handler_dir or an arbitrary dir.
       #

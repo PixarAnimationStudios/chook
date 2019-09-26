@@ -119,8 +119,7 @@ module Chook
     end # init
 
     def handle
-      handler_key = self.class.const_get(Chook::Event::EVENT_NAME_CONST)
-      handlers = Handlers.handlers[handler_key]
+      handlers = handlers_for_my_event_class
       return 'No handlers loaded' unless handlers.is_a? Array
 
       handlers.each do |handler|
@@ -137,6 +136,43 @@ module Chook
       # POSTing the event
       "Processed by #{handlers.count} handlers"
     end # def handle
+
+    # run a single handler specified by filename
+    #
+    def handle_by_name(handler_to_run)
+      handlers = handlers_for_my_event_class
+      return 'No handlers loaded' unless handlers.is_a? Array
+
+      handled = false
+
+      handlers.each do |handler|
+        case handler
+        when Pathname
+          next unless handler.basename == handler_to_run
+
+          pipe_to_executable handler
+          handled = true
+          break
+        when Object
+          next unless handler.handler_file.basename == handler_to_run
+
+          handle_with_proc handler
+          handled = true
+          break
+        end # case
+      end # @handlers.each do |handler|
+
+      return "Processed by handler: #{handler_to_run}" if handled
+
+      "No handler found matching: #{handler_to_run}"
+    end
+
+    # @return [Array] available handlers for this event class
+    #
+    def handlers_for_my_event_class
+      handler_key = self.class.const_get(Chook::Event::EVENT_NAME_CONST)
+      Handlers.handlers[handler_key]
+    end
 
     # TODO: these threads will die midstream when the server stops.
     # Find a way to .join them or otherwise clean them up.
