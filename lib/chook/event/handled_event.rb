@@ -122,6 +122,8 @@ module Chook
       self.class.const_get(Chook::Event::EVENT_NAME_CONST)
     end
 
+    # Run all the general handlers for this event class
+    #
     def handle
       handlers = Handlers.handlers[event_class_name]
       return "No handlers loaded for #{event_class_name} events" unless handlers.is_a? Array
