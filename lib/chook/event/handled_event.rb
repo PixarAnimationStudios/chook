@@ -138,23 +138,21 @@ module Chook
       # the handle method should return a string,
       # which is the body of the HTTP result for
       # POSTing the event
-      "Processed by #{handlers.count} handlers"
+      "Processed by #{handlers.count} general handlers"
     end # def handle
 
     # run a single handler specified by filename
     #
     def handle_by_name(handler_to_run)
-      handlers = Handlers.named_handlers[event_class_name]
-      return "No handlers loaded for #{event_class_name} events" unless handlers.is_a? Hash
-      return "No named handler '#{handler_to_run}' for #{event_class_name} events" unless handlers.key? handler_to_run
+      handler = Handlers.named_handlers[handler_to_run]
+      return "No named handler '#{handler_to_run}'" unless handler
 
-      handler = handlers[handler_to_run]
       if handler.is_a? Pathname
         pipe_to_executable handler
       else
         handle_with_proc handler
       end # if
-      "handle_by_name: Processed by handler '#{handler_to_run}'"
+      "Processed by named handler '#{handler_to_run}'"
     end
 
     # TODO: these threads will die midstream when the server stops.

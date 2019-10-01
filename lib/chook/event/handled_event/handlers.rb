@@ -113,26 +113,37 @@ module Chook
       # These handlers are called by name via the route
       # " post '/handler/:handler_name'"
       #
-      # The data structure of @named_handlers is:
+      # They are not tied to any event type by their filenames
+      # its up to the writers of the handlers to make sure
+      # the webhook that calls them is sending the correct event
+      # type.
+      #
+      # The data structure of @named_handlers is a
+      # Hash of Strings to Pathnames or Anon Objects:
       # {
-      #   EventName => {
-      #     handler_filename => Pathname or Proc,
-      #     handler_filename => Pathname or Proc,
-      #     handler_filename => Pathname or Proc
-      #   },
-      #   EventName => {
-      #     handler_filename => Pathname or Proc,
-      #     handler_filename => Pathname or Proc,
-      #     handler_filename => Pathname or Proc
-      #   }
+      #     handler_filename => Pathname or Obj,
+      #     handler_filename => Pathname or Obj,
+      #     handler_filename => Pathname or Obj
       # }
       #
-      # @return [Hash {String => Hash {String => Pathname, Proc}}]
+      # @return [Hash {String => Pathname, Proc}]
       def self.named_handlers
         @named_handlers ||= {}
       end
 
       # Load all the event handlers from the handler_dir or an arbitrary dir.
+      #
+      #
+      # Handler files must be either:
+      #   - An executable file, which will have the raw JSON from the JSS piped
+      #     to it's stdin when executed
+      # or
+      #   - A non-executable file of ruby code like this:
+      #     Chook.event_handler do |event|
+      #       # your code goes here.
+      #     end
+      #
+      # (see the Chook README for details about writing the ruby handlers)
       #
       # @param from_dir [String, Pathname] directory from which to load the
       #   handlers. Defaults to CONFIG.handler_dir or DEFAULT_HANDLER_DIR if
@@ -157,34 +168,32 @@ module Chook
           load_type = 'Re-loading'
         end
 
-        Chook.logger.info "#{load_type} handlers from directory: #{handler_dir}"
-
-        unless handler_dir.directory? && handler_dir.readable?
-          Chook.logger.error "Handler directory '#{from_dir}' not a readable directory. No handlers loaded. "
-          return
-        end
-
-        handler_dir.children.each do |handler_file|
-          load_handler(handler_file) if handler_file.file? && handler_file.readable?
-        end
-
-        Chook.logger.info handlers.size.zero? ? 'No general handlers found' : "Loaded #{handlers.values.flatten.size} general handlers for #{handlers.keys.size} event triggers"
-
-        if named_handler_dir.directory?
-          named_handler_dir.children.each do |handler_file|
-            load_handler(handler_file, :named) if handler_file.file? && handler_file.readable?
+        # General Handlers
+        Chook.logger.info "#{load_type} general handlers from directory: #{handler_dir}"
+        if handler_dir.directory? && handler_dir.readable?
+          handler_dir.children.each do |handler_file|
+            load_general_handler(handler_file) if handler_file.file? && handler_file.readable?
           end
+          Chook.logger.info handlers.empty? ? 'No general handlers found' : "Loaded #{handlers.values.flatten.size} general handlers for #{handlers.keys.size} event triggers"
+        else
+          Chook.logger.error "General handler directory '#{from_dir}' not a readable directory. No general handlers loaded. "
         end
 
-        Chook.logger.info named_handlers.size.zero? ? 'No named handlers found' : "Loaded #{named_handlers.values.flatten.size} named handlers for #{named_handlers.keys.size} event triggers"
-
-
-
-        @loaded_handler = nil
+        # Named Handlers
+        Chook.logger.info "#{load_type} named handlers from directory: #{named_handler_dir}"
+        if named_handler_dir.directory? && named_handler_dir.readable?
+          named_handler_dir.children.each do |handler_file|
+            load_named_handler(handler_file) if handler_file.file? && handler_file.readable?
+          end
+          Chook.logger.info "Loaded #{named_handlers.size} named handlers"
+        else
+          Chook.logger.error "Named handler directory '#{named_handler_dir}' not a readable directory. No named handlers loaded. "
+        end
       end # load handlers
 
-      # Load an event handler from a file.
-      # Handler files must begin with the name of the event they handle,
+      # Load a general event handler from a file.
+      #
+      # General Handler files must begin with the name of the event they handle,
       # e.g. ComputerAdded,  followed by: nothing, a dot, a dash, or
       # and underscore. Case doesn't matter.
       # So all of these are OK:
@@ -194,45 +203,64 @@ module Chook
       # Computeradded-update-ldap
       # There can be as many as desired for each event.
       #
-      # Each must be either:
-      #   - An executable file, which will have the raw JSON from the JSS piped
-      #     to it's stdin when executed
-      # or
-      #   - A non-executable file of ruby code like this:
-      #     Chook.event_handler do |event|
-      #       # your code goes here.
-      #     end
-      #
-      # (see the Chook README for details about writing the ruby handlers)
-      #
-      # @param from_file [Pathname] the file from which to load the handler
+      # @param handler_file [Pathname] the file from which to load the handler
       #
       # @return [void]
       #
-      def self.load_handler(from_file, named = false)
-        Chook.logger.debug "Starting load of handler file '#{from_file.basename}'"
-        handler_file = Pathname.new from_file
+      def self.load_general_handler(handler_file)
+        Chook.logger.debug "Starting load of general handler file '#{handler_file.basename}'"
+
         event_name = event_name_from_handler_filename(handler_file)
         unless event_name
-          Chook.logger.debug "Ignoring file '#{from_file.basename}'"
+          Chook.logger.debug "Ignoring general handler file '#{handler_file.basename}': Filename doesn't start with event name"
           return
         end
 
-        if named
-          # create an array for this event's handlers, if needed
-          named_handlers[event_name] ||= {}
-        else
-          # create an array for this event's handlers, if needed
-          handlers[event_name] ||= []
+        # create an array for this event's handlers, if needed
+        handlers[event_name] ||= []
+
+        # external? if so, its executable and we only care about its pathname
+        if handler_file.executable?
+          Chook.logger.info "Loading external general handler file '#{handler_file.basename}' for #{event_name} events"
+          handlers[event_name] << handler_file
+          return
         end
 
-        return if load_external_handler(handler_file, event_name, named)
+        # Internal, we store an object with a .handle method
+        Chook.logger.info "Loading internal general handler file '#{handler_file.basename}' for #{event_name} events"
+        load_internal_handler handler_file
+        handlers[event_name] << @loaded_handler if @loaded_handler
 
-        load_internal_handler(handler_file, event_name, named)
-      end # self.load_handler(handler_file)
+      end # self.load_general_handler(handler_file)
+
+      # Load a named event handler from a file.
+      #
+      # Named Handler files can have any name, as they are called directly
+      # from a Jamf webhook via URL.
+      #
+      # @param handler_file [Pathname] the file from which to load the handler
+      #
+      # @return [void]
+      #
+      def self.load_named_handler(handler_file)
+        Chook.logger.debug "Starting load of named handler file '#{handler_file.basename}'"
+
+        # external? if so, its executable and we only care about its pathname
+        if handler_file.executable?
+          Chook.logger.info "Loading external named handler file '#{handler_file.basename}'"
+          named_handlers[handler_file.basename.to_s] = handler_file
+          return
+        end
+
+        # Internal, we store an object with a .handle method
+        Chook.logger.info "Loading internal named handler file '#{handler_file.basename}'"
+        load_internal_handler handler_file
+        named_handlers[handler_file.basename.to_s] = @loaded_handler if @loaded_handler
+      end # self.load_general_handler(handler_file)
 
       # if the given file is executable, store it's path as a handler for the event
       #
+      # @return [Boolean] did we load an external handler?
       #
       def self.load_external_handler(handler_file, event_name, named)
         return false unless handler_file.executable?
@@ -252,42 +280,35 @@ module Chook
 
       # if a given path is not executable, try to load it as an internal handler
       #
+      # @param handler_file[Pathname] the handler file
       #
-      def self.load_internal_handler(handler_file, event_name, named)
+      # @return [Object] and anonymous object that has a .handle method
+      #
+      def self.load_internal_handler(handler_file)
         # load the file. If written correctly, it will
         # put an anon. Object with a #handle method into @loaded_handler
-        say_named = named ? 'named ' : ''
-
-        Chook.logger.info "Loading #{say_named}internal handler file '#{handler_file.basename}' for #{event_name} events"
-
         unless handler_file.read =~ INTERNAL_HANDLER_BLOCK_START_RE
-          Chook.logger.error "Internal #{say_named} handler file '#{handler_file.basename}' missing event_handler block"
-          return
+          Chook.logger.error "Internal handler file '#{handler_file}' missing event_handler block"
+          return nil
         end
 
         # reset @loaded_handler - the `load` call will refill it
         # see Chook.event_handler
         @loaded_handler = nil
+
         begin
           load handler_file.to_s
           raise '@loaded handler nil after loading file' unless @loaded_handler
         rescue => e
-          Chook.logger.error "FAILED loading #{say_named}internal handler file '#{handler_file.basename}': #{e}"
+          Chook.logger.error "FAILED loading #{say_named}internal handler file '#{handler_file}': #{e}"
           return
         end
 
-        # add a method to the object to get its filename
-        @loaded_handler.define_singleton_method(:handler_file) { handler_file.basename.to_s }
+        # add a method to the object to get its Pathname
+        @loaded_handler.define_singleton_method(:handler_file) { handler_file }
 
-        if named
-          named_handlers[event_name][handler_file.basename.to_s] = @loaded_handler
-        else
-          # store the Pathname, we'll pipe JSON to it
-          handlers[event_name] << @loaded_handler
-        end
-
-        Chook.logger.debug "Loaded #{say_named}internal handler file '#{handler_file.basename}'"
-        @loaded_handler = nil
+        # return it
+        @loaded_handler
       end
 
       # Given a handler filename, return the event name it wants to handle

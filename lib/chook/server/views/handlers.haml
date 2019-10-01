@@ -19,18 +19,16 @@
 
   %table#handlers_table
     %tr#handlers_table_header_row
-      %th.handlers_table_cell Event
-      %th.handlers_table_cell{ width: '10%' } Handler Type
       %th.handlers_table_cell File Name
+      %th.handlers_table_cell{ width: '10%' } Handler Type
       %th.handlers_table_cell Actions
 
     - @handlers_for_admin_page.each do |hndlr_info|
       %tr
-        %td.handlers_table_cell= hndlr_info[:event]
-        %td.handlers_table_cell= hndlr_info[:type].to_s
         %td.handlers_table_cell= hndlr_info[:file].basename.to_s
+        %td.handlers_table_cell= hndlr_info[:type].to_s
         %td.handlers_table_cell
-          %button.edit_handler_btn{ type: 'button', onClick: "edit_handler('#{hndlr_info[:file].basename}', '#{hndlr_info[:type]}', false);", title: 'View this handler' }
+          %button.edit_handler_btn{ type: 'button', onClick: "view_handler_code('#{hndlr_info[:file]}', '#{hndlr_info[:type]}');", title: 'View this handler' }
             View
   %br
   %br
@@ -40,18 +38,16 @@
 
   %table#handlers_table
     %tr#handlers_table_header_row
-      %th.handlers_table_cell Event
-      %th.handlers_table_cell{ width: '10%' } Handler Type
       %th.handlers_table_cell File Name
+      %th.handlers_table_cell{ width: '10%' } Handler Type
       %th.handlers_table_cell Actions
 
     - @named_handlers_for_admin_page.each do |hndlr_info|
       %tr
-        %td.handlers_table_cell= hndlr_info[:event]
-        %td.handlers_table_cell= hndlr_info[:type].to_s
         %td.handlers_table_cell= hndlr_info[:file].basename.to_s
+        %td.handlers_table_cell= hndlr_info[:type].to_s
         %td.handlers_table_cell
-          %button.edit_handler_btn{ type: 'button', onClick: "edit_handler('#{hndlr_info[:file].basename}', '#{hndlr_info[:type]}', true);", title: 'View this handler' }
+          %button.edit_handler_btn{ type: 'button', onClick: "view_handler_code('#{hndlr_info[:file]}', '#{hndlr_info[:type]}');", title: 'View this handler' }
             View
 
   #handler_viewer_div

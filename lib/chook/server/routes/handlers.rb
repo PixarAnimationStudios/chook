@@ -36,14 +36,10 @@ module Chook
     end # get /
 
     # used by javascript to fetch the content of a handler
-    get '/handler_code/:file' do
-      file = Chook.config.handler_dir + params[:file]
-      named_file = Chook.config.handler_dir + Chook::HandledEvent::Handlers::NAMED_HANDLER_SUBDIR  + params[:file]
-
+    get '/handler_code' do
+      file = Pathname.new params[:filepath]
       if file.file?
         body file.read
-      elsif named_file.file?
-        body named_file.read
       else
         404
       end

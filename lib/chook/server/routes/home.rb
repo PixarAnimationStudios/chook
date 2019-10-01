@@ -39,7 +39,7 @@ module Chook
             file = handler
             type = :external
           else
-            file = Pathname.new(Chook.config.handler_dir) + handler.handler_file
+            file = handler.handler_file
             type = :internal
           end # if else
           @handlers_for_admin_page << { event: eventname, file: file, type: type }
@@ -49,18 +49,17 @@ module Chook
       # a list of current named handlers for the admin page
       @named_handlers_for_admin_page = []
 
-      Chook::HandledEvent::Handlers.named_handlers.keys.sort.each do |eventname|
-        Chook::HandledEvent::Handlers.named_handlers[eventname].each do |name, handler|
-          if handler.is_a? Pathname
-            file = handler
-            type = :external
-          else
-            file = Pathname.new(Chook.config.handler_dir) + Chook::HandledEvent::Handlers::NAMED_HANDLER_SUBDIR + name
-            type = :internal
-          end # if else
-          @named_handlers_for_admin_page << { event: eventname, file: file, type: type }
-        end # handlers each
-      end # Handlers.handlers.each
+      Chook::HandledEvent::Handlers.named_handlers.each do |name, handler|
+        if handler.is_a? Pathname
+          file = handler
+          type = :external
+        else
+          file = handler.handler_file
+          type = :internal
+        end # if else
+        @named_handlers_for_admin_page << { file: file, type: type }
+      end # handlers each
+
 
       # the current config, for the admin page
       @config_text =
