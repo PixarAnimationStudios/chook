@@ -35,10 +35,12 @@ module Chook
       'Handlers reloaded'
     end # get /
 
-    # used by javascript to fetch the content of a handler
+    # used by javascript to fetch the content of a handler file
     get '/handler_code' do
       file = Pathname.new params[:filepath]
-      if file.file?
+
+      # only if its a known handler path
+      if Chook::HandledEvent::Handlers.all_handler_paths.include?(file) && file.file?
         body file.read
       else
         404
