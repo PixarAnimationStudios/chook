@@ -109,6 +109,12 @@ module Chook
         @handlers ||= {}
       end
 
+      # Handlers can check Chook::HandledEvent::Handlers.reloading?
+      # and do stuff if desired.
+      def self.reloading?
+        @reloading
+      end
+
       # getter for @named_handlers
       # These handlers are called by name via the route
       # " post '/handler/:handler_name'"
@@ -174,6 +180,7 @@ module Chook
         load_type = 'Loading'
 
         if reload
+          @reloading = true
           @handlers = {}
           @named_handlers = {}
           @loaded_handler = nil
@@ -201,6 +208,8 @@ module Chook
         else
           Chook.logger.error "Named handler directory '#{named_handler_dir}' not a readable directory. No named handlers loaded. "
         end
+
+        @reloading = false
       end # load handlers
 
       # Load a general event handler from a file.
