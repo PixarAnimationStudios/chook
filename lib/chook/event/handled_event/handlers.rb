@@ -131,6 +131,18 @@ module Chook
         @named_handlers ||= {}
       end
 
+      # the Pathname objects for all loaded handlers
+      #
+      # @return [Array<Pathname>]
+      #
+      def self.all_handler_paths
+        hndlrs = named_handlers.values
+        hndlrs += handlers.values.flatten
+        hndlrs.map do |hndlr|
+          hndlr.is_a?(Pathname) ? hndlr : hndlr.handler_file
+        end
+      end
+
       # Load all the event handlers from the handler_dir or an arbitrary dir.
       #
       #
