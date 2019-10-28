@@ -39,11 +39,7 @@ Chook.event_handler do |event|
 
   action = APIOpHandler::REPORT_ACTIONS[event.subject.restAPIOperationType]
 
-  return nil unless action
+  break unless action
 
-  puts <<-ENDMSG
-The JSS WebHook named '#{event.webhook_name}' was just triggered.
-It indicates that Casper user '#{event.subject.authorizedUsername}' just used the JSS API to #{action}
-the JSS #{event.subject.objectTypeName} named '#{event.subject.objectName}' (id #{event.subject.objectID})
-ENDMSG
+  event.logger.info "API #{action}: #{event.subject.objectTypeName} '#{event.subject.objectName}' (id #{event.subject.objectID})"
 end
