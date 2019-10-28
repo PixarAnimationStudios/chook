@@ -118,10 +118,15 @@ module Chook
       super raw_json: raw_event_json
     end # init
 
+    def event_class_name
+      self.class.const_get(Chook::Event::EVENT_NAME_CONST)
+    end
+
+    # Run all the general handlers for this event class
+    #
     def handle
-      handler_key = self.class.const_get(Chook::Event::EVENT_NAME_CONST)
-      handlers = Handlers.handlers[handler_key]
-      return 'No handlers loaded' unless handlers.is_a? Array
+      handlers = Handlers.handlers[event_class_name]
+      return "No handlers loaded for #{event_class_name} events" unless handlers.is_a? Array
 
       handlers.each do |handler|
         case handler
@@ -135,8 +140,22 @@ module Chook
       # the handle method should return a string,
       # which is the body of the HTTP result for
       # POSTing the event
-      "Processed by #{handlers.count} handlers"
+      "Processed by #{handlers.count} general handlers"
     end # def handle
+
+    # run a single handler specified by filename
+    #
+    def handle_by_name(handler_to_run)
+      handler = Handlers.named_handlers[handler_to_run]
+      return "No named handler '#{handler_to_run}'" unless handler
+
+      if handler.is_a? Pathname
+        pipe_to_executable handler
+      else
+        handle_with_proc handler
+      end # if
+      "Processed by named handler '#{handler_to_run}'"
+    end
 
     # TODO: these threads will die midstream when the server stops.
     # Find a way to .join them or otherwise clean them up.
