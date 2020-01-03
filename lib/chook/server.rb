@@ -71,6 +71,7 @@ module Chook
     end # self.run
 
     def self.prep_to_run
+      @start_time = Time.now
       log_level ||= Chook.config.log_level
       @log_level = Chook::Procs::STRING_TO_LOG_LEVEL.call log_level
 
@@ -93,6 +94,28 @@ module Chook
 
       Chook::HandledEvent::Handlers.load_handlers
     end # prep to run
+
+    def self.starttime
+      @start_time
+    end
+
+    def self.uptime
+      @start_time ? "#{humanize_secs(Time.now - @start_time)} ago" : 'Not Running'
+    end
+
+    # Very handy!
+    # lifted from
+    # http://stackoverflow.com/questions/4136248/how-to-generate-a-human-readable-time-range-using-ruby-on-rails
+    #
+    def self.humanize_secs(secs)
+      [[60, :second], [60, :minute], [24, :hour], [7, :day], [52.179, :week], [1_000_000, :year]].map do |count, name|
+        next unless secs.positive?
+
+        secs, n = secs.divmod(count)
+        n = n.to_i
+        "#{n} #{n == 1 ? name : (name.to_s + 's')}"
+      end.compact.reverse.join(' ')
+    end
 
   end # class server
 

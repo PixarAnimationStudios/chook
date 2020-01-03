@@ -27,6 +27,6 @@
 module Chook
 
   ### The version of the Chook framework
-  VERSION = '1.1.3'.freeze
+  VERSION = '1.1.4a1'.freeze
 
 end # module

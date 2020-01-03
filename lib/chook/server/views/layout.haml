@@ -34,6 +34,11 @@
               %span.def_dialect Australian/NZ informal
               %br/
               %span.def_definition a chicken or fowl
+          %td#serverstats{ valign: 'bottom' }
+            Server started: #{Chook::Server.starttime.strftime '%Y-%m-%d %H:%M:%S'}
+            %br/
+            (#{Chook::Server.uptime})
+
     %hr/
     - if Chook.config.admin_user
       #login_logout_div

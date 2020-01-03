@@ -22,6 +22,10 @@
   line-height: 1.6;
 }
 
+#serverstats {
+  vertical-align: bottom;
+}
+
 .def_pronunciation {
   font-style: italic;
   font-size: 1.2em;
