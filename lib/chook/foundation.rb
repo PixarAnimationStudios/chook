@@ -29,6 +29,7 @@ require 'open-uri'
 require 'pathname'
 require 'logger'
 require 'English'
+require 'securerandom'
 
 require 'chook/version'
 require 'chook/procs' # must load before configuration

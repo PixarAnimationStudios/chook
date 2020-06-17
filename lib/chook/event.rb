@@ -94,6 +94,9 @@ module Chook
 
     #### Attrbutes common to all events
 
+    # @return [String] A unique identifier for this chook event
+    attr_reader :id
+
     # @return [Integer] The webhook id in the JSS that caused this event
     attr_reader :webhook_id
 
@@ -128,6 +131,7 @@ module Chook
     # event. Any not provided will be nil.
     #
     def initialize(**args)
+      @id = "#{Time.now.to_i}-#{SecureRandom.urlsafe_base64 8}"
       if args[:raw_json]
         @raw_json = args[:raw_json]
         @parsed_json = JSON.parse @raw_json, symbolize_names: true

@@ -47,7 +47,7 @@ module Chook
     end
 
     def event_message(msg)
-      "Event #{@event.object_id}: #{msg}"
+      "Event #{@event.id}: #{msg}"
     end
 
     def debug(msg)
