@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+Process.setproctitle('chook')
+
 ### Copyright 2017 Pixar
 
 ###
