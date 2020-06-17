@@ -316,12 +316,13 @@ module Chook
         # reset @loaded_handler - the `load` call will refill it
         # see Chook.event_handler
         @loaded_handler = nil
+        say_named = named ? 'named ' : ''
 
         begin
           load handler_file.to_s
           raise '@loaded handler nil after loading file' unless @loaded_handler
         rescue => e
-          Chook.logger.error "FAILED loading #{say_named}internal handler file '#{handler_file}': #{e}"
+          Chook.logger.error "FAILED loading internal handler file '#{handler_file}': #{e}"
           return
         end
 
