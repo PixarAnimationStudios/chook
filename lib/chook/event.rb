@@ -62,36 +62,36 @@ module Chook
     # Chook::HandledSubjects::Computer or Chook::TestSubjects::Computer
     #
     EVENTS = {
-      "ComputerAdded" => Chook::Subject::COMPUTER,
-      "ComputerCheckIn" => Chook::Subject::COMPUTER,
-      "ComputerInventoryCompleted" => Chook::Subject::COMPUTER,
-      "ComputerPolicyFinished" => Chook::Subject::COMPUTER,
-      "ComputerPushCapabilityChanged" => Chook::Subject::COMPUTER,
-      "DeviceAddedToDEP" => Chook::Subject::COMPUTER,
-      "JSSShutdown" => Chook::Subject::JAMF_SOFTWARE_SERVER,
-      "JSSStartup" => Chook::Subject::JAMF_SOFTWARE_SERVER,
-      "MobileDeviceCheckIn" => Chook::Subject::MOBILE_DEVICE,
-      "MobileDeviceCommandCompleted" => Chook::Subject::MOBILE_DEVICE,
-      "MobileDeviceEnrolled" => Chook::Subject::MOBILE_DEVICE,
-      "MobileDevicePushSent" => Chook::Subject::MOBILE_DEVICE,
-      "MobileDeviceUnEnrolled" => Chook::Subject::MOBILE_DEVICE,
-      "PatchSoftwareTitleUpdated" => Chook::Subject::PATCH_SW_UPDATE,
-      "PushSent" => Chook::Subject::PUSH,
-      "RestAPIOperation" => Chook::Subject::REST_API_OPERATION,
-      "SCEPChallenge" => Chook::Subject::SCEP_CHALLENGE,
-      "SmartGroupComputerMembershipChange" => Chook::Subject::SMART_GROUP,
-      "SmartGroupMobileDeviceMembershipChange" => Chook::Subject::SMART_GROUP,
+      'ComputerAdded' => Chook::Subject::COMPUTER,
+      'ComputerCheckIn' => Chook::Subject::COMPUTER,
+      'ComputerInventoryCompleted' => Chook::Subject::COMPUTER,
+      'ComputerPolicyFinished' => Chook::Subject::COMPUTER,
+      'ComputerPushCapabilityChanged' => Chook::Subject::COMPUTER,
+      'DeviceAddedToDEP' => Chook::Subject::COMPUTER,
+      'JSSShutdown' => Chook::Subject::JAMF_SOFTWARE_SERVER,
+      'JSSStartup' => Chook::Subject::JAMF_SOFTWARE_SERVER,
+      'MobileDeviceCheckIn' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDeviceCommandCompleted' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDeviceEnrolled' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDevicePushSent' => Chook::Subject::MOBILE_DEVICE,
+      'MobileDeviceUnEnrolled' => Chook::Subject::MOBILE_DEVICE,
+      'PatchSoftwareTitleUpdated' => Chook::Subject::PATCH_SW_UPDATE,
+      'PushSent' => Chook::Subject::PUSH,
+      'RestAPIOperation' => Chook::Subject::REST_API_OPERATION,
+      'SCEPChallenge' => Chook::Subject::SCEP_CHALLENGE,
+      'SmartGroupComputerMembershipChange' => Chook::Subject::SMART_GROUP,
+      'SmartGroupMobileDeviceMembershipChange' => Chook::Subject::SMART_GROUP,
     }.freeze
 
     # Event subclasses will have an EVENT_NAME constant,
     # which contains the name of the event, one of the keys
     # from the Event::EVENTS Hash.
-    EVENT_NAME_CONST = "EVENT_NAME".freeze
+    EVENT_NAME_CONST = 'EVENT_NAME'.freeze
 
     # Event subclasses will have a SUBJECT_CLASS constant,
     # which contains the class of the subject of the event, based on one of the
     # values from the Event::EVENTS Hash.
-    SUBJECT_CLASS_CONST = "SUBJECT_CLASS".freeze
+    SUBJECT_CLASS_CONST = 'SUBJECT_CLASS'.freeze
 
     #### Attrbutes common to all events
 
