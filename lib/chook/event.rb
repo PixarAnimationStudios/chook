@@ -67,6 +67,7 @@ module Chook
       'ComputerInventoryCompleted' => Chook::Subject::COMPUTER,
       'ComputerPolicyFinished' => Chook::Subject::COMPUTER,
       'ComputerPushCapabilityChanged' => Chook::Subject::COMPUTER,
+      'DeviceAddedToDEP' => Chook::Subject::COMPUTER,
       'JSSShutdown' => Chook::Subject::JAMF_SOFTWARE_SERVER,
       'JSSStartup' => Chook::Subject::JAMF_SOFTWARE_SERVER,
       'MobileDeviceCheckIn' => Chook::Subject::MOBILE_DEVICE,
@@ -79,7 +80,7 @@ module Chook
       'RestAPIOperation' => Chook::Subject::REST_API_OPERATION,
       'SCEPChallenge' => Chook::Subject::SCEP_CHALLENGE,
       'SmartGroupComputerMembershipChange' => Chook::Subject::SMART_GROUP,
-      'SmartGroupMobileDeviceMembershipChange' => Chook::Subject::SMART_GROUP
+      'SmartGroupMobileDeviceMembershipChange' => Chook::Subject::SMART_GROUP,
     }.freeze
 
     # Event subclasses will have an EVENT_NAME constant,
@@ -147,7 +148,5 @@ module Chook
 
       @subject = self.class::SUBJECT_CLASS.new subject_data
     end
-
   end # class Event
-
 end # module
