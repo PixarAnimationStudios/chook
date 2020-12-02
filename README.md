@@ -446,6 +446,7 @@ the `Chook::Subjects` module.
 | Chook::HandledEvents::ComputerInventoryCompletedEvent | Chook::HandledSubjects::Computer |
 | Chook::HandledEvents::ComputerPolicyFinishedEvent | Chook::HandledSubjects::Computer |
 | Chook::HandledEvents::ComputerPushCapabilityChangedEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::DeviceAddedToDEP | Chook::HandledSubjects::Computer |
 | Chook::HandledEvents::JSSShutdownEvent | Chook::HandledSubjects::JSS |
 | Chook::HandledEvents::JSSStartupEvent | Chook::HandledSubjects::JSS |
 | Chook::HandledEvents::MobileDeviceCheckinEvent | Chook::HandledSubjects::MobileDevice |
