@@ -1,5 +1,13 @@
 # Chook Change Log
 
+## v 1.1.5 2020-12-08
+
+- Add support for ComputerPolicyFinished and DeviceAddedToDEP webhook events
+  NOTE: The computer info in the Event subject for ComputerPolicyFinished events is located in a hash in the 'computer' attribute of the subject.  So to get the SN of the computer that finished a policy, you'd use `event.subject.computer[:serialNumber]`. See the file ..lib/chook/subject/policy_finished.rb.
+
+### IMPORTANT Note:
+ This is probably the last release of v.1x for chook. Version 2 will be a major reworking of the code. While the general principles will remain the same, a lot will be simplified, some will be jettisoned (e.g. the whole TestEvent aspect) and hopefully lots will be optimized to better handle more and faster incoming webhooks. We'll get some test code up to Github asap.
+
 ## v 1.1.4, 2020-08-10
 
 - Set the server process name to 'chook'  - some OS utilities will see it
