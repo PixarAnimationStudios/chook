@@ -67,6 +67,7 @@ module Chook
       'ComputerInventoryCompleted' => Chook::Subject::COMPUTER,
       'ComputerPolicyFinished' => Chook::Subject::COMPUTER,
       'ComputerPushCapabilityChanged' => Chook::Subject::COMPUTER,
+      'DeviceAddedToDEP' => Chook::Subject::DEP_DEVICE,
       'JSSShutdown' => Chook::Subject::JAMF_SOFTWARE_SERVER,
       'JSSStartup' => Chook::Subject::JAMF_SOFTWARE_SERVER,
       'MobileDeviceCheckIn' => Chook::Subject::MOBILE_DEVICE,
