@@ -49,6 +49,11 @@ module Chook
     # Chook::HandledSubjects and Chook::TestSubjects
     COMPUTER = 'Computer'.freeze
 
+    # The name of the DeviceAddedtoDEP subject (a.k.a. 'event_object')
+    # as known to the JSS. Also the class name of such subjects in
+    # Chook::HandledSubjects and Chook::TestSubjects
+    DEP_DEVICE = 'DEPDevice'.freeze
+
     # The name of the JSS subject (a.k.a. 'event_object')
     # as known to the JSS. Also the class name of such subjects in
     # Chook::HandledSubjects and Chook::TestSubjects
@@ -140,3 +145,4 @@ require 'chook/subject/rest_api_operation'
 require 'chook/subject/scep_challenge'
 require 'chook/subject/smart_group'
 require 'chook/test_subjects'
+requiire 'chook/dep_device'
