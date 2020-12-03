@@ -76,6 +76,7 @@ module Chook
       'MobileDevicePushSent' => Chook::Subject::MOBILE_DEVICE,
       'MobileDeviceUnEnrolled' => Chook::Subject::MOBILE_DEVICE,
       'PatchSoftwareTitleUpdated' => Chook::Subject::PATCH_SW_UPDATE,
+      'PolicyFinished' => Chook::Subject::POLICY_FINISHED,
       'PushSent' => Chook::Subject::PUSH,
       'RestAPIOperation' => Chook::Subject::REST_API_OPERATION,
       'SCEPChallenge' => Chook::Subject::SCEP_CHALLENGE,

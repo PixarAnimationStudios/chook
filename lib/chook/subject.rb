@@ -69,6 +69,11 @@ module Chook
     # Chook::HandledSubjects and Chook::TestSubjects
     PATCH_SW_UPDATE = 'PatchSoftwareTitleUpdated'.freeze
 
+    # The name of the ComputerPolicyFinished subject (a.k.a. 'event_object')
+    # as known to the JSS. Also the class name of such subjects in
+    # Chook::HandledSubjects and Chook::TestSubjects
+    POLICY_FINISHED = 'PolicyFinished'.freeze
+
     # The name of the Push subject (a.k.a. 'event_object')
     # as known to the JSS. Also the class name of such subjects in
     # Chook::HandledSubjects and Chook::TestSubjects
@@ -145,4 +150,5 @@ require 'chook/subject/rest_api_operation'
 require 'chook/subject/scep_challenge'
 require 'chook/subject/smart_group'
 require 'chook/test_subjects'
-requiire 'chook/dep_device'
+require 'chook/dep_device'
+require 'chook/subject/policy_finished'
