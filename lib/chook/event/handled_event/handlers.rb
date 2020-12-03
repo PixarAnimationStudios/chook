@@ -316,7 +316,6 @@ module Chook
         # reset @loaded_handler - the `load` call will refill it
         # see Chook.event_handler
         @loaded_handler = nil
-        say_named = named ? 'named ' : ''
 
         begin
           load handler_file.to_s
