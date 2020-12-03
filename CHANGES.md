@@ -1,5 +1,16 @@
 # Chook Change Log
 
+## v 1.1.4, 2020-08-10
+
+- Set the server process name to 'chook'  - some OS utilities will see it
+- remove event START messages from info logging, now only visible when log level is debug.
+- Don't use ruby object IDs as event ids - ruby reuses them.
+- Server uptime is displayed on the simple admin web UI.
+
+## v 1.1.3, 2019-10-28
+
+- Named Handlers!  You can create a handler with any file name, and put it in /Library/Application Support/Chook/NamedHandlers  then call it specifically from a webhook in Jamf Pro using the url http[s]://your.chook.server.com/handler/handler-filename
+
 ## v 1.1.2,  2019-01-24
 
 - code cleanup & bugfixes
