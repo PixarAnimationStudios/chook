@@ -36,8 +36,8 @@ Chook::Subject.classes[Chook::Subject::POLICY_FINISHED] = {
     validation: Integer,
     api_object_attribute: :policyId
   },
-  success: {
+  successful: {
     validation: :boolean,
-    api_object_attribute: :success
+    api_object_attribute: :successful
   }
 }
