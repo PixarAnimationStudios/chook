@@ -2,6 +2,10 @@
 
 Documentation is a work in progress. Please [get in touch](mailto:chook@pixar.com) for assistance. <3
 
+### IMPORTANT Note:
+Version 1.1.5 is probably the last release of v.1x for chook. Version 2 will be a major reworking of the code. While the general principles will remain the same, a lot will be simplified, some will be jettisoned (e.g. the whole TestEvent aspect) and hopefully lots will be optimized to better handle more and faster incoming webhooks. We'll get some test code up to Github asap.
+
+
 - [Introduction](#introduction)
 - [Installing Chook](#installing-chook)
 - [The Server](#the-server)
@@ -444,8 +448,9 @@ the `Chook::Subjects` module.
 | Chook::HandledEvents::ComputerAddedEvent | Chook::HandledSubjects::Computer |
 | Chook::HandledEvents::ComputerCheckInEvent | Chook::HandledSubjects::Computer |
 | Chook::HandledEvents::ComputerInventoryCompletedEvent | Chook::HandledSubjects::Computer |
-| Chook::HandledEvents::ComputerPolicyFinishedEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::ComputerPolicyFinishedEvent | Chook::HandledSubjects::PolicyFinished |
 | Chook::HandledEvents::ComputerPushCapabilityChangedEvent | Chook::HandledSubjects::Computer |
+| Chook::HandledEvents::DeviceAddedToDEP | Chook::HandledSubjects::DEPDevice |
 | Chook::HandledEvents::JSSShutdownEvent | Chook::HandledSubjects::JSS |
 | Chook::HandledEvents::JSSStartupEvent | Chook::HandledSubjects::JSS |
 | Chook::HandledEvents::MobileDeviceCheckinEvent | Chook::HandledSubjects::MobileDevice |
