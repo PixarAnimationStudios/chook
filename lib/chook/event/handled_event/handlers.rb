@@ -68,6 +68,9 @@ module Chook
     # The Handlers namespace module
     module Handlers
 
+      # Don't load any handlers whose filenames start with this
+      DO_NOT_LOAD_PREFIX = 'Ignore-'.freeze
+
       DEFAULT_HANDLER_DIR = '/Library/Application Support/Chook'.freeze
 
       # Handlers that are only called by name using the route:
@@ -191,6 +194,9 @@ module Chook
         Chook.logger.info "#{load_type} general handlers from directory: #{handler_dir}"
         if handler_dir.directory? && handler_dir.readable?
           handler_dir.children.each do |handler_file|
+            # ignore if marked to
+            next if handler_file.basename.to_s.start_with? DO_NOT_LOAD_PREFIX
+
             load_general_handler(handler_file) if handler_file.file? && handler_file.readable?
           end
           Chook.logger.info handlers.empty? ? 'No general handlers found' : "Loaded #{handlers.values.flatten.size} general handlers for #{handlers.keys.size} event triggers"
@@ -202,6 +208,9 @@ module Chook
         Chook.logger.info "#{load_type} named handlers from directory: #{named_handler_dir}"
         if named_handler_dir.directory? && named_handler_dir.readable?
           named_handler_dir.children.each do |handler_file|
+            # ignore if marked to
+            next if handler_file.basename.to_s.start_with? DO_NOT_LOAD_PREFIX
+
             load_named_handler(handler_file) if handler_file.file? && handler_file.readable?
           end
           Chook.logger.info "Loaded #{named_handlers.size} named handlers"
