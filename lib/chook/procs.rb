@@ -46,8 +46,10 @@ module Chook
       end # if..else
     end
 
+    COMMA_STRING_TO_ARRAY = proc { |val| val.split(/\s*,\s*/) }
+
     ENV_FROM_CONFIG = proc do |envs|
-      envs = envs.split /\s*,\s*/
+      envs = envs.split(/\s*,\s*/)
       envs.each do |env|
         var, val = env.split '='
         ENV[var] = val

@@ -94,6 +94,15 @@ module Chook
           use_ssl: Chook.config.jamf_use_ssl,
           verify_cert: Chook.config.jamf_verify_cert
         )
+
+        if Chook.config.jamf_admins
+          unless Chook.config.jamf_admins.include? user
+            Chook.logger.warn "Jamf Admin login FAILED for: #{user}@#{request.ip}, Not listed in config.jamf_admins"
+            session[:authed_admin] = nil
+            return false
+          end
+        end
+
         Chook.logger.debug "Jamf Admin login for: #{user}@#{request.ip}"
 
         session[:authed_admin] = user

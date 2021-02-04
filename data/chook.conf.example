@@ -123,6 +123,19 @@ webhooks_user_pw:
 admin_user:
 
 #################
+# When admin_users is set to 'use_jamf', it allows anyone who can log in to
+# jamf pro to access the chook web UI.
+#
+# To limit that to a list of specific usernames, put those usernames into this
+# value, comma-separated
+#
+# example:
+#   jamf_admins:  admin1,admin2,admin3
+# Default: none
+#
+jamf_admins:
+
+#################
 # When admin page authentication is enabled by setting admin_user, this
 # tells chook how to learn the password for that user:
 #

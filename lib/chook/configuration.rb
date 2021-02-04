@@ -58,6 +58,7 @@ module Chook
       admin_user: nil,
       admin_pw: nil,
       admin_session_expires: :to_i,
+      jamf_admins: Chook::Procs::COMMA_STRING_TO_ARRAY,
       jamf_server: nil,
       jamf_port: :to_i,
       jamf_use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
