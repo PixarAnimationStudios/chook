@@ -164,6 +164,9 @@ module Chook
         if level == Logger::DEBUG
           @logger.debug 'Config: '
           Chook::Configuration::CONF_KEYS.keys.each do |key|
+            # don't log :env, it might have sensitive data
+            next if key == :env
+
             @logger.debug "  Chook.config.#{key} = #{Chook.config.send key}"
           end
         end
