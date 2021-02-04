@@ -138,7 +138,7 @@ module Chook
     def self.pw_from_command(cmd)
       cmd = cmd.chomp '|'
       output = `#{cmd} 2>&1`.chomp
-      raise "Can't get password from #{setting}: #{output}" unless $CHILD_STATUS.exitstatus.zero?
+      raise "Can't get password from #{cmd}: #{output}" unless $CHILD_STATUS.exitstatus.zero?
       output
     end
 
