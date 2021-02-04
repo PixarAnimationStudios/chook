@@ -181,3 +181,14 @@ jamf_use_ssl:
 # Default: none, but /etc/ruby-jss.conf will be honored
 #
 jamf_verify_cert:
+
+#################
+# Environment Variables to set before starting the server.
+# The value is a comma-separated list of  VAR=value pairs.
+# NOTE: do not quote the values.
+# Example:
+#   env: FOO=bar,BAZ=this is a value,BANG=42
+#
+# Default: none
+#
+env:

@@ -46,6 +46,15 @@ module Chook
       end # if..else
     end
 
+    ENV_FROM_CONFIG = proc do |envs|
+      envs = envs.split /\s*,\s*/
+      envs.each do |env|
+        var, val = env.split '='
+        ENV[var] = val
+      end
+      envs
+    end
+
     MOBILE_USERID = proc { |_device| '-1' }
 
     PRODUCT = proc { |_device| nil }

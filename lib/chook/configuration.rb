@@ -51,7 +51,7 @@ module Chook
       ssl_private_key_path: Chook::Procs::STRING_TO_PATHNAME,
       log_file: Chook::Procs::STRING_TO_PATHNAME,
       log_level: Chook::Procs::STRING_TO_LOG_LEVEL,
-      log_max_megs:  :to_i,
+      log_max_megs: :to_i,
       logs_to_keep: :to_i,
       webhooks_user: nil,
       webhooks_user_pw: nil,
@@ -61,7 +61,8 @@ module Chook
       jamf_server: nil,
       jamf_port: :to_i,
       jamf_use_ssl: Chook::Procs::STRING_TO_BOOLEAN,
-      jamf_verify_cert: Chook::Procs::STRING_TO_BOOLEAN
+      jamf_verify_cert: Chook::Procs::STRING_TO_BOOLEAN,
+      env: Chook::Procs::ENV_FROM_CONFIG
     }.freeze
 
     # Class Variables
