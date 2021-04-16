@@ -22,8 +22,7 @@
           %td{ valign: 'bottom', width: '120' }
             #header_logo
               %img{ alt: '', height: '120', src: '/imgs/ChookLogoAlMcWhiggin.png', width: '120' }
-            #header_version
-              v#{Chook::VERSION}
+
           %td
             #definition
               %span.chook_title Chook
@@ -34,10 +33,36 @@
               %span.def_dialect Australian/NZ informal
               %br/
               %span.def_definition a chicken or fowl
-          %td#serverstats{ valign: 'bottom' }
-            Server started: #{Chook::Server.starttime.strftime '%Y-%m-%d %H:%M:%S'}
-            %br/
-            (#{Chook::Server.uptime})
+          %td#serverstats{ valign: :bottom, align: :right }
+            %table
+              %tr
+                %td.label_cell
+                  Chook version:
+                %td.value_cell
+                  #{Chook::VERSION}
+              %tr
+                %td.label_cell
+                  Sinatra version:
+                %td.value_cell
+                  #{Sinatra::VERSION}
+              %tr
+                %td.label_cell
+                  Thin version:
+                %td.value_cell
+                  #{Thin::VERSION::STRING}
+              %tr
+                %td.label_cell
+                  Ruby version:
+                %td.value_cell
+                  #{RUBY_VERSION} @ #{Gem.ruby}
+              %tr
+                %td.label_cell
+                  Server started:
+                %td.value_cell
+                  #{Chook::Server.starttime.strftime '%Y-%m-%d %H:%M:%S'}
+                  (#{Chook::Server.uptime})
+
+
 
     %hr/
     - if Chook.config.admin_user

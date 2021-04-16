@@ -6,6 +6,16 @@
   font-family: "Lucida Console", Monaco, monospace;
 }
 
+.label_cell {
+  text-align: right;
+  vertical-align: top;
+  padding-right: 5px;
+}
+
+.value_cell {
+  text-align: left;
+  vertical-align: top;
+}
 
 /* ******* Title Header Area ******* */
 
