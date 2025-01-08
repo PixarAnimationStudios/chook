@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -33,7 +33,7 @@ module Chook
       protect_via_basic_auth!
 
       # rewind to ensure read-pointer is at the start
-      request.body.rewind #
+      request.body.rewind
       raw_json = request.body.read
 
       event = Chook::HandledEvent.parse_event raw_json

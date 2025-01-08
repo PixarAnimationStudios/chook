@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -37,7 +37,7 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
   version: {
     validation: String,
     randomizer: :version,
-    api_object_attribute: [:network, :carrier_settings_version]
+    api_object_attribute: %i[network carrier_settings_version]
   },
   model: {
     validation: String,
@@ -45,24 +45,24 @@ Chook::Subject.classes[Chook::Subject::MOBILE_DEVICE] = {
     api_object_attribute: :model
   },
   bluetoothMacAddress: {
-    validation: String, #:validate_mac_address,
+    validation: String, # :validate_mac_address,
     randomizer: :mac_address,
     api_object_attribute: :bluetooth_mac_address
   },
   wifiMacAddress: {
-    validation: String, #:validate_mac_address,
+    validation: String, # :validate_mac_address,
     randomizer: :mac_address,
     api_object_attribute: :wifi_mac_address
   },
   imei: {
     validation: :imei,
     randomizer: :imei,
-    api_object_attribute: [:network, :imei]
+    api_object_attribute: %i[network imei]
   },
   icciID: {
-    validation: String, #:iccid,
+    validation: String, # :iccid,
     randomizer: :iccid,
-    api_object_attribute: [:network, :iccid]
+    api_object_attribute: %i[network iccid]
   },
   product: {
     # Product is null in the sample JSONs... And there isn't anything labeled "product" in JSS::API.get_rsrc("mobiledevices/id/#{id}")

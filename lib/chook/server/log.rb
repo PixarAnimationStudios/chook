@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -92,6 +92,7 @@ module Chook
             active_stream << "#{LOGSTREAM_DATA_PFX}#{str}\n\n"
           end
         end
+
       end # class
 
       # mapping of integer levels to symbols

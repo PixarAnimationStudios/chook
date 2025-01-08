@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -37,6 +37,7 @@ module Chook
         # don't protect if user isn't defined
         return unless Chook.config.webhooks_user
         return if webhook_user_authorized?
+
         headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
         halt 401, "Not authorized\n"
       end
@@ -67,6 +68,7 @@ module Chook
       # admin user auth might come from config, might come from Jamf Pro
       def authenticate_admin(user, pw)
         return authenticate_jamf_admin(user, pw) if Chook.config.admin_user == USE_JAMF_ADMIN_USER
+
         authenticate_admin_user(user, pw)
       end
 
@@ -95,12 +97,10 @@ module Chook
           verify_cert: Chook.config.jamf_verify_cert
         )
 
-        if Chook.config.jamf_admins
-          unless Chook.config.jamf_admins.include? user
-            Chook.logger.warn "Jamf Admin login FAILED for: #{user}@#{request.ip}, Not listed in config.jamf_admins"
-            session[:authed_admin] = nil
-            return false
-          end
+        if Chook.config.jamf_admins && !Chook.config.jamf_admins.include?(user)
+          Chook.logger.warn "Jamf Admin login FAILED for: #{user}@#{request.ip}, Not listed in config.jamf_admins"
+          session[:authed_admin] = nil
+          return false
         end
 
         Chook.logger.debug "Jamf Admin login for: #{user}@#{request.ip}"
@@ -148,20 +148,22 @@ module Chook
       cmd = cmd.chomp '|'
       output = `#{cmd} 2>&1`.chomp
       raise "Can't get password from #{cmd}: #{output}" unless $CHILD_STATUS.exitstatus.zero?
+
       output
     end
 
     def self.pw_from_file(file)
       file = Pathname.new file
       return nil unless file.file?
+
       stat = file.stat
       mode = format('%o', stat.mode)
       raise "Password file #{setting} has insecure mode, must be 0600." unless mode.end_with?('0600')
       raise "Password file #{setting} has insecure owner, must be owned by UID #{Process.euid}." unless stat.owned?
+
       # chomping an empty string removes all trailing \n's and \r\n's
       file.read.chomp('')
     end
-
 
   end # server
 

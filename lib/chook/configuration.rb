@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -104,6 +104,7 @@ module Chook
     #
     def read_global
       return false unless DEFAULT_CONF_FILE.file? && DEFAULT_CONF_FILE.readable?
+
       read DEFAULT_CONF_FILE
     end
 
@@ -116,6 +117,7 @@ module Chook
     def reload(file = DEFAULT_CONF_FILE)
       file = Pathname.new file
       return false unless file.file? && file.readable?
+
       clear_all
       read file
     end
@@ -186,8 +188,10 @@ module Chook
         line.strip =~ /^(\w+?):\s*(\S.*)$/
         key = Regexp.last_match(1)
         next unless key
+
         attr = key.to_sym
         next unless available_conf_keys.include? attr
+
         setter = "#{key}=".to_sym
         value = Regexp.last_match(2).strip
 

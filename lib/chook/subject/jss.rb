@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -25,18 +25,18 @@
 Chook::Subject.classes[Chook::Subject::JAMF_SOFTWARE_SERVER] = {
   institution: {
     validation: String,
-    randomizer: :word,
+    randomizer: :word
     # sampler: :institution,
     # api_object_attribute: :institution
   },
   hostAddress: {
     validation: String,
-    randomizer: :host,
+    randomizer: :host
     # sampler: ,
     # api_object_attribute: :hostAddress
   },
   webApplicationPath: {
-    validation: String,
+    validation: String
     # randomizer: ,
     # sampler: ,
     # api_object_attribute: :webApplicationPath
@@ -49,7 +49,7 @@ Chook::Subject.classes[Chook::Subject::JAMF_SOFTWARE_SERVER] = {
   },
   jssUrl: {
     validation: :url,
-    randomizer: :url,
+    randomizer: :url
     # sampler: ,
     # api_object_attribute: :jssUrl
   }

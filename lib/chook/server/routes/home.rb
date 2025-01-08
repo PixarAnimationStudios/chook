@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -29,7 +29,6 @@ module Chook
   class Server < Sinatra::Base
 
     get '/' do
-
       # a list of current handlers for the admin page
       @handlers_for_admin_page = []
 
@@ -49,7 +48,7 @@ module Chook
       # a list of current named handlers for the admin page
       @named_handlers_for_admin_page = []
 
-      Chook::HandledEvent::Handlers.named_handlers.each do |name, handler|
+      Chook::HandledEvent::Handlers.named_handlers.each do |_name, handler|
         if handler.is_a? Pathname
           file = handler
           type = :external
@@ -59,7 +58,6 @@ module Chook
         end # if else
         @named_handlers_for_admin_page << { file: file, type: type }
       end # handlers each
-
 
       # the current config, for the admin page
       @config_text =

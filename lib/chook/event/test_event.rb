@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -37,7 +37,7 @@ module Chook
   #
   class TestEvent < Chook::Event
 
-    EVENT_ATTRIBUTES = %w(webhook_id webhook_name subject).freeze
+    EVENT_ATTRIBUTES = %w[webhook_id webhook_name subject].freeze
 
     # For each event type in Chook::Event::EVENTS.keys
     # generate a TestEvent class for it, set its SUBJECT_CLASS constant
@@ -48,16 +48,21 @@ module Chook
     def self.generate_classes
       Chook::Event::EVENTS.each do |classname, subject|
         next if Chook::TestEvents.const_defined? classname
+
         # make the new TestEvent subclass
         new_class = Class.new(Chook::TestEvent) do
           # Setters & Getters
           EVENT_ATTRIBUTES.each do |attribute|
             # Getter
             attr_reader attribute
+
             # Setter
             if attribute == 'subject'
               define_method("#{attribute}=") do |new_val|
-                raise "Invalid TestSubject: Chook::TestEvents::#{classname} requires a Chook::TestSubjects::#{EVENTS[classname]}" unless Chook::Validators.send(:valid_test_subject, classname, new_val)
+                raise "Invalid TestSubject: Chook::TestEvents::#{classname} requires a Chook::TestSubjects::#{EVENTS[classname]}" unless Chook::Validators.send(
+                  :valid_test_subject, classname, new_val
+                )
+
                 instance_variable_set(('@' + attribute.to_s), new_val)
               end # end define_method
             else
@@ -90,6 +95,7 @@ module Chook
       raw_hash_form['webhook'.to_sym] = { 'webhookEvent'.to_sym => self.class.to_s.split('::')[-1] }
       EVENT_ATTRIBUTES.each do |json_attribute|
         next if json_attribute.include? 'json'
+
         if json_attribute == 'subject'
           raw_hash_form['event'.to_sym] = instance_variable_get('@' + json_attribute).json_hash
         else
@@ -111,8 +117,10 @@ module Chook
     #
     def fire(server_url)
       raise 'Please provide a destination server URL' unless server_url
+
       uri = URI.parse(server_url)
       raise 'Please provide a valid destination server URL' if uri.host.nil?
+
       data = json_hash.to_json # This is the structural equivalent of the Chook::Event @raw_json form
       http_connection = Net::HTTP.new uri.host, uri.port
       http_connection.post(uri, data)
@@ -128,6 +136,7 @@ module Chook
       if event_data
         event_data.each do |key, value|
           next unless EVENT_ATTRIBUTES.include? key
+
           instance_variable_set(('@' + key.to_s), value)
         end # event_data.each
       else

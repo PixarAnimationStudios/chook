@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -49,7 +49,7 @@ Chook::Subject.classes[Chook::Subject::SMART_GROUP] = {
   },
   computer: { # SmartGroupComputerMembershipChange == true, SmartGroupMobileDeviceMembershipChange == false
     validation: :boolean,
-    randomizer: :bool,
+    randomizer: :bool
     # sampler: ,
     # api_object_attribute: :computer
   }

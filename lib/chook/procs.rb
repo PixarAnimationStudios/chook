@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -42,7 +42,7 @@ module Chook
         level
       else
         lvl = Chook::Server::Log::LOG_LEVELS[level.to_sym]
-        lvl ? lvl : Logger::UNKNOWN
+        lvl || Logger::UNKNOWN
       end # if..else
     end
 

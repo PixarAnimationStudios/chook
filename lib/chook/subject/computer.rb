@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -41,32 +41,32 @@ Chook::Subject.classes[Chook::Subject::COMPUTER] = {
   model: {
     validation: String,
     randomizer: :computer_model,
-    api_object_attribute: [:hardware, :model]
+    api_object_attribute: %i[hardware model]
   },
   macAddress: {
-    validation: String, #:validate_mac_address,
+    validation: String, # :validate_mac_address,
     randomizer: :mac_address,
     api_object_attribute: :mac_address
   },
   alternateMacAddress: {
-    validation: String, #:validate_mac_address, # TODO: sometimes this value is nil !
+    validation: String, # :validate_mac_address, # TODO: sometimes this value is nil !
     randomizer: :mac_address,
     api_object_attribute: :alt_mac_address
   },
   serialNumber: {
-    validation: String, #:validate_serial_number,
+    validation: String, # :validate_serial_number,
     randomizer: :computer_serial_number,
     api_object_attribute: :serial_number
   },
   osVersion: {
     validation: String,
     randomizer: :computer_os_version,
-    api_object_attribute: [:hardware, :os_version]
+    api_object_attribute: %i[hardware os_version]
   },
   osBuild: {
     validation: String,
     randomizer: :os_build,
-    api_object_attribute: [:hardware, :os_build]
+    api_object_attribute: %i[hardware os_build]
   },
   userDirectoryID: {
     validation: String,
@@ -84,12 +84,12 @@ Chook::Subject.classes[Chook::Subject::COMPUTER] = {
     api_object_attribute: :real_name
   },
   emailAddress: {
-    validation: String, #:validate_email,
+    validation: String, # :validate_email,
     randomizer: :email_address,
     api_object_attribute: :email_address
   },
   phone: {
-    validation: String, #:validate_phone_number,
+    validation: String, # :validate_phone_number,
     randomizer: :phone,
     api_object_attribute: :phone
   },

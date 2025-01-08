@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -30,11 +30,11 @@ module Chook
 
     HANDLE_EVENT_ROUTE = '/handle_webhook_event'.freeze
 
-  #   before do
-  #     break if request.path_info == Chook::Server::HANDLE_EVENT_ROUTE
-  # #    break if request.path_info == '/' && session[:authed_admin]
-  # #    redirect '/' unless session[:authed_admin]
-  #   end
+    #   before do
+    #     break if request.path_info == Chook::Server::HANDLE_EVENT_ROUTE
+    # #    break if request.path_info == '/' && session[:authed_admin]
+    # #    redirect '/' unless session[:authed_admin]
+    #   end
 
     # log errors in production (in dev, they go to stdout and the browser)
     error do

@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -41,7 +41,6 @@ module Chook
       session[:auth_failed] = !authenticate_admin(params[:username], params[:password])
       redirect '/'
     end # get /
-
 
   end # class
 

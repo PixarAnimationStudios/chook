@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -31,31 +31,31 @@ Chook::Subject.classes[Chook::Subject::REST_API_OPERATION] = {
   },
   objectID: {
     validation: Integer,
-    randomizer: :int,
+    randomizer: :int
     # sampler: ,
     # api_object_attribute: :objectID
   },
   objectName: { # This can be "" if the object doesn't have a name attribute.
     validation: String,
-    randomizer: :word,
+    randomizer: :word
     # sampler: ,
     # api_object_attribute: :objectName
   },
   objectTypeName: {
     validation: String,
-    randomizer: :word, 
+    randomizer: :word
     # sampler: ,
     # api_object_attribute: :objectTypeName
   },
   authorizedUsername: {
     validation: String,
-    randomizer: :word,
+    randomizer: :word
     # sampler: :username,
     # api_object_attribute: :authorizedUsername
   },
   restAPIOperationType: {
     validation: String,
-    randomizer: :rest_operation,
+    randomizer: :rest_operation
     # sampler: ,
     # api_object_attribute: :restAPIOperationType
   }

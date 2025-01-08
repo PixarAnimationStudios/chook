@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -48,6 +48,7 @@ module Chook
           attribs.each do |attrib, deets|
             # getter
             attr_reader attrib
+
             validator = deets[:validation]
 
             # setter with validator
@@ -72,7 +73,7 @@ module Chook
     # a random test subject,
     def self.random
       random_vals = {}
-      Chook::Subject.classes[self.const_get NAME_CONSTANT].each do |attrib, deets|
+      Chook::Subject.classes[const_get NAME_CONSTANT].each do |attrib, deets|
         random_vals[attrib] = Chook::Randomizers.send deets[:randomizer] if deets[:randomizer]
       end # each do |attr_def|
       new random_vals
@@ -81,14 +82,14 @@ module Chook
     # a sampled test subject (real data from real JSS objects)
     # NOTE: a valid ruby-jss JSS::APIConnection must exist
     def self.sample(ids = 'random', api: JSS.api)
-      classname = self.const_get Chook::Subject::NAME_CONSTANT
+      classname = const_get Chook::Subject::NAME_CONSTANT
       ids = [ids] if ids.is_a? Integer
       # !!Kernel.const_get('JSS::' + classname) rescue false
-      if classname == 'PatchSoftwareTitleUpdated'
-        all_ids = Chook::Samplers.all_patch_ids('blah', api: api)
-      else
-        all_ids = Kernel.const_get('JSS::' + classname).all_ids(api: api) # (api: api)
-      end
+      all_ids = if classname == 'PatchSoftwareTitleUpdated'
+                  Chook::Samplers.all_patch_ids('blah', api: api)
+                else
+                  Kernel.const_get('JSS::' + classname).all_ids(api: api) # (api: api)
+                end
       ids = [all_ids.sample] if ids == 'random'
 
       ok = true
@@ -152,14 +153,15 @@ module Chook
     def json_hash
       # Verify that input is a child of TestSubjects, raise if not
       raise 'Invalid TestSubject' unless self.class.superclass == Chook::TestSubject
+
       test_subject_attributes = Chook::Subject.classes[self.class.to_s.split('::')[-1]]
       raw_hash_form = {}
       test_subject_attributes.each do |attribute, details|
-        if details.keys.include? :to_json
-          raw_hash_form[attribute] = send(attribute).send details[:to_json]
-        else
-          raw_hash_form[attribute] = instance_variable_get('@' + attribute.to_s)
-        end
+        raw_hash_form[attribute] = if details.keys.include? :to_json
+                                     send(attribute).send details[:to_json]
+                                   else
+                                     instance_variable_get('@' + attribute.to_s)
+                                   end
       end # end test_subject_attributes.keys.each do |attribute, details|
       raw_hash_form
     end # end json_hash

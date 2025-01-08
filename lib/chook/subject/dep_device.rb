@@ -1,4 +1,4 @@
-### Copyright 2020 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -24,38 +24,38 @@
 ###
 Chook::Subject.classes[Chook::Subject::DEP_DEVICE] = {
   assetTag: {
-    validation: String,
+    validation: String
     # randomizer: ,
     # sampler: ,
     # api_object_attribute:
   },
   description: {
     validation: String,
-    randomizer: :word,
+    randomizer: :word
     # sampler: ,
     # api_object_attribute:
   },
   deviceAssignedDate: {
     to_json: :to_jss_epoch,
     validation: Time,
-    randomizer: :time,
+    randomizer: :time
     # sampler: ,
     # api_object_attribute:
   },
   deviceEnrollmentProgramInstanceId: {
     validation: Integer,
-    randomizer: :int,
+    randomizer: :int
     # sampler: ,
     # api_object_attribute:
   },
   model: {
     validation: String,
-    randomizer: [:computer_model, :mobile_model], # /:
+    randomizer: %i[computer_model mobile_model], # /:
     # sampler: ,
-    api_object_attribute: [:hardware, :model]
+    api_object_attribute: %i[hardware model]
   },
   serialNumber: {
-    validation: String, #:validate_serial_number,
+    validation: String, # :validate_serial_number,
     # randomizer: :computer_serial_number,
     # sampler: ,
     api_object_attribute: :serial_number

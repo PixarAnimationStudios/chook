@@ -1,4 +1,4 @@
-# Copyright 2017 Pixar
+# Copyright 2025 Pixar
 #
 #    Licensed under the Apache License, Version 2.0 (the "Apache License")
 #    with the following modification; you may not use this file except in
@@ -260,7 +260,6 @@ module Chook
         Chook.logger.info "Loading internal general handler file '#{handler_file.basename}' for #{event_name} events"
         load_internal_handler handler_file
         handlers[event_name] << @loaded_handler if @loaded_handler
-
       end # self.load_general_handler(handler_file)
 
       # Load a named event handler from a file.

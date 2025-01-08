@@ -1,4 +1,4 @@
-### Copyright 2017 Pixar
+### Copyright 2025 Pixar
 
 ###
 ###    Licensed under the Apache License, Version 2.0 (the "Apache License")
@@ -96,6 +96,7 @@ module Chook
     #
     def self.parse_event(raw_event_json)
       return nil if raw_event_json.to_s.empty?
+
       event_json = JSON.parse(raw_event_json, symbolize_names: true)
       event_name = event_json[:webhook][:webhookEvent]
       Chook::HandledEvents.const_get(event_name).new raw_event_json
