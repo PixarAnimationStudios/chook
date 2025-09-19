@@ -43,6 +43,8 @@ module Chook
     DEFAULT_CONCURRENCY = true
     DEFAULT_SESSION_EXPIRE = 24 * 60 * 60 # one day
 
+    CHOOK_LOGO_URL = 'https://pixaranimationstudios.github.io/chook/images/Chook_Al_McWhiggin_Logo_Web.png'.freeze
+
     # set defaults in config
     Chook.config.port ||= Chook.config.use_ssl ? DEFAULT_SSL_PORT : DEFAULT_PORT
     Chook.config.admin_session_expires ||= DEFAULT_SESSION_EXPIRE
