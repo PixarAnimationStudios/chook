@@ -1,8 +1,10 @@
 # Chook Change Log
 
-## v 1.1.6 2025-10-20
+## v 1.1.9 2025-10-20
 - Use the 'TOMORROW OPEN SOURCE TECHNOLOGY LICENSE 1.0' (TOST) License 
   - The terms are unchanged, but it now has an offical name.
+
+## v 1.1.6 - 1.1.8 Internal Releases only.
 
 ## v 1.1.5 2020-12-11
 
