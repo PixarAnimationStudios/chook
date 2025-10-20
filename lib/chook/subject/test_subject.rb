@@ -1,27 +1,27 @@
-### Copyright 2025 Pixar
+# Copyright 2025 Pixar
 
-###
-###    Licensed under the Apache License, Version 2.0 (the "Apache License")
-###    with the following modification; you may not use this file except in
-###    compliance with the Apache License and the following modification to it:
-###    Section 6. Trademarks. is deleted and replaced with:
-###
-###    6. Trademarks. This License does not grant permission to use the trade
-###       names, trademarks, service marks, or product names of the Licensor
-###       and its affiliates, except as required to comply with Section 4(c) of
-###       the License and to reproduce the content of the NOTICE file.
-###
-###    You may obtain a copy of the Apache License at
-###
-###        http://www.apache.org/licenses/LICENSE-2.0
-###
-###    Unless required by applicable law or agreed to in writing, software
-###    distributed under the Apache License with the above modification is
-###    distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-###    KIND, either express or implied. See the Apache License for the specific
-###    language governing permissions and limitations under the Apache License.
-###
-###
+#
+#    Licensed under the Apache License, Version 2.0 (the "Apache License")
+#    with the following modification; you may not use this file except in
+#    compliance with the Apache License and the following modification to it:
+#    Section 6. Trademarks. is deleted and replaced with:
+#
+#    6. Trademarks. This License does not grant permission to use the trade
+#       names, trademarks, service marks, or product names of the Licensor
+#       and its affiliates, except as required to comply with Section 4(c) of
+#       the License and to reproduce the content of the NOTICE file.
+#
+#    You may obtain a copy of the Apache License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the Apache License with the above modification is
+#    distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#    KIND, either express or implied. See the Apache License for the specific
+#    language governing permissions and limitations under the Apache License.
+#
+#
 
 module Chook
 
@@ -58,7 +58,7 @@ module Chook
               elsif !validator.nil?
                 raise "Invalid value for #{attrib}" unless Chook::Validators.send validator, new_val
               end
-              instance_variable_set(('@' + attrib.to_s), new_val)
+              instance_variable_set('@' + attrib.to_s, new_val)
             end # end define method
           end # end do |attrib, deets|
         end # end new_class
@@ -185,10 +185,10 @@ module Chook
           if converter
             value = converter.is_a?(Symbol) ? value.send(converter) : converter.call(value)
           end # if converter
-          instance_variable_set(('@' + key.to_s), value)
+          instance_variable_set('@' + key.to_s, value)
         end # each key value
       else
-        attribs.keys.each { |key| instance_variable_set(('@' + key.to_s), nil) }
+        attribs.keys.each { |key| instance_variable_set('@' + key.to_s, nil) }
       end # if subject_data
     end # init
 
